@@ -1,4 +1,6 @@
 /node_modules
+/.idea/
+/.idea/workspace.xml
 /public/hot
 /public/storage
 /storage/*.key
