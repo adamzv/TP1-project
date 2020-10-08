@@ -8,6 +8,9 @@
         >vue-cli documentation</a
       >.
     </p>
+    <p>
+      Work in progress
+    </p>
     <h3>Installed CLI Plugins</h3>
     <ul>
       <li>
