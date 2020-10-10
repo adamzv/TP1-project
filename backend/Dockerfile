@@ -23,7 +23,6 @@ RUN apt-get update && apt-get install -y \
 COPY vhost.conf /etc/apache2/sites-available/000-default.conf
 
 COPY . .
-RUN cp .env.example var/www/html/.env
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
