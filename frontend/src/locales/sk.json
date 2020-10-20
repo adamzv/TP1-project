@@ -1,6 +1,14 @@
 {
+<<<<<<< HEAD
   "language": "SK",
   "ukf": "Moja UKF",
   "login": "Prihlásiť sa",
   "ukfNitra": "UKF v Nitre"
+=======
+  "hello": "ahoj i18n !!",
+  "message": "Táto správa je zobrazená v slovenčine",
+  "language": "SK",
+  "ukf": "Moja UKF",
+  "login": "Prihlásiť sa"
+>>>>>>> b68f783... Added plugin for i18n, some translations and simple gradients for faculties
 }

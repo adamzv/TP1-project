@@ -1,6 +1,14 @@
 {
+<<<<<<< HEAD
   "language": "EN",
   "ukf": "My UKF",
   "login": "Log in",
   "ukfNitra": "UKF in Nitra"
+=======
+  "hello": "hello i18n !!",
+  "message": "This message is displayed in english",
+  "language": "EN",
+  "ukf": "My UKF",
+  "login": "Log in"
+>>>>>>> b68f783... Added plugin for i18n, some translations and simple gradients for faculties
 }
