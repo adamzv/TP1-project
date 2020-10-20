@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <b-navbar class="is-dark" :fixed-top="false" :transparent="true">
+    <b-navbar class="is-dark" :transparent="true">
       <template slot="brand">
         <b-navbar-item tag="router-link" :to="{ path: '/' }">
           <img
@@ -10,9 +10,6 @@
         </b-navbar-item>
       </template>
       <template slot="end">
-        <b-navbar-item tag="router-link" :to="{ path: '/i18n' }">
-          i18n
-        </b-navbar-item>
         <b-navbar-item href="#">
           UKF.sk
         </b-navbar-item>
@@ -56,6 +53,7 @@
     >
       <b-carousel-item v-for="(carousel, i) in carousels" :key="i">
         <section :class="`hero is-medium is-${carousel.color} is-bold`">
+          <!-- TODO: find images for background and specify correct size -->
           <img src="../src/assets/convention.jpg" width="auto" height="100%" />
           <div
             :class="
