@@ -10,16 +10,33 @@
         </b-navbar-item>
       </template>
       <template slot="end">
+        <b-navbar-item tag="router-link" :to="{ path: '/i18n' }">
+          i18n
+        </b-navbar-item>
         <b-navbar-item href="#">
           UKF.sk
         </b-navbar-item>
         <b-navbar-item href="#">
-          Moja UKF
+          {{ $t("ukf") }}
         </b-navbar-item>
+        <b-navbar-dropdown
+          class="locale-changer"
+          :label="$t('language')"
+          v-model="locale"
+        >
+          <b-navbar-item
+            v-for="(lang, i) in langs"
+            :key="`Lang${i}`"
+            :value="lang"
+            @click="setLocale(lang)"
+          >
+            {{ lang.toLocaleUpperCase() }}
+          </b-navbar-item>
+        </b-navbar-dropdown>
         <b-navbar-item tag="div">
           <div class="buttons">
             <a class="button is-light">
-              Log in
+              {{ $t("login") }}
             </a>
           </div>
         </b-navbar-item>
@@ -51,14 +68,23 @@
         </section>
       </b-carousel-item>
     </b-carousel>
+
     <router-view />
   </div>
 </template>
 
 <script>
 export default {
+  methods: {
+    setLocale(val) {
+      this.$i18n.locale = val;
+      console.log(this.$i18n.locale);
+    }
+  },
   data() {
     return {
+      langs: ["sk", "en"],
+      locale: this.$i18n.locale,
       carousel: 0,
       pauseInfo: false,
       interval: 4000,
@@ -66,32 +92,32 @@ export default {
         {
           title: "Lorem Ipsum Event 1",
           color: "dark",
-          overlay: "angled-overlay"
+          overlay: "brown-overlay"
         },
         {
           title: "Lorem Ipsum Event 2",
           color: "dark",
-          overlay: "yellow-overlay"
+          overlay: "gray-overlay"
         },
         {
           title: "Lorem Ipsum Event 3",
           color: "dark",
-          overlay: "color-overlay"
+          overlay: "blue-overlay"
         },
         {
           title: "Lorem Ipsum Event 4",
           color: "dark",
-          overlay: "color-overlay"
+          overlay: "green-overlay"
         },
         {
           title: "Lorem Ipsum Event 5",
           color: "dark",
-          overlay: "color-overlay"
+          overlay: "orange-overlay"
         },
         {
           title: "Lorem Ipsum Event 6",
           color: "dark",
-          overlay: "color-overlay"
+          overlay: "pink-overlay"
         }
       ]
     };
@@ -118,29 +144,55 @@ body {
   padding-top: 0px !important;
 }
 // TODO: Unify overlays according to faculty color schemes
-.color-overlay {
-  background: rgb(131, 58, 180);
+.blue-overlay {
+  background: rgb(96, 212, 255);
   background: linear-gradient(
     90deg,
-    rgba(131, 58, 180, 0.5) 0%,
-    rgba(253, 29, 29, 0.5) 50%,
-    rgba(252, 176, 69, 0.5) 100%
+    rgba(96, 212, 255, 0.6) 0%,
+    rgba(23, 144, 228, 0.6) 43%,
+    rgba(0, 98, 167, 0.6) 75%,
+    rgba(0, 78, 131, 0.6) 100%
   );
 }
-.angled-overlay {
-  background: #4158d0;
+.green-overlay {
+  background: rgb(0, 232, 112);
+  background: linear-gradient(
+    90deg,
+    rgba(70, 251, 158, 0.5) 0%,
+    rgba(0, 153, 74, 0.5) 100%
+  );
+}
+.orange-overlay {
+  background: rgb(255, 248, 26);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 248, 26, 0.5) 0%,
+    rgba(243, 146, 0, 0.5) 100%
+  );
+}
+.pink-overlay {
+  background: rgb(244, 121, 188);
+  background: linear-gradient(
+    90deg,
+    rgba(244, 121, 188, 0.5) 0%,
+    rgba(212, 0, 117, 0.5) 73%,
+    rgba(175, 0, 92, 0.5) 100%
+  );
+}
+.brown-overlay {
+  background: rgb(238, 109, 67);
   background: linear-gradient(
     43deg,
-    rgba(65, 88, 208, 0.5) 0%,
-    rgba(200, 80, 192, 0.5) 46%,
-    rgba(255, 204, 112, 0.5) 100%
+    rgba(238, 109, 67, 0.3) 0%,
+    rgba(127, 24, 16, 0.6) 100%
   );
 }
-.yellow-overlay {
+.gray-overlay {
+  background: rgb(244, 244, 244);
   background: linear-gradient(
     90deg,
-    rgba(248, 255, 0, 0.5) 0%,
-    rgba(58, 213, 159, 0.5) 100%
+    rgba(244, 244, 244, 0.5) 0%,
+    rgba(178, 178, 178, 0.5) 100%
   );
 }
 </style>

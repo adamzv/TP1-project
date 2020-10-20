@@ -6,10 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
-  },
-  "prettier": {
-    "htmlWhitespaceSensitivity": "ignore"
+    "lint": "vue-cli-service lint",
+    "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'"
   },
   "dependencies": {
     "@mdi/font": "^5.7.55",
@@ -17,11 +15,13 @@
     "buefy": "^0.9.3",
     "core-js": "^2.6.5",
     "vue": "^2.6.10",
+    "vue-i18n": "^8.17.3",
     "vue-router": "^3.0.3",
     "vue-social-sharing": "^3.0.2",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
+    "@intlify/vue-i18n-loader": "^1.0.0",
     "@vue/cli-plugin-babel": "^3.12.0",
     "@vue/cli-plugin-eslint": "^3.12.0",
     "@vue/cli-plugin-unit-mocha": "^3.12.0",
@@ -36,6 +36,10 @@
     "node-sass": "^4.12.0",
     "prettier": "^1.18.2",
     "sass-loader": "^8.0.0",
+    "vue-cli-plugin-i18n": "^1.0.1",
     "vue-template-compiler": "^2.6.10"
+  },
+  "prettier": {
+    "htmlWhitespaceSensitivity": "ignore"
   }
 }
