@@ -21,13 +21,6 @@ class Department extends Model
     protected $guarded = ['id'];
 
     /**
-     * The attributes that are mass assignable
-     *
-     * @var array
-     */
-    protected $fillable = ['name'];
-
-    /**
      * Get the faculty that owns the department
      */
     public function faculty()

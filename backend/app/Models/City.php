@@ -21,13 +21,6 @@ class City extends Model
     protected $guarded = ['id'];
 
     /**
-     * The attributes that are mass assignable
-     *
-     * @var array
-     */
-    protected $fillable = ['name'];
-
-    /**
      * Get the state that owns the city
      */
     public function state()
