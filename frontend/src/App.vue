@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <b-navbar class="is-link" :fixed-top="false" :transparent="true">
+    <b-navbar class="is-dark" :fixed-top="false" :transparent="true">
       <template slot="brand">
         <b-navbar-item tag="router-link" :to="{ path: '/' }">
           <img
@@ -9,21 +9,15 @@
           />
         </b-navbar-item>
       </template>
-      <template slot="start">
-        <b-navbar-item href="#">
-          Home
-        </b-navbar-item>
-        <b-navbar-item href="#">
-          Documentation
-        </b-navbar-item>
-      </template>
-
       <template slot="end">
+        <b-navbar-item href="#">
+          UKF.sk
+        </b-navbar-item>
+        <b-navbar-item href="#">
+          Moja UKF
+        </b-navbar-item>
         <b-navbar-item tag="div">
           <div class="buttons">
-            <a class="button is-success">
-              <strong>Sign up</strong>
-            </a>
             <a class="button is-light">
               Log in
             </a>
@@ -45,7 +39,12 @@
     >
       <b-carousel-item v-for="(carousel, i) in carousels" :key="i">
         <section :class="`hero is-medium is-${carousel.color} is-bold`">
-          <div class="hero-body has-text-centered">
+          <img src="../src/assets/convention.jpg" width="auto" height="100%" />
+          <div
+            :class="
+              `hero-body has-text-centered is-overlay ${carousel.overlay}`
+            "
+          >
             <h1 class="title">{{ carousel.title }}</h1>
             <h2>{{ carousel.time }}</h2>
           </div>
@@ -62,14 +61,38 @@ export default {
     return {
       carousel: 0,
       pauseInfo: false,
-      interval: 3000,
+      interval: 4000,
       carousels: [
-        { title: "Lorem Ipsum Event 1", color: "dark" },
-        { title: "Lorem Ipsum Event 2", color: "primary" },
-        { title: "Lorem Ipsum Event 3", color: "info" },
-        { title: "Lorem Ipsum Event 4", color: "success" },
-        { title: "Lorem Ipsum Event 5", color: "warning" },
-        { title: "Lorem Ipsum Event 6", color: "danger" }
+        {
+          title: "Lorem Ipsum Event 1",
+          color: "dark",
+          overlay: "angled-overlay"
+        },
+        {
+          title: "Lorem Ipsum Event 2",
+          color: "dark",
+          overlay: "yellow-overlay"
+        },
+        {
+          title: "Lorem Ipsum Event 3",
+          color: "dark",
+          overlay: "color-overlay"
+        },
+        {
+          title: "Lorem Ipsum Event 4",
+          color: "dark",
+          overlay: "color-overlay"
+        },
+        {
+          title: "Lorem Ipsum Event 5",
+          color: "dark",
+          overlay: "color-overlay"
+        },
+        {
+          title: "Lorem Ipsum Event 6",
+          color: "dark",
+          overlay: "color-overlay"
+        }
       ]
     };
   }
@@ -84,27 +107,40 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-  // position: absolute;
-  // background: rgb(0, 0, 0);
-  // opacity: 0.85;
-}
-nav.navbar.is-fixed-top {
-  background: transparent;
-}
-nav.navbar.is-link {
+nav.navbar.is-dark {
   background: rgba(0, 0, 0, 0);
+}
+nav.navbar {
   position: absolute;
+  width: 100%;
 }
 body {
   padding-top: 0px !important;
+}
+// TODO: Unify overlays according to faculty color schemes
+.color-overlay {
+  background: rgb(131, 58, 180);
+  background: linear-gradient(
+    90deg,
+    rgba(131, 58, 180, 0.5) 0%,
+    rgba(253, 29, 29, 0.5) 50%,
+    rgba(252, 176, 69, 0.5) 100%
+  );
+}
+.angled-overlay {
+  background: #4158d0;
+  background: linear-gradient(
+    43deg,
+    rgba(65, 88, 208, 0.5) 0%,
+    rgba(200, 80, 192, 0.5) 46%,
+    rgba(255, 204, 112, 0.5) 100%
+  );
+}
+.yellow-overlay {
+  background: linear-gradient(
+    90deg,
+    rgba(248, 255, 0, 0.5) 0%,
+    rgba(58, 213, 159, 0.5) 100%
+  );
 }
 </style>
