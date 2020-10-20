@@ -76,7 +76,6 @@ export default {
   methods: {
     setLocale(lang) {
       this.$i18n.locale = lang;
-      console.log(this.$i18n.locale);
     }
   },
   data() {
