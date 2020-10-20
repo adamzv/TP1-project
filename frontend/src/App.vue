@@ -76,46 +76,46 @@
 <script>
 export default {
   methods: {
-    setLocale(val) {
-      this.$i18n.locale = val;
+    setLocale(lang) {
+      this.$i18n.locale = lang;
       console.log(this.$i18n.locale);
     }
   },
   data() {
     return {
-      langs: ["sk", "en"],
+      langs: this.$i18n.availableLocales,
       locale: this.$i18n.locale,
       carousel: 0,
       pauseInfo: false,
       interval: 4000,
       carousels: [
         {
-          title: "Lorem Ipsum Event 1",
+          title: "Univerzitná knižnica",
           color: "dark",
           overlay: "brown-overlay"
         },
         {
-          title: "Lorem Ipsum Event 2",
+          title: "Fakulta sociálnych vied a zdravotníctva",
           color: "dark",
           overlay: "gray-overlay"
         },
         {
-          title: "Lorem Ipsum Event 3",
+          title: "Pedagogická fakulta",
           color: "dark",
           overlay: "blue-overlay"
         },
         {
-          title: "Lorem Ipsum Event 4",
+          title: "Fakulta prírodných vied",
           color: "dark",
           overlay: "green-overlay"
         },
         {
-          title: "Lorem Ipsum Event 5",
+          title: "Fakulta stredoeurópskych štúdií",
           color: "dark",
           overlay: "orange-overlay"
         },
         {
-          title: "Lorem Ipsum Event 6",
+          title: "Filozofická fakulta",
           color: "dark",
           overlay: "pink-overlay"
         }
@@ -155,19 +155,17 @@ body {
   );
 }
 .green-overlay {
-  background: rgb(0, 232, 112);
-  background: linear-gradient(
-    90deg,
-    rgba(70, 251, 158, 0.5) 0%,
-    rgba(0, 153, 74, 0.5) 100%
+  background-image: linear-gradient(
+    135deg,
+    rgba(112, 245, 112, 0.4) 10%,
+    rgba(73, 198, 40, 0.5) 100%
   );
 }
 .orange-overlay {
-  background: rgb(255, 248, 26);
-  background: linear-gradient(
-    90deg,
-    rgba(255, 248, 26, 0.5) 0%,
-    rgba(243, 146, 0, 0.5) 100%
+  background-image: linear-gradient(
+    135deg,
+    rgba(253, 216, 25, 0.5) 10%,
+    rgba(232, 5, 5, 0.5) 100%
   );
 }
 .pink-overlay {
