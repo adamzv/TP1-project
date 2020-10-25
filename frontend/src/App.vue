@@ -81,6 +81,7 @@
 
       <!-- Actual reference of the EventComponent /w no props -->
       <EventComponent />
+      <EventComponent />
     </div>
 
     <router-view />
