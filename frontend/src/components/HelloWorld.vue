@@ -1,13 +1,7 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-    <b-button type="is-success">
-      <span class="mdi mdi-home"></span>
-      Testing buefy and mdi
-    </b-button>
-    <p>
-      Work in progress
-    </p>
+
+
   </div>
 </template>
 
