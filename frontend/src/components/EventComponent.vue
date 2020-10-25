@@ -6,7 +6,7 @@
         <div class="columns is-desktop">
 
             <!-- Actual column iterated through the event list -->
-            <div class="column" v-for="event in events" :key="event.id">
+            <div class="column grow" v-for="event in events" :key="event.id">
 
                 <!-- Actual event panel/card -->
                 <article class="panel _card">
@@ -99,9 +99,9 @@
                                 'eventDetailsHeaderColorFSS':(event.faculty == `FSS`)}">
 
                                 <!-- Actual buttons -->
-                                <button class="button is-success">Link 1</button>
-                                <button class="button is-warning">Link 2</button>
-                                <button class="button is-danger">Link 3</button>
+                                <button class="button is-success">#ukf</button>
+                                <button class="button is-warning">#fpv</button>
+                                <button class="button is-danger">#ki</button>
                             </div>
                         </div>
                     </div>
@@ -123,8 +123,6 @@
                     id: 0,
                     name: 'Karierny den',
                     desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ' +
-                        'tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,' +
-                        ' quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo' +
                         ' consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse',
                     date: '21. - 23.12.2020',
                     department: 'Katedra informatiky',
@@ -148,8 +146,7 @@
                     name: 'Hentaky den',
                     desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod ' +
                         'tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,' +
-                        ' quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo' +
-                        ' consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse',
+                        ' quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo',
                     date: '21. - 23.12.2020',
                     department: 'Katedra blabla',
                     place: 'FSS Aula',
@@ -162,6 +159,9 @@
 </script>
 
 <style lang="scss" scoped>
+
+    .grow { transition: all .14s ease-in-out; }
+    .grow:hover { transform: scale(1.05);  cursor: pointer;}
 
     .alignLeft { float: left !important; }
     .alignRight { float: right !important; }
@@ -179,6 +179,7 @@
         margin: 0;
     }
 
+
     ._card {
         padding: 0px;
         margin: 10px;
@@ -193,6 +194,8 @@
     .eventDetails {
         padding: 20px;
         text-align: justify;
+        height: 200px;
+        max-height: 200px;
     }
 
     .eventLinks {
