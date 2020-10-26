@@ -41,27 +41,22 @@
     </b-navbar>
     <b-carousel
       v-model="carousel"
-      :animated="animated"
-      :has-drag="drag"
-      :autoplay="autoPlay"
-      :pause-hover="pauseHover"
+      :has-drag="true"
       :pause-info="pauseInfo"
-      :pause-info-type="pauseType"
       :interval="interval"
-      :repeat="repeat"
-      @change="info($event)"
+      :repeat="true"
     >
       <b-carousel-item v-for="(carousel, i) in carousels" :key="i">
         <section :class="`hero is-medium is-${carousel.color} is-bold`">
           <!-- TODO: find images for background and specify correct size -->
-          <img src="../src/assets/convention.jpg" width="auto" height="100%" />
+          <img :src="getImgUrl(i)" width="auto" height="100%" />
           <div
             :class="
               `hero-body has-text-centered is-overlay ${carousel.overlay}`
             "
           >
             <h1 class="title">{{ carousel.title }}</h1>
-            <h2>{{ carousel.time }}</h2>
+            <h1 class="subtitle">{{ formatRemainingTime(carousel.time) }}</h1>
           </div>
         </section>
       </b-carousel-item>
@@ -72,14 +67,69 @@
 </template>
 
 <script>
+import moment from "moment";
+import countdown from "countdown";
+
 export default {
+  created: function() {
+    this.advance();
+    this.countdownTranslate();
+  },
   methods: {
+    advance: function() {
+      setTimeout(this.timer, 1000);
+    },
+    timer: function() {
+      this.counter++;
+      this.advance();
+    },
+    formatRemainingTime(endTime) {
+      // this counter causes refresh
+      this.counter + 1;
+      return moment(endTime)
+        .countdown()
+        .toString();
+    },
     setLocale(lang) {
       this.$i18n.locale = lang;
+
+      console.log(this.lang);
+      this.countdownTranslate();
+    },
+    getImgUrl(value) {
+      return `https://picsum.photos/id/43${value}/1230/350`;
+    },
+    slovakUnits: function(value, unit) {
+      var ONE = " | sekunda| minúta| hodina| deň| týždeň| mesiac| rok| | | ".split(
+        "|"
+      );
+      var FEW = " | sekundy| minúty| hodiny| dni| týždne| mesiace| roky| | | ".split(
+        "|"
+      );
+      var MANY = " | sekúnd| minút| hodín| dní| týždňov| mesiacov| rokov| | | ".split(
+        "|"
+      );
+      if (value === 1) {
+        // singular
+        return value + ONE[unit];
+      }
+      if (value >= 2 && value <= 4) {
+        return value + FEW[unit];
+      }
+      // general plural
+      return value + MANY[unit];
+    },
+    countdownTranslate: function() {
+      if (this.$i18n.locale.toLowerCase() === "sk") {
+        countdown.setFormat({ last: " a ", formatter: this.slovakUnits });
+      } else {
+        countdown.resetFormat();
+      }
     }
   },
   data() {
     return {
+      counter: 0,
       langs: this.$i18n.availableLocales,
       locale: this.$i18n.locale,
       carousel: 0,
@@ -88,31 +138,37 @@ export default {
       carousels: [
         {
           title: "Univerzitná knižnica",
+          time: 1603806300000,
           color: "dark",
           overlay: "brown-overlay"
         },
         {
           title: "Fakulta sociálnych vied a zdravotníctva",
+          time: 1603806300000,
           color: "dark",
           overlay: "gray-overlay"
         },
         {
           title: "Pedagogická fakulta",
+          time: 1603806300000,
           color: "dark",
           overlay: "blue-overlay"
         },
         {
           title: "Fakulta prírodných vied",
+          time: 1603806300000,
           color: "dark",
           overlay: "green-overlay"
         },
         {
           title: "Fakulta stredoeurópskych štúdií",
+          time: 1603806300000,
           color: "dark",
           overlay: "orange-overlay"
         },
         {
           title: "Filozofická fakulta",
+          time: 1603806300000,
           color: "dark",
           overlay: "pink-overlay"
         }
@@ -139,6 +195,10 @@ nav.navbar {
 }
 body {
   padding-top: 0px !important;
+}
+.carousel {
+  overflow: hidden;
+  // max-height: 200px;
 }
 // TODO: Unify overlays according to faculty color schemes
 .blue-overlay {
