@@ -9,8 +9,10 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @author klukak
  */
-class User extends Model
+class Repeat extends Model
 {
+    public $timestamps = false;
+
     /**
      * The attributes that aren´t max assignable
      *
@@ -18,12 +20,5 @@ class User extends Model
      */
     protected $guarded = ['id'];
 
-    /**
-     * Get the role
-     */
-    public function role()
-    {
-        return $this->belongsTo('App\Models\Role');
-    }
 
 }

@@ -9,8 +9,10 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @author klukak
  */
-class User extends Model
+class Picture extends Model
 {
+    public $timestamps = false;
+
     /**
      * The attributes that aren´t max assignable
      *
@@ -19,11 +21,10 @@ class User extends Model
     protected $guarded = ['id'];
 
     /**
-     * Get the role
+     * Get the event that has pictures
      */
-    public function role()
+    public function event()
     {
-        return $this->belongsTo('App\Models\Role');
+        return $this->belongsTo('App\Models\Event');
     }
-
 }
