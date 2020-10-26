@@ -24,12 +24,21 @@ class CreateEventsTable extends Migration
             $table->text('desc')->nullable();
             $table->dateTime('beginning');
             $table->dateTime('end')->nullable();
-            $table->integer('attendance_limit');
+            $table->integer('attendance_limit')->nullable();
+
+            // foreign ids
+            $table->unsignedBigInteger('id_user');
+            $table->unsignedBigInteger('id_place');
+            $table->unsignedBigInteger('id_faculty');
+            $table->unsignedBigInteger('id_department')->nullable()->unsigned();
+            $table->unsignedBigInteger('id_repeat');
+
+            // foreign relationships
             $table->foreign('id_user')->references('id')->on('states');
             $table->foreign('id_place')->references('id')->on('places');
             $table->foreign('id_faculty')->references('id')->on('faculties');
-            $table->integer('id_department')->nullable()->unsigned();
             $table->foreign('id_repeat')->references('id')->on('repeats');
+
             $table->timestamps();
         });
     }
