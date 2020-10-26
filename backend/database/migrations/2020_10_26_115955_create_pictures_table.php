@@ -20,7 +20,7 @@ class CreatePicturesTable extends Migration
     {
         Schema::create('pictures', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('link');
+            $table->text('link');
 
             //foreign ids
             $table->unsignedBigInteger('id_event');
