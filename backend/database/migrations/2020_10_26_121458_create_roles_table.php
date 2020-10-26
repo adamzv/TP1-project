@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
  *
  * @author klukak
  */
-class CreateFiltersTable extends Migration
+class CreateRolesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,9 +18,9 @@ class CreateFiltersTable extends Migration
      */
     public function up()
     {
-        Schema::create('filters', function (Blueprint $table) {
+        Schema::create('roles', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name', 255);
+            $table->string('type', 255);
         });
     }
 
@@ -31,6 +31,6 @@ class CreateFiltersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('filters');
+        Schema::dropIfExists('roles');
     }
 }

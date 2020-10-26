@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
  *
  * @author klukak
  */
-class CreateAttendancesTable extends Migration
+class CreateFilterUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,16 +18,18 @@ class CreateAttendancesTable extends Migration
      */
     public function up()
     {
-        Schema::create('attendances', function (Blueprint $table) {
+        Schema::create('filter_user', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('filter_value', 255);
 
             // foreign ids
+            $table->unsignedBigInteger('id_filter');
             $table->unsignedBigInteger('id_user');
-            $table->unsignedBigInteger('id_event');
 
             // foreign relationships
+            $table->foreign('id_filter')->references('id')->on('filters');
             $table->foreign('id_user')->references('id')->on('users');
-            $table->foreign('id_event')->references('id')->on('events');
+
         });
     }
 
@@ -38,6 +40,6 @@ class CreateAttendancesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('attendances');
+        Schema::dropIfExists('filter_user');
     }
 }

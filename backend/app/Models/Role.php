@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @author klukak
  */
-class Filter extends Model
+class Role extends Model
 {
     public $timestamps = false;
 

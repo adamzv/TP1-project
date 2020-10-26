@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
  *
  * @author klukak
  */
-class CreateAttendancesTable extends Migration
+class CreateUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,16 +18,20 @@ class CreateAttendancesTable extends Migration
      */
     public function up()
     {
-        Schema::create('attendances', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('name', 255);
+            $table->string('email', 255);
+            $table->string('password', 255);
+            $table->dateTime('email_verified_at')->nullable();
 
             // foreign ids
-            $table->unsignedBigInteger('id_user');
-            $table->unsignedBigInteger('id_event');
+            $table->unsignedBigInteger('id_role');
 
             // foreign relationships
-            $table->foreign('id_user')->references('id')->on('users');
-            $table->foreign('id_event')->references('id')->on('events');
+            $table->foreign('id_role')->references('id')->on('roles');
+
+            $table->timestamp();
         });
     }
 
@@ -38,6 +42,6 @@ class CreateAttendancesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('attendances');
+        Schema::dropIfExists('users');
     }
 }

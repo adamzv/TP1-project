@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @author klukak
  */
-class Filter extends Model
+class Picture extends Model
 {
     public $timestamps = false;
 
@@ -19,4 +19,12 @@ class Filter extends Model
      * @var array
      */
     protected $guarded = ['id'];
+
+    /**
+     * Get the event that has pictures
+     */
+    public function event()
+    {
+        return $this->belongsTo('App\Models\Event');
+    }
 }
