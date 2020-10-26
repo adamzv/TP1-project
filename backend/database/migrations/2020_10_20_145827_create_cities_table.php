@@ -5,11 +5,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Class CreateRepeatsTable
+ * Class CreateCitiesTable
  *
- * @author klukak
+ * @author lacal
  */
-class CreatePicturesTable extends Migration
+class CreateCitiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,15 +18,11 @@ class CreatePicturesTable extends Migration
      */
     public function up()
     {
-        Schema::create('pictures', function (Blueprint $table) {
+        Schema::create('cities', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->text('link');
-
-            //foreign ids
-            $table->unsignedBigInteger('id_event');
-
-            //foreign relationships
-            $table->foreign('id_event')->references('id')->on('events');
+            $table->string('name', 255);
+            $table->unsignedBigInteger('id_state');
+            $table->foreign('id_state')->references('id')->on('states');
         });
     }
 
@@ -37,6 +33,6 @@ class CreatePicturesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pictures');
+        Schema::dropIfExists('cities');
     }
 }

@@ -31,7 +31,7 @@ class CreateUsersTable extends Migration
             // foreign relationships
             $table->foreign('id_role')->references('id')->on('roles');
 
-            $table->timestamp();
+            $table->timestamps();
         });
     }
 
