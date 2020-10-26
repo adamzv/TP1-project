@@ -42,8 +42,8 @@
     <b-carousel
       v-model="carousel"
       :has-drag="true"
-      :pause-info="pauseInfo"
-      :interval="interval"
+      :pause-info="false"
+      :interval="4000"
       :repeat="true"
     >
       <b-carousel-item v-for="(carousel, i) in carousels" :key="i">
@@ -69,19 +69,31 @@
 <script>
 import moment from "moment";
 import countdown from "countdown";
+import { ONE, FEW, MANY } from "./const.js";
 
 export default {
   created: function() {
+    // every second an anonymous function will be called which causes re-render of the countdown string
     this.advance();
     this.countdownTranslate();
   },
   methods: {
-    advance: function() {
-      setTimeout(this.timer, 1000);
+    setLocale(lang) {
+      this.$i18n.locale = lang;
+
+      console.log(this.lang);
+      this.countdownTranslate();
     },
-    timer: function() {
-      this.counter++;
-      this.advance();
+    // sample function which returns "lorem ipsum" image for carousel background
+    // in the future every background image needs to have at least 350px height
+    getImgUrl(value) {
+      return `https://picsum.photos/id/43${value}/1230/350`;
+    },
+    advance: function() {
+      setTimeout(() => {
+        this.counter++;
+        this.advance();
+      }, 1000);
     },
     formatRemainingTime(endTime) {
       // this counter causes refresh
@@ -90,25 +102,8 @@ export default {
         .countdown()
         .toString();
     },
-    setLocale(lang) {
-      this.$i18n.locale = lang;
-
-      console.log(this.lang);
-      this.countdownTranslate();
-    },
-    getImgUrl(value) {
-      return `https://picsum.photos/id/43${value}/1230/350`;
-    },
-    slovakUnits: function(value, unit) {
-      var ONE = " | sekunda| minúta| hodina| deň| týždeň| mesiac| rok| | | ".split(
-        "|"
-      );
-      var FEW = " | sekundy| minúty| hodiny| dni| týždne| mesiace| roky| | | ".split(
-        "|"
-      );
-      var MANY = " | sekúnd| minút| hodín| dní| týždňov| mesiacov| rokov| | | ".split(
-        "|"
-      );
+    // formatter used to correctly translate time units in carousel
+    slovakCountdownUnitsFormatter: function(value, unit) {
       if (value === 1) {
         // singular
         return value + ONE[unit];
@@ -119,9 +114,13 @@ export default {
       // general plural
       return value + MANY[unit];
     },
+    // translates countdown in carousel according to selected language
     countdownTranslate: function() {
       if (this.$i18n.locale.toLowerCase() === "sk") {
-        countdown.setFormat({ last: " a ", formatter: this.slovakUnits });
+        countdown.setFormat({
+          last: " a ",
+          formatter: this.slovakCountdownUnitsFormatter
+        });
       } else {
         countdown.resetFormat();
       }
@@ -133,8 +132,6 @@ export default {
       langs: this.$i18n.availableLocales,
       locale: this.$i18n.locale,
       carousel: 0,
-      pauseInfo: false,
-      interval: 4000,
       carousels: [
         {
           title: "Univerzitná knižnica",
