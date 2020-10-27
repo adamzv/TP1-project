@@ -1,7 +1,7 @@
 version: "3"
 services:
   mysql:
-    container_name: tp1_mysql
+    container_name: mysql
     restart: always
     image: mysql:latest
     environment:
