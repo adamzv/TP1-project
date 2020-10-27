@@ -5,7 +5,7 @@ services:
     restart: always
     image: mysql:latest
     environment:
-      MYSQL_ROOT_PASSWORD: "test"
+      MYSQL_ROOT_PASSWORD: "root"
       MYSQL_USER: "root"
       MYSQL_PASS: "root"
     volumes:
