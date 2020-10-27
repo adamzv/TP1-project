@@ -8,6 +8,32 @@
     <p>
       Work in progress
     </p>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vitae lacinia
+      orci. Nulla facilisi. Class aptent taciti sociosqu ad litora torquent per
+      conubia nostra, per inceptos himenaeos. Sed congue metus id sapien
+      ullamcorper rhoncus. Nunc nec nisi convallis, vulputate lacus non, posuere
+      odio. Phasellus vel est id orci volutpat convallis. Morbi justo tortor,
+      tincidunt ut vulputate eget, porttitor eu enim. Proin vitae nisl at tortor
+      pretium dignissim sed molestie felis. In hac habitasse platea dictumst.
+      Phasellus volutpat sodales posuere. Nam vitae consectetur ligula, a mattis
+      tellus. Sed massa augue, lacinia iaculis velit a, porttitor consequat
+      nisl. Nulla condimentum lobortis maximus. Vivamus sed ex a risus ultricies
+      pharetra in vel urna.
+    </p>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vitae lacinia
+      orci. Nulla facilisi. Class aptent taciti sociosqu ad litora torquent per
+      conubia nostra, per inceptos himenaeos. Sed congue metus id sapien
+      ullamcorper rhoncus. Nunc nec nisi convallis, vulputate lacus non, posuere
+      odio. Phasellus vel est id orci volutpat convallis. Morbi justo tortor,
+      tincidunt ut vulputate eget, porttitor eu enim. Proin vitae nisl at tortor
+      pretium dignissim sed molestie felis. In hac habitasse platea dictumst.
+      Phasellus volutpat sodales posuere. Nam vitae consectetur ligula, a mattis
+      tellus. Sed massa augue, lacinia iaculis velit a, porttitor consequat
+      nisl. Nulla condimentum lobortis maximus. Vivamus sed ex a risus ultricies
+      pharetra in vel urna.
+    </p>
   </div>
 </template>
 
@@ -21,19 +47,4 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>
+<style scoped lang="scss"></style>
