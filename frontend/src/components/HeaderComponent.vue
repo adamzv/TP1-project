@@ -76,7 +76,6 @@ export default {
     setLocale(lang) {
       this.$i18n.locale = lang;
 
-      console.log(this.lang);
       this.countdownTranslate();
     },
     // sample function which returns "lorem ipsum" image for carousel background
