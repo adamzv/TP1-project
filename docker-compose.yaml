@@ -10,7 +10,7 @@ services:
       MYSQL_USER: "backend"
       MYSQL_PASS: "root"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - /opt/db_data:/var/lib/mysql
     ports:
       - 3306:3306
     networks:
