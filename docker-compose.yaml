@@ -12,15 +12,25 @@ services:
       - /opt/mysql_data:/var/lib/mysql
     ports:
       - 3306:3306
+    networks:
+      - network
   backend:
     build: ./backend
     image: "backend"
     ports:
       - 3000:80
     restart: always
+    networks:
+      - network
   frontend:
     build: ./frontend
     image: "frontend"
     ports:
       - 8080:8080
     restart: always
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge
