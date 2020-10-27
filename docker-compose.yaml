@@ -12,3 +12,15 @@ services:
     ports:
       - 8080:8080
     restart: always
+  mysql:
+    container_name: tp1_mysql
+    restart: always
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: "test"
+      MYSQL_USER: "root"
+      MYSQL_PASS: ""
+    volumes:
+      - /opt/mysql_data:/var/lib/mysql
+    ports:
+      - 3306:3306
