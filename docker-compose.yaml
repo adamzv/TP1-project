@@ -5,6 +5,7 @@ services:
     restart: always
     image: mysql:latest
     environment:
+      MYSQL_DATABASE: "backend"
       MYSQL_ROOT_PASSWORD: "root"
       MYSQL_USER: "root"
       MYSQL_PASS: "root"
