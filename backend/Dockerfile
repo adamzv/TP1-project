@@ -31,4 +31,4 @@ RUN chown -R www-data:www-data /var/www/html \
 
 EXPOSE 3000
 
-RUN cd /var/www/html && composer install && php artisan key:generate && php artisan migrate && php artisan db:seed
+RUN cd /var/www/html && composer install && php artisan key:generate
