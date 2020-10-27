@@ -1,17 +1,5 @@
 version: "3"
 services:
-  backend:
-    build: ./backend
-    image: "backend"
-    ports:
-      - 3000:80
-    restart: always
-  frontend:
-    build: ./frontend
-    image: "frontend"
-    ports:
-      - 8080:8080
-    restart: always
   mysql:
     container_name: tp1_mysql
     restart: always
@@ -24,3 +12,15 @@ services:
       - /opt/mysql_data:/var/lib/mysql
     ports:
       - 3306:3306
+  backend:
+    build: ./backend
+    image: "backend"
+    ports:
+      - 3000:80
+    restart: always
+  frontend:
+    build: ./frontend
+    image: "frontend"
+    ports:
+      - 8080:8080
+    restart: always
