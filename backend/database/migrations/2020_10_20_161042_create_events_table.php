@@ -34,7 +34,7 @@ class CreateEventsTable extends Migration
             $table->unsignedBigInteger('id_repeat');
 
             // foreign relationships
-            $table->foreign('id_user')->references('id')->on('states');
+            $table->foreign('id_user')->references('id')->on('users');
             $table->foreign('id_place')->references('id')->on('places');
             $table->foreign('id_faculty')->references('id')->on('faculties');
             $table->foreign('id_department')->references('id')->on('departments');
