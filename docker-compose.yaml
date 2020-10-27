@@ -7,15 +7,16 @@ services:
     environment:
       MYSQL_DATABASE: "backend"
       MYSQL_ROOT_PASSWORD: "root"
-      MYSQL_USER: "root"
+      MYSQL_USER: "backend"
       MYSQL_PASS: "root"
     volumes:
-      - /opt/mysql_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
     ports:
       - 3306:3306
     networks:
       - network
   backend:
+    container_name: backend
     build: ./backend
     image: "backend"
     ports:
@@ -24,6 +25,7 @@ services:
     networks:
       - network
   frontend:
+    container_name: frontend
     build: ./frontend
     image: "frontend"
     ports:
