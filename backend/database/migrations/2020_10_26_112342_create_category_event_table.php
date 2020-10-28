@@ -24,9 +24,11 @@ class CreateCategoryEventTable extends Migration
             $table->unsignedBigInteger('id_category');
 
             // foreign relationships
-            $table->foreign('id_event')->references('id')->on('events');
-            $table->foreign('id_category')->references('id')->on('categories');
+            $table->foreign('id_event')->references('id')->on('events')->onDelete('cascade');
+            $table->foreign('id_category')->references('id')->on('categories')->onDelete('cascade');
             $table->unique(['id_event', 'id_category']);
+
+            $table->softDeletes();
         });
     }
 

@@ -20,10 +20,10 @@ class CreateRepeatsTable extends Migration
     {
         Schema::create('repeats', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('repeatUnit', 255)->nullable();
-            $table->integer('repeatNumber')->nullable();
+            $table->string('repeatUnit', 255);
+            $table->integer('repeatNumber');
             $table->dateTime('repeatUntil')->nullable();
-
+            $table->softDeletes();
         });
     }
 

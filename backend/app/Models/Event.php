@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Event
@@ -11,6 +12,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Event extends Model
 {
+    use SoftDeletes;
+
     /**
      * The attributes that aren't mass assignable
      *
@@ -63,6 +66,16 @@ class Event extends Model
      */
     public function categories()
     {
-        return $this->belongsToMany('App\Models\Category');
+        return $this->belongsToMany('App\Models\Category')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get the attendance of users that belongs to the event
+     */
+    public function attendance()
+    {
+        return $this->belongsToMany('App\Models\User')
+            ->withTimestamps();
     }
 }

@@ -27,9 +27,10 @@ class CreateFilterUserTable extends Migration
             $table->unsignedBigInteger('id_user');
 
             // foreign relationships
-            $table->foreign('id_filter')->references('id')->on('filters');
-            $table->foreign('id_user')->references('id')->on('users');
+            $table->foreign('id_filter')->references('id')->on('filters')->onDelete('cascade');
+            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
 
+            $table->softDeletes();
         });
     }
 

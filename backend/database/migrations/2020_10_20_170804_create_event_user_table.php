@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
  *
  * @author klukak
  */
-class CreateAttendancesTable extends Migration
+class CreateEventUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,7 +18,7 @@ class CreateAttendancesTable extends Migration
      */
     public function up()
     {
-        Schema::create('attendances', function (Blueprint $table) {
+        Schema::create('event_user', function (Blueprint $table) {
             $table->bigIncrements('id');
 
             // foreign ids
@@ -28,6 +28,8 @@ class CreateAttendancesTable extends Migration
             // foreign relationships
             $table->foreign('id_user')->references('id')->on('users');
             $table->foreign('id_event')->references('id')->on('events');
+
+            $table->softDeletes();
         });
     }
 
@@ -38,6 +40,6 @@ class CreateAttendancesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('attendances');
+        Schema::dropIfExists('event_user');
     }
 }

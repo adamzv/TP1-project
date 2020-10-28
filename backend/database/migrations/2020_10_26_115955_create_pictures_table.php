@@ -27,6 +27,8 @@ class CreatePicturesTable extends Migration
 
             //foreign relationships
             $table->foreign('id_event')->references('id')->on('events');
+
+            $table->softDeletes();
         });
     }
 
