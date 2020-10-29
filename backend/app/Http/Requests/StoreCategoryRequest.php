@@ -31,7 +31,7 @@ class StoreCategoryRequest extends FormRequest
     {
         return [
             'name' => [
-                'required|max:5',
+                'required',
                 Rule::unique('categories', 'name')->ignore($this->category)
             ]
         ];

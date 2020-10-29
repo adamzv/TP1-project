@@ -63,11 +63,9 @@ class CitiesController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
-     *
-     * TODO: discuss how to implement delete in cities
      */
     public function destroy($id)
     {
-
+        // TODO: discuss how to implement delete in cities
     }
 }
