@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class CreateRepeatsTable
@@ -11,6 +12,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Filter extends Model
 {
+    use SoftDeletes;
+
     public $timestamps = false;
 
     /**
@@ -19,4 +22,13 @@ class Filter extends Model
      * @var array
      */
     protected $guarded = ['id'];
+
+    /**
+     * Get the users for the Filter
+     */
+    public function user()
+    {
+        return $this->belongsToMany('App\Models\User')
+            ->withTimestamps();
+    }
 }

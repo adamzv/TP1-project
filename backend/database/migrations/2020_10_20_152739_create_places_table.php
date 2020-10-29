@@ -23,6 +23,7 @@ class CreatePlacesTable extends Migration
             $table->string('name', 255);
             $table->unsignedBigInteger('id_city');
             $table->foreign('id_city')->references('id')->on('cities');
+            $table->softDeletes();
         });
     }
 

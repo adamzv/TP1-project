@@ -22,7 +22,8 @@ class CreateDepartmentsTable extends Migration
             $table->bigIncrements('id');
             $table->string('name', 255);
             $table->unsignedBigInteger('id_faculty');
-            $table->foreign('id_faculty')->references('id')->on('faculties');
+            $table->foreign('id_faculty')->references('id')->on('faculties')->onDelete('cascade');
+            $table->softDeletes();
         });
     }
 
