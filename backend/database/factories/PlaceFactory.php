@@ -4,13 +4,14 @@
 
 use App\Models\Place;
 use App\Models\City;
-use Faker\Generator as Faker;
+use Faker\Generator;
 use Faker\Provider\sk_SK\Address;
+$faker = new Faker\Generator();
 
-$factory->define(Place::class, function (Faker $faker) {
-    $faker->addProvider(new Faker\Provider\sk_SK\Address($faker));
+$factory->define(Place::class, function ($faker) {
+    $faker->addProvider(new Faker\Provider\en_US\Address($faker));
     return [
-        'name' => $faker->street_address(),
+        'name' => $faker->word(),
         'id_city' => City::all()->random()->id,
     ];
 });

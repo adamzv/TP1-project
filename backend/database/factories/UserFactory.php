@@ -9,7 +9,6 @@ use Faker\Generator as Faker;
 $factory->define(User::class, function (Faker $faker) {
     return [
         'name' => $faker->firstName,
-        'surname' => $faker->lastName,
         'email' => $faker->safeEmail,
         'password' => $faker->password,
         'email_verified_at' => $faker->dateTime($max = 'now'),
