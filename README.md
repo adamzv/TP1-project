@@ -14,9 +14,8 @@ We are using Azure DevOps for CI/CD and after successful build, services are aut
 In the future ports will be changed to ensure proper communication between frontend and backend
 
 ## Authors
-
-- [Adam Zverka](https://github.com/adamzv) - team leader, continuous integration and deployment, frontend
-- [Dušan Angelovič](https://github.com/AngelovicD) - backend, testing
-- [Kristián Kluka](https://github.com/kristiankluka) - backend, SW architect related tasks
-- [Ľudovít Laca](https://github.com/Ludovit-Laca) - backend, DB design
-- [Martin Gajdoš](https://github.com/martingajdos) - design, frontend
+* [Adam Zverka](https://github.com/adamzv) - team leader, continuous integration and deployment, frontend
+* [Kristián Kluka](https://github.com/kristiankluka) - backend, SW architect related tasks
+* [Ľudovít Laca](https://github.com/Ludovit-Laca) - backend, DB design
+* [Martin Gajdoš](https://github.com/martingajdos) - design, frontend
+* [Dusan Angelovic] (https://github.com/AngelovicD) -  tester, backend
