@@ -3,13 +3,17 @@
 
 class RolesSeeder extends DatabaseSeeder
 {
-    public function run(){
+    public function run()
+    {
         //vlozenie roli (ne tote co su na nich grule)
-        DB::table('roles')->insert([
-            'type'=>'admin',
-            'type'=>'moderator',
-            'type'=>'pouzivatel',
-            'type'=>'host'
-        ]);
+
+        $roles_array = array('admin',
+            'moderator',
+            'pouzivatel',
+            'host');
+        for ($i = 1; $i <= (sizeof($roles_array)); $i++) {
+            DB::table('roles')->insert([
+                'type' => $roles_array[$i - 1]]);
+        }
     }
 }
