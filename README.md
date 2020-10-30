@@ -17,3 +17,4 @@ In the future ports will be changed to ensure proper communication between front
 * [Kristián Kluka](https://github.com/kristiankluka) - backend, SW architect related tasks
 * [Ľudovít Laca](https://github.com/Ludovit-Laca) - backend, DB design
 * [Martin Gajdoš](https://github.com/martingajdos) - design, frontend
+* [Dusan Angelovic] (https://github.com/AngelovicD) -  tester, backend
