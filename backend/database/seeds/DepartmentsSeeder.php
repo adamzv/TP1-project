@@ -1,6 +1,8 @@
 <?php
 
 
+use Illuminate\Support\Facades\DB;
+
 class DepartmentsSeeder extends DatabaseSeeder
 {
 
@@ -8,99 +10,90 @@ class DepartmentsSeeder extends DatabaseSeeder
     {
 
         //vloženie katedier a súčastí
-        $fpv_array = array('Katedra zoológie a antropológie', 'Katedra chémie', 'Gemologický ústav', 'Katedra informatiky');
+        $fpv_array = array('Katedra zoológie a antropológie', 'Katedra chémie', 'Gemologický ústav',
+            'Katedra informatiky', 'Katedra zoológie a antropológie', 'Katedra matematiky',
+            'Katedra geografie a regionálneho rozvoja', 'Katedra fyziky',
+            'Katedra ekológie a enviromentalistiky', 'Katedra botaniky a genetiky');
 
-        foreach ($fpv_array as $arr) {
-            DB::table('Faculties')->insert([
-                'nazov'=>$arr,
-                id_faculties=>1
-            ]);
-        };
+        for ($i = 1; $i <= (sizeof($fpv_array)); $i++) {
+            DB::table('departments')->insert([
+                'name' => $fpv_array[$i - 1],
+                'id_faculty' => 1,]);
+        }
+
+        $fsvaz_array = array('Katedra sociálnej práce asociálnych vied', 'Ústav aplikovanej psychológie',
+            'Ústav romologických štúdií', 'Katedra ošetrovateľstva', 'Katedra klinických disciplín aurgentnej medicíny');
+
+        for ($i = 1; $i <= (sizeof($fsvaz_array)); $i++) {
+            DB::table('departments')->insert([
+                'name' => $fsvaz_array[$i - 1],
+                'id_faculty' => 2,]);
+        }
+        $fsš_array = array('Katedra cestovného ruchu', 'Ústav maďarskej jazykovedy a literárnej vedy',
+            'Ústav pre vzdelávanie pedagógov', 'Ústaav stredoeurópskych jazykov a kultúr');
+
+        for ($i = 1; $i <= (sizeof($fsš_array)); $i++) {
+            DB::table('departments')->insert([
+                'name' => $fsš_array[$i - 1],
+                'id_faculty' => 3,]);
+        }
+        $ff_array = array('Katedra anglistiky a amerikanistiky',
+            'Katedra archeológie',
+            'Katedra etnológie a folkloristiky',
+            'Katedra filozofie',
+            'Katedra germanistiky',
+            'Katedra histórie',
+            'Katedra kulturológie',
+            'Katedra manažmentu kultúry a turizmu',
+            'Katedra masmediálnej komunikácie a reklamy',
+            'Katedra muzeológie',
+            'Katedra náboženských štúdií',
+            'Katedra politológie a euroázijských štúdií',
+            'Katedra romanistiky',
+            'Katedra rusistiky',
+            'Katedra sociológie',
+            'Katedra translatológie',
+            'Katedra všeobecnej a aplikovanej etiky',
+            'Katedra žurnalistiky',
+            'Mediálne centrum',
+            'Tlmočnícky ústav',
+            'Katedra žurnalistiky',
+            'Ústav literárnej a umeleckej komunikácie',
+            'Ústav pre výskum kultúrneho dedičstva Konštantína a Metoda',
+            'Centrum digitálnych humanitných vied',
+            'Jazykové centrum');
+        for ($i = 1; $i <= (sizeof($ff_array)); $i++) {
+            DB::table('departments')->insert([
+                'name' => $ff_array[$i - 1],
+                'id_faculty' => 4,]);
+        }
+
+        $pf_array = array('Katedra hudby',
+            'Katedra lingvodidaktiky a interkultúrnych štúdií',
+            'Katedra pedagogiky',
+            'Katedra pedagogickej a školskej psychológie',
+            'Katedra techniky a informačných technológií',
+            'Katedra telesnej výchovy a športu',
+            'Katedra výtvarnej tvorby a výchovy');
+        for ($i = 1; $i <= (sizeof($pf_array)); $i++) {
+            DB::table('departments')->insert([
+                'name' => $pf_array[$i - 1],
+                'id_faculty' => 5,]);
+        }
     }
 }
-
-
-              /*Katedra zoologie a antropológie
-                * Katedra chémie
-
-    public function run(){
-        {
-            //vloženie katedier a súčastí
-            DB::table('departments')->insert([
-                'name'=>'Katedra zoologie a antropológie',
-                'name'=>'Katedra chémie',
-
-                'name'=>'Gemologický ústav',
-                'name'=>'Katedra matematiky',
-                'name'=>'Katedra geografie a regionálneho rozvoja',
-                'name'=>'Katedra ekonomiky a manažmentu',
-                'name'=>'Katedra informatiky',
-                'name'=>'Katedra fyziky',
-                'name'=>'Katedra ekológie a enviromentalistiky',
-                'name'=>'Katedra botaniky a genetiky',
-
-                'id_faculty'=>'1' //fpv*/
 /*
 
-                'id_faculty'=>'1' //fpv
-            ]);
-
-
-            DB::table('departments')->insert([
-                'name'=>'Katedra sociálnej práce asociálnych vied',
-                'name'=>'Ústav aplikovanej psychológie',
-                'name'=>'Ústav romologických štúdií',
-                'name'=>'Katedra ošetrovateľstva',
-                'name'=>'Katedra klinických disciplín aurgentnej medicíny',
-                'id_faculty'=>'2' //svaz
-
-
-            ]);
-            DB::table('departments')->insert([
-                'name'=>'Katedra cestovného ruchu',
-                'name'=>'Ústav maďarskej jazykovedy a literárnej vedy',
-                'name'=>'Ústav pre vzdelávanie pedagógov',
-                'name'=>'Ústaav stredoeurópskych jazykov a kultúr',
-                'id_faculty'=>'3' //fsš
-            ]);
-            DB::table('departments')->insert([
-                'name'=>'Katedra anglistiky a amerikanistiky',
-                'name'=>'Katedra archeológie',
-                'name'=>'Katedra etnológie a folkloristiky',
-                'name'=>'Katedra filozofie',
-                'name'=>'Katedra germanistiky',
-                'name'=>'Katedra histórie',
-                'name'=>'Katedra kulturológie',
-                'name'=>'Katedra manažmentu kultúry a turizmu',
-                'name'=>'Katedra masmediálnej komunikácie a reklamy',
-                'name'=>'Katedra muzeológie',
-                'name'=>'Katedra náboženských štúdií',
-                'name'=>'Katedra politológie a euroázijských štúdií',
-                'name'=>'Katedra romanistiky',
-                'name'=>'Katedra rusistiky',
-                'name'=>'Katedra sociológie',
-                'name'=>'Katedra translatológie',
-                'name'=>'Katedra všeobecnej a aplikovanej etiky',
-                'name'=>'Katedra žurnalistiky',
-                'name'=>'Mediálne centrum',
-                'name'=>'Tlmočnícky ústav',
-                'name'=>'Katedra žurnalistiky',
-                'name'=>'Ústav literárnej a umeleckej komunikácie',
-                'name'=>'Ústav pre výskum kultúrneho dedičstva Konštantína a Metoda',
-                'name'=>'Centrum digitálnych humanitných vied',
-                'name'=>'Jazykové centrum',
-                'id_faculty'=>'4' //ff
-            ]);
-            DB::table('departments')->insert([
-                'name'=>'Katedra hudby',
-                'name'=>'Katedra lingvodidaktiky a interkultúrnych štúdií',
-                'name'=>'Katedra pedagogiky',
-                'name'=>'Katedra pedagogickej a školskej psychológie',
-                'name'=>'Katedra techniky a informačných technológií',
-                'name'=>'Katedra telesnej výchovy a športu',
-                'name'=>'Katedra výtvarnej tvorby a výchovy',
+                'Katedra hudby',
+                'Katedra lingvodidaktiky a interkultúrnych štúdií',
+                'Katedra pedagogiky',
+                'Katedra pedagogickej a školskej psychológie',
+                'Katedra techniky a informačných technológií',
+                'Katedra telesnej výchovy a športu',
+                'Katedra výtvarnej tvorby a výchovy'
                 'id_faculty'=>'5'//pf
             ]);
         }
     }
 }
+*/
