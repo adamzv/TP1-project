@@ -3,6 +3,7 @@
 
 class DepartmentsSeeder extends DatabaseSeeder
 {
+
     public function run()
     {
 
@@ -21,6 +22,14 @@ class DepartmentsSeeder extends DatabaseSeeder
 
               /*Katedra zoologie a antropológie
                 * Katedra chémie
+
+    public function run(){
+        {
+            //vloženie katedier a súčastí
+            DB::table('departments')->insert([
+                'name'=>'Katedra zoologie a antropológie',
+                'name'=>'Katedra chémie',
+
                 'name'=>'Gemologický ústav',
                 'name'=>'Katedra matematiky',
                 'name'=>'Katedra geografie a regionálneho rozvoja',
@@ -29,8 +38,13 @@ class DepartmentsSeeder extends DatabaseSeeder
                 'name'=>'Katedra fyziky',
                 'name'=>'Katedra ekológie a enviromentalistiky',
                 'name'=>'Katedra botaniky a genetiky',
+
                 'id_faculty'=>'1' //fpv*/
 /*
+
+                'id_faculty'=>'1' //fpv
+            ]);
+
 
             DB::table('departments')->insert([
                 'name'=>'Katedra sociálnej práce asociálnych vied',
@@ -90,4 +104,3 @@ class DepartmentsSeeder extends DatabaseSeeder
         }
     }
 }
-*/
