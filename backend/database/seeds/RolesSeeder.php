@@ -1,14 +1,17 @@
 <?php
 
-
+/**
+ * Class RolesSeeder
+ *
+ * @author angelovicd
+ */
 class RolesSeeder extends DatabaseSeeder
 {
+
     public function run()
     {
-        /*
-         * adding roles in loop from array
-         * author Dusan Angelovic as AngelovicD
-         */
+
+        // adding roles in loop from array
         $roles_array = array('admin',
             'moderator',
             'pouzivatel',

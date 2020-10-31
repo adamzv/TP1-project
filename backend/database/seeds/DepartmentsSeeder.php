@@ -1,47 +1,47 @@
 <?php
 
-
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Class DepartmentsSeeder
+ *
+ * Adding departments to its faculties.
+ *
+ * @author angelovicd
+ */
 class DepartmentsSeeder extends DatabaseSeeder
 {
 
     public function run()
     {
 
-        /*
-         * addind departments to its faculties.
-         * adding each departments from its own array in loop so its easily changeable, if needed.
-         * author Dusan Angelovic as AngelovicD
-         */
+        // adding each departments from its own array in loop so its easily changeable, if needed.
         $fpv_array = array('Katedra zoológie a antropológie', 'Katedra chémie', 'Gemologický ústav',
             'Katedra informatiky', 'Katedra zoológie a antropológie', 'Katedra matematiky',
             'Katedra geografie a regionálneho rozvoja', 'Katedra fyziky',
             'Katedra ekológie a enviromentalistiky', 'Katedra botaniky a genetiky');
-
         for ($i = 1; $i <= (sizeof($fpv_array)); $i++) {
             DB::table('departments')->insert([
                 'name' => $fpv_array[$i - 1],
                 'id_faculty' => 1,]);
-
         }
 
         $fsvaz_array = array('Katedra sociálnej práce asociálnych vied', 'Ústav aplikovanej psychológie',
             'Ústav romologických štúdií', 'Katedra ošetrovateľstva', 'Katedra klinických disciplín aurgentnej medicíny');
-
         for ($i = 1; $i <= (sizeof($fsvaz_array)); $i++) {
             DB::table('departments')->insert([
                 'name' => $fsvaz_array[$i - 1],
                 'id_faculty' => 2,]);
         }
+
         $fsš_array = array('Katedra cestovného ruchu', 'Ústav maďarskej jazykovedy a literárnej vedy',
             'Ústav pre vzdelávanie pedagógov', 'Ústaav stredoeurópskych jazykov a kultúr');
-
         for ($i = 1; $i <= (sizeof($fsš_array)); $i++) {
             DB::table('departments')->insert([
                 'name' => $fsš_array[$i - 1],
                 'id_faculty' => 3,]);
         }
+
         $ff_array = array('Katedra anglistiky a amerikanistiky',
             'Katedra archeológie',
             'Katedra etnológie a folkloristiky',

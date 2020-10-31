@@ -1,13 +1,15 @@
 <?php
 
-
-class FacultiesSeeder extends DatabaseSeeder
-/*
- * adding faculties
- * author Dusan Angelovic as AngelovicD
+/**
+ * Class FacultiesSeeder
  *
+ * Adding faculties
+ *
+ * @author angelovicd
  */
+class FacultiesSeeder extends DatabaseSeeder
 {
+
     public function run()
     {
         DB::table('faculties')->insert([
@@ -25,12 +27,15 @@ class FacultiesSeeder extends DatabaseSeeder
         DB::table('faculties')->insert([
             'name' => 'Pedagogická fakulta',
         ]);
+
+        // events that are for the whole university. e.g. for all faculties.
         DB::table('faculties')->insert([
-            'name' => 'Univerzita Konštantína Filozofa', //events that are for the whole university.
-                                                        //e.g. for all faculties.
+            'name' => 'Univerzita Konštantína Filozofa',
         ]);
+
+        // sometimes school library has events also
         DB::table('faculties')->insert([
-            'name' => 'Univerzitná knižnica', // sometimes school library has events also
+            'name' => 'Univerzitná knižnica',
         ]);
     }
 }
