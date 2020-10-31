@@ -6,8 +6,12 @@ use App\Models\City;
 use App\Models\State;
 use Faker\Provider\sk_SK\Address;
 
+/**
+ * Class CreateRepeatsTable
+ *
+ * @author klukak
+ */
 $faker = new Faker\Generator();
-
 $factory->define(City::class, function ($faker) {
     $faker->addProvider(new Faker\Provider\sk_SK\Address($faker));
 

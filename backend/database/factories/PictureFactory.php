@@ -6,6 +6,11 @@ use App\Models\Picture;
 use App\Models\Event;
 use Faker\Generator as Faker;
 
+/**
+ * Class CreateRepeatsTable
+ *
+ * @author klukak
+ */
 $factory->define(Picture::class, function (Faker $faker) {
     return [
         'link' => $faker->imageUrl(),

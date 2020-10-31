@@ -4,14 +4,18 @@
 
 use App\Models\Place;
 use App\Models\City;
-use Faker\Generator;
 use Faker\Provider\sk_SK\Address;
-$faker = new Faker\Generator();
 
+/**
+ * Class CreateRepeatsTable
+ *
+ * @author klukak
+ */
+$faker = new Faker\Generator();
 $factory->define(Place::class, function ($faker) {
-    $faker->addProvider(new Faker\Provider\en_US\Address($faker));
+    $faker->addProvider(new Faker\Provider\sk_SK\Address($faker));
     return [
-        'name' => $faker->word(),
+        'name' => $faker->streetAddress(),
         'id_city' => City::all()->random()->id,
     ];
 });
