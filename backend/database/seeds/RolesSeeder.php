@@ -5,8 +5,10 @@ class RolesSeeder extends DatabaseSeeder
 {
     public function run()
     {
-        //vlozenie roli (ne tote co su na nich grule)
-
+        /*
+         * addinf roles in loop from array
+         * author Dusan Angelovic as AngelovicD
+         */
         $roles_array = array('admin',
             'moderator',
             'pouzivatel',
