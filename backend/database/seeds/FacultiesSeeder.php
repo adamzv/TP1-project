@@ -2,9 +2,12 @@
 
 
 class FacultiesSeeder extends DatabaseSeeder
-
-{  // $this->call(UsersTableSeeder::class);
-    //vloženie falúlt
+/*
+ * adding faculties
+ * author Dusan Angelovic as AngelovicD
+ *
+ */
+{
     public function run()
     {
         DB::table('faculties')->insert([
@@ -23,10 +26,11 @@ class FacultiesSeeder extends DatabaseSeeder
             'name' => 'Pedagogická fakulta',
         ]);
         DB::table('faculties')->insert([
-            'name' => 'Univerzita Konštantína Filozofa', //eventy,ktoré sa týkajú celej univerzity
+            'name' => 'Univerzita Konštantína Filozofa', //events that are for the whole university.
+                                                        //e.g. for all faculties.
         ]);
         DB::table('faculties')->insert([
-            'name' => 'Univerzitná knižnica', // niekedy ma aj kniznica eventy
+            'name' => 'Univerzitná knižnica', // sometimes school library has events also
         ]);
     }
 }

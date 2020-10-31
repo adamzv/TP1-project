@@ -9,7 +9,11 @@ class DepartmentsSeeder extends DatabaseSeeder
     public function run()
     {
 
-        //vloženie katedier a súčastí
+        /*
+         * addind departments to its faculties.
+         * adding each departments from its own array in loop so its easily changeable, if needed.
+         * author Dusan Angelovic as AngelovicD
+         */
         $fpv_array = array('Katedra zoológie a antropológie', 'Katedra chémie', 'Gemologický ústav',
             'Katedra informatiky', 'Katedra zoológie a antropológie', 'Katedra matematiky',
             'Katedra geografie a regionálneho rozvoja', 'Katedra fyziky',
@@ -19,6 +23,7 @@ class DepartmentsSeeder extends DatabaseSeeder
             DB::table('departments')->insert([
                 'name' => $fpv_array[$i - 1],
                 'id_faculty' => 1,]);
+
         }
 
         $fsvaz_array = array('Katedra sociálnej práce asociálnych vied', 'Ústav aplikovanej psychológie',
@@ -82,18 +87,3 @@ class DepartmentsSeeder extends DatabaseSeeder
         }
     }
 }
-/*
-
-                'Katedra hudby',
-                'Katedra lingvodidaktiky a interkultúrnych štúdií',
-                'Katedra pedagogiky',
-                'Katedra pedagogickej a školskej psychológie',
-                'Katedra techniky a informačných technológií',
-                'Katedra telesnej výchovy a športu',
-                'Katedra výtvarnej tvorby a výchovy'
-                'id_faculty'=>'5'//pf
-            ]);
-        }
-    }
-}
-*/

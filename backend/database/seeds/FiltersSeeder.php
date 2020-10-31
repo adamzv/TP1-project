@@ -3,9 +3,12 @@
 
 class FiltersSeeder extends DatabaseSeeder
 {
+    /*
+     * adding filters with loop also from array for easy changes
+     * author Dusan Angelovic as AngelovicD
+     */
     public function run()
     {
-        //vlozenie filtrov
         $filters_array = array('start_date',
             'end_date',
             'category',

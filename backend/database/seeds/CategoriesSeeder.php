@@ -3,8 +3,12 @@
 
 class CategoriesSeeder extends DatabaseSeeder
 {
+    /*
+     * adding catefories in loop from array
+     * author Dusan Angelovic as AngelovicD
+     */
     public function run(){
-        //vlozenie categories
+
         $categories_array = array('zábava a šport',
             'konferencie',
             'erazmus');
