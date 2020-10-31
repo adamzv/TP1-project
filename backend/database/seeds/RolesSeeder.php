@@ -6,7 +6,7 @@ class RolesSeeder extends DatabaseSeeder
     public function run()
     {
         /*
-         * addinf roles in loop from array
+         * adding roles in loop from array
          * author Dusan Angelovic as AngelovicD
          */
         $roles_array = array('admin',
