@@ -21,6 +21,15 @@ class DatabaseSeeder extends Seeder
         $this->call(DepartmentsSeeder::class);
         $this->call(FiltersSeeder::class);
         $this->call(RolesSeeder::class);
+        $this->call(StatesSeeder::class);
+        $this->call(CitiesSeeder::class);
+        $this->call(PlacesSeeder::class);
+        $this->call(UsersSeeder::class);
+        $this->call(EventsSeeder::class);
+        $this->call(PicturesSeeder::class);
         Model::reguard();
+
+
+
     }
 }
