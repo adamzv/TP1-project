@@ -1,14 +1,39 @@
 version: "3"
 services:
+  mysql:
+    container_name: mysql
+    restart: ${DOCKER_RESTART_POLICY:-always}
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: "backend"
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_USER: "backend"
+      MYSQL_PASS: "root"
+    volumes:
+      - ${DOCKER_MYSQL_VOLUME:-/opt/db_data}:/var/lib/mysql
+    ports:
+      - 3306:3306
+    networks:
+      - network
   backend:
+    container_name: backend
     build: ./backend
     image: "backend"
     ports:
       - 3000:80
-    restart: always
+    restart: ${DOCKER_RESTART_POLICY:-always}
+    networks:
+      - network
   frontend:
+    container_name: frontend
     build: ./frontend
     image: "frontend"
     ports:
       - 8080:8080
-    restart: always
+    restart: ${DOCKER_RESTART_POLICY:-always}
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge
