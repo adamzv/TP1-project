@@ -2,8 +2,8 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\Models\Picture;
 use App\Models\Event;
+use App\Models\Picture;
 use Faker\Generator as Faker;
 
 /**

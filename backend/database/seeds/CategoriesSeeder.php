@@ -19,5 +19,6 @@ class CategoriesSeeder extends DatabaseSeeder
             DB::table('categories')->insert([
                 'name' => $categories_array[$i - 1]]);
         }
+
     }
 }

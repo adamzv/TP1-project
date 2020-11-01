@@ -15,7 +15,7 @@ $factory->define(State::class, function (Faker $faker) {
 
     return [
 
-    'name' => 'Slovensko',
+        'name' => 'Slovensko',
 
     ];
 });

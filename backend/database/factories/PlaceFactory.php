@@ -2,9 +2,8 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\Models\Place;
 use App\Models\City;
-use Faker\Provider\sk_SK\Address;
+use App\Models\Place;
 
 /**
  * Class CreateRepeatsTable

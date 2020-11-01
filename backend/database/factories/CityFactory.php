@@ -4,7 +4,6 @@
 
 use App\Models\City;
 use App\Models\State;
-use Faker\Provider\sk_SK\Address;
 
 /**
  * Class CreateRepeatsTable
@@ -16,8 +15,8 @@ $factory->define(City::class, function ($faker) {
     $faker->addProvider(new Faker\Provider\sk_SK\Address($faker));
 
     return [
-       'name' => $faker->city(),
+        'name' => $faker->city(),
         'id_state' => State::all()->random()->id,
-        ];
+    ];
 
 });
