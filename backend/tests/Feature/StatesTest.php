@@ -2,41 +2,47 @@
 
 namespace Tests\Feature;
 
-use App\Models\Category;
+use App\Models\State;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
+
 /**
- * Class CategoryTest
+ * Class RolesTest
  *
  * @author klukak
  */
-class CategoryTest extends TestCase
+class StatesTest extends TestCase
 {
     use RefreshDatabase;
+
+
+
+
     /**
      * A basic feature test example.
      *
      * @return void
      */
-    public function test_can_create_category()
+    public function test_can_create_state()
     {
         $data = ['name' => 'test'];
-       $this->json('POST',route('categories.store'),$data)
+        $this->withoutExceptionHandling();
+        $this->json('POST',route('states.store'),$data)
             ->assertStatus(201)
             ->assertJson($data);
 
 
     }
 
-    public function test_can_update_category()
+    public function test_can_update_state()
     {
 
-        $category = factory(Category::class)->create();
+        $state = factory(State::class)->create();
         $data = ['name' => 'testovanie'];
-
-        $this->json('PUT',route('categories.update', $category->id),$data)
+        $this->withoutExceptionHandling();
+        $this->json('PUT',route('states.update', $state->id),$data)
             ->assertStatus(200)
             ->assertJson($data);
 
