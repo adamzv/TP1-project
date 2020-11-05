@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\Event;
-use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,8 +13,13 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+/*
+ * Prefix for user authentication routes
+ */
+Route::prefix('users')->group(function () {
+    Route::post('login', 'Api\UsersController@login');
+    Route::post('register', 'Api\UsersController@register');
+    Route::get('logout', 'Api\UsersController@logout')->middleware('auth:api');
 });
 
 Route::namespace('Api')->group(function () {
@@ -33,6 +37,9 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('users', 'UsersController');
 });
 
+/*
+ * Route for filtering events according parameters
+ */
 Route::get('events', function () {
     $query = Event::query();
 
