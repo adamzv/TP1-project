@@ -27,7 +27,7 @@ class StatesTest extends TestCase
      */
     public function test_can_create_state()
     {
-        $data = ['name' => 'test'];
+        $data = ['name' => 'Slovensko'];
         $this->withoutExceptionHandling();
         $this->json('POST',route('states.store'),$data)
             ->assertStatus(201)
