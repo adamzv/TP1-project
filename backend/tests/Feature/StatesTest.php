@@ -9,7 +9,7 @@ use Tests\TestCase;
 
 
 /**
- * Class RolesTest
+ * Class StatesTest
  *
  * @author klukak
  */
@@ -17,13 +17,8 @@ class StatesTest extends TestCase
 {
     use RefreshDatabase;
 
-
-
-
     /**
-     * A basic feature test example.
-     *
-     * @return void
+     * Test: creating state
      */
     public function test_can_create_state()
     {
@@ -36,6 +31,9 @@ class StatesTest extends TestCase
 
     }
 
+    /**
+     * Test: Updating state
+     */
     public function test_can_update_state()
     {
 

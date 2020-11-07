@@ -7,24 +7,28 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
+/**
+ * Class FiltersTest
+ *
+ * @author klukak
+ */
 class FiltersTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * Setup
+     */
     public function setUp():void
     {
         parent::setUP();
         $this->seed();
     }
 
-
-
     /**
-     * A basic feature test example.
-     *
-     * @return void
+     * Test: Creating Filters
      */
-    public function test_can_create_faculty()
+    public function test_can_create_filter()
     {
         $data = ['name' => 'test'];
         $this->withoutExceptionHandling();
@@ -35,7 +39,10 @@ class FiltersTest extends TestCase
 
     }
 
-    public function test_can_update_faculty()
+    /**
+     * Test: Updating Filters
+     */
+    public function test_can_update_filter()
     {
 
         $filter = Filter::all()->random()->id;

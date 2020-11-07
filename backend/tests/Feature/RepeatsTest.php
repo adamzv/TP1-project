@@ -8,14 +8,17 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
+/**
+ * Class RepeatsTest
+ *
+ * @author klukak
+ */
 class RepeatsTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
     /**
-     * A basic feature test example.
-     *
-     * @return void
+     * Test: Creating repeats
      */
     public function test_can_create_repeat()
     {
@@ -34,6 +37,9 @@ class RepeatsTest extends TestCase
 
     }
 
+    /**
+     * Test: updating repeats
+     */
     public function test_can_update_repeat()
     {
 

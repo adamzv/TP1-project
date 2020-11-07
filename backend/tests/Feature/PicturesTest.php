@@ -8,23 +8,26 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
+/**
+ * Class PicturesTest
+ *
+ * @author klukak
+ */
 class PicturesTest extends TestCase
 {
     use RefreshDatabase,WithFaker;
 
-
+    /**
+     * Setup
+     */
     public function setUp():void
     {
         parent::setUP();
         $this->seed();
     }
 
-
-
     /**
-     * A basic feature test example.
-     *
-     * @return void
+     * Test: Creating pictures
      */
     public function test_can_create_picture()
     {
@@ -41,6 +44,9 @@ class PicturesTest extends TestCase
 
     }
 
+    /**
+     * Test: Updating pictures
+     */
     public function test_can_update_picture()
     {
         $event = factory(Event::class)->create()->id;

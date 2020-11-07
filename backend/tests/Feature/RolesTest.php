@@ -18,18 +18,17 @@ class RolesTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * Setup
+     */
     public function setUp():void
     {
         parent::setUP();
         $this->seed();
     }
 
-
-
     /**
-     * A basic feature test example.
-     *
-     * @return void
+     * Test: creating roles
      */
     public function test_can_create_role()
     {
@@ -42,6 +41,9 @@ class RolesTest extends TestCase
 
     }
 
+    /**
+     * Test: updating roles
+     */
     public function test_can_update_role()
     {
 

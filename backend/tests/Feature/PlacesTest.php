@@ -9,14 +9,17 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
+/**
+ * Class PlacesTest
+ *
+ * @author klukak
+ */
 class PlacesTest extends TestCase
 {
     use RefreshDatabase;
 
     /**
-     * A basic feature test example.
-     *
-     * @return void
+     * Test: Creating cities
      */
     public function test_can_create_city()
     {
@@ -34,6 +37,9 @@ class PlacesTest extends TestCase
 
     }
 
+    /**
+     * Test: Updating cities
+     */
     public function test_can_update_city()
     {
         factory(State::class)->create();

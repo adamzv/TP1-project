@@ -12,11 +12,18 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
+/**
+ * Class EventsTest
+ *
+ * @author klukak
+ */
 class EventsTest extends TestCase
 {
     use RefreshDatabase,WithFaker;
 
-
+    /**
+     * Setup
+     */
     public function setUp():void
     {
         parent::setUP();
@@ -24,9 +31,7 @@ class EventsTest extends TestCase
     }
 
     /**
-     * A basic feature test example.
-     *
-     * @return void
+     * Test: Creating Events
      */
     public function test_can_create_event()
     {
@@ -54,6 +59,9 @@ class EventsTest extends TestCase
 
     }
 
+    /**
+     * Test: Updating Events
+     */
     public function test_can_update_event()
     {
 
@@ -70,7 +78,7 @@ class EventsTest extends TestCase
             'id_place' => factory(Place::class)->create()->id,
             'id_faculty' => Faculty::all()->random()->id,
             'id_department' =>  Department::all()->random()->id,
-            'id_repeat' => factory(Repeat::class)->create()->id,
+            //'id_repeat' => factory(Repeat::class)->create()->id,
         ];
         $this->withoutExceptionHandling();
         $this->json('PUT',route('events.update', $event->id),$data)

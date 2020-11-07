@@ -9,10 +9,18 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
+/**
+ * Class UsersTest
+ *
+ * @author klukak
+ */
 class UsersTest extends TestCase
 {
     use WithFaker, RefreshDatabase;
 
+    /**
+     * Setup
+     */
     public function setUp():void
     {
         parent::setUP();
@@ -21,12 +29,8 @@ class UsersTest extends TestCase
 
     }
 
-
-
     /**
-     * A basic feature test example.
-     *
-     * @return void
+     * Test: Creating User
      */
     public function test_can_create_user()
     {
@@ -47,6 +51,9 @@ class UsersTest extends TestCase
 
     }
 
+    /**
+     * Test: Updating User
+     */
     public function test_can_update_user()
     {
 

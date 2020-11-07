@@ -7,10 +7,18 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
+/**
+ * Class FacultiesTest
+ *
+ * @author klukak
+ */
 class FacultiesTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * Setup
+     */
     public function setUp():void
     {
         parent::setUP();
@@ -18,11 +26,8 @@ class FacultiesTest extends TestCase
     }
 
 
-
     /**
-     * A basic feature test example.
-     *
-     * @return void
+     * Test: Creating Faculties
      */
     public function test_can_create_faculty()
     {
@@ -35,6 +40,9 @@ class FacultiesTest extends TestCase
 
     }
 
+    /**
+     * Test: Updating Faculties
+     */
     public function test_can_update_faculty()
     {
 
