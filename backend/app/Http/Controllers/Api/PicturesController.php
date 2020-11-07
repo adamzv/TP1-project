@@ -56,7 +56,7 @@ class PicturesController extends Controller
     public function update(StorePictureRequest $request, $id)
     {
         $picture = Picture::findOrFail($id);
-        $picture->update($request->only(['línk', 'id_event']));
+        $picture->update($request->only(['link', 'id_event']));
         return $picture;
     }
 
