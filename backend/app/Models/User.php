@@ -2,17 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\HasApiTokens;
 
 /**
  * Class CreateRepeatsTable
  *
- * @author klukak
+ * @author klukak, lacal
  */
-class User extends Model
+class User extends Authenticatable
 {
-    use SoftDeletes;
+    use SoftDeletes, Notifiable, HasApiTokens;
 
     /**
      * The attributes that aren´t max assignable
@@ -20,6 +22,24 @@ class User extends Model
      * @var array
      */
     protected $guarded = ['id'];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password',
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
 
     /**
      * Get the role
