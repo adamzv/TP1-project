@@ -3,67 +3,164 @@
     <div class="container">
       <h1 class="is-uppercase is-size-4">Vytvorenie novej udalosti</h1>
       <hr class="hr" />
-
-      <div class="box">
-        <div class="columns">
-          <div class="column is-two-fifths">
-            <b-field label="Názov udalosti">
-              <b-input v-model="name"></b-input>
-            </b-field>
+      <form id="app" v-on:submit.prevent="checkForm" method="post">
+        <div class="box">
+          <div class="columns">
+            <div class="column is-two-fifths">
+              <b-field label="Názov udalosti">
+                <b-input v-model="name"></b-input>
+              </b-field>
+            </div>
+            <div class="column">
+              <b-field label="Kategórie">
+                <b-taginput
+                  v-model="categories"
+                  :data="filteredCategories"
+                  field="name"
+                  autocomplete
+                  :allow-new="false"
+                  :open-on-focus="true"
+                  :keep-first="true"
+                  icon="label"
+                  placeholder="Pridať kategóriu"
+                  @typing="getFilteredTags"
+                >
+                  <template slot="header">
+                    <a @click="addNewCategory">
+                      <span>Nová kategória</span>
+                    </a>
+                  </template>
+                </b-taginput>
+              </b-field>
+            </div>
+            <div class="column">TODO</div>
+            <div class="column">
+              <b-field label="Dátum konania">
+                <b-datetimepicker
+                  v-model="beginning"
+                  placeholder="Vybrať dátum a čas"
+                  icon="calendar-today"
+                  :locale="'sk-SK'"
+                  ref="datepicker"
+                  horizontal-time-picker
+                >
+                  <!-- A simple hack to display timepicker in the middle :) -->
+                  <template slot="left">
+                    <b-button disabled style="visibility:hidden"></b-button>
+                  </template>
+                  <template slot="right">
+                    <b-button
+                      outlined
+                      class="button is-success"
+                      type="button"
+                      icon-left="check"
+                      @click="$refs.datepicker.toggle()"
+                    ></b-button>
+                  </template>
+                </b-datetimepicker>
+              </b-field>
+            </div>
           </div>
-          <div class="column">
-            <b-field label="Kategórie">
-              <b-taginput
-                v-model="categories"
-                :data="filteredCategories"
-                field="name"
-                autocomplete
-                :allow-new="false"
-                :open-on-focus="false"
-                icon="label"
-                placeholder="Pridať kategóriu"
-                @typing="getFilteredTags"
-              ></b-taginput>
-            </b-field>
-            <a @click="isCategoryModalActive = true">Pridať novú kategóriu</a>
-            <b-modal
-              v-model="isCategoryModalActive"
-              has-modal-card
-              trap-focus
-              :destroy-on-hide="false"
-              aria-role="dialog"
-              aria-modal
-            >
-              <template #default="props">
-                <div class="card">
-                  <div class="card-content">
-                    <div class="content">
-                      <b-field label="Name">
-                        <b-input v-model="newCategoryName"></b-input>
-                      </b-field>
-                      <button
-                        class="button is-primary is-medium"
-                        @click="addNewCategory"
-                      >
-                        Launch image modal
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </template>
-            </b-modal>
+          <div class="columns">
+            <div class="column">
+              <b-field label="Popis udalosti">
+                <b-input
+                  maxlength="500"
+                  v-model="desc"
+                  type="textarea"
+                ></b-input>
+              </b-field>
+            </div>
           </div>
-          <div class="column"></div>
-          <div class="column"></div>
+          <div class="columns">
+            <div class="column">
+              <b-field label="Miesto konania">
+                <b-autocomplete
+                  ref="autocomplete"
+                  :data="availablePlaces"
+                  field="name"
+                  :keep-first="true"
+                  :open-on-focus="true"
+                  :clearable="true"
+                  placeholder="Vybrať miesto konania udalosti"
+                  @select="option => (place = option)"
+                >
+                  <template slot="header">
+                    <a @click="console.log('todo')">
+                      <span>Pridať nové miesto</span>
+                    </a>
+                  </template>
+                </b-autocomplete>
+              </b-field>
+            </div>
+            <div class="column"></div>
+          </div>
         </div>
-        <div class="columns">
-          <div class="column">
-            <b-field label="Popis udalosti">
-              <b-input maxlength="500" v-model="desc" type="textarea"></b-input>
-            </b-field>
+        <h1 class="is-uppercase is-size-4">Univerzitné nastavenia</h1>
+        <hr class="hr" />
+        <div class="box">
+          <div class="columns">
+            <div class="column">
+              <b-field label="Fakulta">
+                <b-autocomplete
+                  :keep-first="true"
+                  :open-on-focus="true"
+                  :data="availableFaculties"
+                  field="name"
+                  @select="option => (selectedFaculty = option)"
+                  v-on:select="checkIfDepartmentIsSelected"
+                  :clearable="true"
+                ></b-autocomplete>
+              </b-field>
+            </div>
+            <div class="column">
+              <b-field label="Katedra">
+                <b-autocomplete
+                  v-model="selectedDepartment"
+                  :keep-first="true"
+                  :open-on-focus="true"
+                  :data="getFilteredDepartments"
+                  field="name"
+                  :disabled="selectedFaculty == null"
+                  :clearable="true"
+                ></b-autocomplete>
+              </b-field>
+            </div>
           </div>
         </div>
-      </div>
+        <div class="level">
+          <div class="level-left">
+            <div class="level-item">
+              <b-button
+                type="button"
+                class="is-danger"
+                tag="router-link"
+                to="/"
+              >
+                Zrušiť
+              </b-button>
+            </div>
+          </div>
+          <div class="level-right">
+            <div class="level-item">
+              <b-checkbox
+                v-model="createNext"
+                type="is-info"
+                @click="console.log(createNext)"
+              >
+                Vytvoriť ďalší
+              </b-checkbox>
+            </div>
+            <div class="level-item">
+              <input
+                type="submit"
+                class="button is-success"
+                value="Vytvoriť udalosť"
+              />
+            </div>
+          </div>
+        </div>
+      </form>
     </div>
   </section>
 </template>
@@ -73,25 +170,70 @@ import httpClient from "../httpClient.js";
 
 export default {
   name: "manageEvent",
-  created() {
-    // loads categories from backend
-    httpClient.get("/categories").then(response => {
-      this.availableCategories = response.data;
-    });
-  },
   data() {
     return {
       newCategoryName: "",
-      isCategoryModalActive: false,
       availableCategories: [],
       filteredCategories: [],
       id: null,
       name: "Kariérne dni",
       desc: null,
-      categories: []
+      categories: [],
+      beginning: null,
+      place: null,
+      availablePlaces: [],
+      createNext: false,
+      selectedDepartment: null,
+      selectedFaculty: null,
+      availableDepartments: [],
+      availableFaculties: []
     };
   },
   methods: {
+    addNewCategory() {
+      this.$buefy.dialog.prompt({
+        message: `Pridať novú kategóriu`,
+        inputAttrs: {
+          maxlength: 255,
+          value: this.newCategoryName
+        },
+        confirmText: "Add",
+        onConfirm: value => {
+          this.availableCategories.push({ name: value });
+          this.categories.push({ name: value });
+          this.newCategoryName = "";
+        }
+      });
+    },
+    checkForm() {
+      // TODO add axios post
+      if (this.createNext) {
+        // this console.log simulates POST request
+        console.log(this.generateJSON());
+        this.$buefy.toast.open({
+          message: "Udalosť bola úspešne vytvorená!",
+          type: "is-success"
+        });
+      } else {
+        // this console.log simulates POST request
+        console.log(this.generateJSON());
+        this.$router.push({ name: "home" }, () => {
+          this.$buefy.toast.open({
+            message: "Udalosť bola úspešne vytvorená!",
+            type: "is-success"
+          });
+        });
+      }
+    },
+    generateJSON() {
+      return JSON.stringify({
+        name: this.name,
+        desc: this.desc,
+        categories: this.categories,
+        place: this.place,
+        beginning: this.beginning
+      });
+    },
     getFilteredTags(text) {
       this.filteredCategories = this.availableCategories.filter(option => {
         return (
@@ -102,13 +244,41 @@ export default {
         );
       });
     },
-    addNewCategory() {
-      this.availableCategories.push({ name: this.newCategoryName });
-      this.newCategoryName = "";
-      // TODO add validation
-      // TODO make modal prettier
-      this.isCategoryModalActive = false;
+    checkIfDepartmentIsSelected() {
+      if (this.selectedFaculty == null && this.selectedDepartment !== null) {
+        this.selectedDepartment = null;
+        console.log("true");
+      }
     }
+  },
+  computed: {
+    getFilteredDepartments() {
+      return this.availableDepartments.filter(department => {
+        return (
+          this.selectedFaculty !== null &&
+          department.id_faculty === this.selectedFaculty.id
+        );
+      });
+    }
+  },
+  created() {
+    // loads categories from backend
+    httpClient.get("/categories").then(response => {
+      this.availableCategories = response.data;
+      this.filteredCategories = response.data;
+    });
+
+    httpClient.get("/places").then(response => {
+      this.availablePlaces = response.data;
+    });
+
+    httpClient.get("/departments").then(response => {
+      this.availableDepartments = response.data;
+    });
+
+    httpClient.get("/faculties").then(response => {
+      this.availableFaculties = response.data;
+    });
   }
 };
 </script>
@@ -116,5 +286,10 @@ export default {
 <style>
 .columns.notification {
   padding-top: 12px;
+}
+/* Set top margin to 0 so that timepicker 
+ and button are vertically centered */
+.datepicker-footer .level .level-item {
+  margin: 0px 12px;
 }
 </style>
