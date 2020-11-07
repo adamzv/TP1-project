@@ -36,8 +36,12 @@ class UsersController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        return User::create($request->only([
+        $user = User::create($request->only([
             'name', 'surname', 'email', 'password', 'id_role']));
+
+        // for testing purposes
+        $user->makeVisible(['password']);
+        return $user;
     }
 
     /**
@@ -63,6 +67,9 @@ class UsersController extends Controller
         $user = User::findOrFail($id);
         $user->update($request->only([
             'name', 'surname', 'email', 'password', 'id_role']));
+
+        // for testing purposes
+        $user->makeVisible(['password']);
         return $user;
     }
 
