@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\Filter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 /**
@@ -19,7 +18,7 @@ class FiltersTest extends TestCase
     /**
      * Setup
      */
-    public function setUp():void
+    public function setUp(): void
     {
         parent::setUP();
         $this->seed();
@@ -32,7 +31,7 @@ class FiltersTest extends TestCase
     {
         $data = ['name' => 'test'];
         $this->withoutExceptionHandling();
-        $this->json('POST',route('filters.store'),$data)
+        $this->json('POST', route('filters.store'), $data)
             ->assertStatus(201)
             ->assertJson($data);
 
@@ -48,7 +47,7 @@ class FiltersTest extends TestCase
         $filter = Filter::all()->random()->id;
         $data = ['name' => 'testovanie'];
         $this->withoutExceptionHandling();
-        $this->json('PUT',route('filters.update', $filter),$data)
+        $this->json('PUT', route('filters.update', $filter), $data)
             ->assertStatus(200)
             ->assertJson($data);
 

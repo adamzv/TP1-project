@@ -6,7 +6,6 @@ use App\Models\Department;
 use App\Models\Event;
 use App\Models\Faculty;
 use App\Models\Place;
-use App\Models\Repeat;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -19,12 +18,12 @@ use Tests\TestCase;
  */
 class EventsTest extends TestCase
 {
-    use RefreshDatabase,WithFaker;
+    use RefreshDatabase, WithFaker;
 
     /**
      * Setup
      */
-    public function setUp():void
+    public function setUp(): void
     {
         parent::setUP();
         $this->seed();
@@ -47,12 +46,12 @@ class EventsTest extends TestCase
             'id_user' => factory(User::class)->create()->id,
             'id_place' => factory(Place::class)->create()->id,
             'id_faculty' => Faculty::all()->random()->id,
-            'id_department' =>  Department::all()->random()->id,
-            'id_repeat' => factory(Repeat::class)->create()->id,
+            'id_department' => Department::all()->random()->id,
+            //'id_repeat' => factory(Repeat::class)->create()->id,
 
         ];
         $this->withoutExceptionHandling();
-        $this->json('POST',route('events.store'),$data)
+        $this->json('POST', route('events.store'), $data)
             ->assertStatus(201)
             ->assertJson($data);
 
@@ -77,11 +76,11 @@ class EventsTest extends TestCase
             'id_user' => factory(User::class)->create()->id,
             'id_place' => factory(Place::class)->create()->id,
             'id_faculty' => Faculty::all()->random()->id,
-            'id_department' =>  Department::all()->random()->id,
+            'id_department' => Department::all()->random()->id,
             //'id_repeat' => factory(Repeat::class)->create()->id,
         ];
         $this->withoutExceptionHandling();
-        $this->json('PUT',route('events.update', $event->id),$data)
+        $this->json('PUT', route('events.update', $event->id), $data)
             ->assertStatus(200)
             ->assertJson($data);
 

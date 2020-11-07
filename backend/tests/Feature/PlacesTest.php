@@ -6,7 +6,6 @@ use App\Models\City;
 use App\Models\Place;
 use App\Models\State;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 /**
@@ -26,11 +25,11 @@ class PlacesTest extends TestCase
 
         factory(State::class)->create();
         $data = [
-            'name' => 'test',
+            'name' => 'Za školou 8111',
             'id_city' => factory(City::class)->create()->id,
         ];
         $this->withoutExceptionHandling();
-        $this->json('POST',route('places.store'),$data)
+        $this->json('POST', route('places.store'), $data)
             ->assertStatus(201)
             ->assertJson($data);
 
@@ -50,7 +49,7 @@ class PlacesTest extends TestCase
             'id_city' => $city,
         ];
         $this->withoutExceptionHandling();
-        $this->json('PUT',route('places.update', $place->id),$data)
+        $this->json('PUT', route('places.update', $place->id), $data)
             ->assertStatus(200)
             ->assertJson($data);
 

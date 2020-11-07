@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\State;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 
@@ -24,7 +23,7 @@ class StatesTest extends TestCase
     {
         $data = ['name' => 'Slovensko'];
         $this->withoutExceptionHandling();
-        $this->json('POST',route('states.store'),$data)
+        $this->json('POST', route('states.store'), $data)
             ->assertStatus(201)
             ->assertJson($data);
 
@@ -40,7 +39,7 @@ class StatesTest extends TestCase
         $state = factory(State::class)->create();
         $data = ['name' => 'testovanie'];
         $this->withoutExceptionHandling();
-        $this->json('PUT',route('states.update', $state->id),$data)
+        $this->json('PUT', route('states.update', $state->id), $data)
             ->assertStatus(200)
             ->assertJson($data);
 

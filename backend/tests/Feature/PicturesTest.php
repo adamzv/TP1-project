@@ -15,12 +15,12 @@ use Tests\TestCase;
  */
 class PicturesTest extends TestCase
 {
-    use RefreshDatabase,WithFaker;
+    use RefreshDatabase, WithFaker;
 
     /**
      * Setup
      */
-    public function setUp():void
+    public function setUp(): void
     {
         parent::setUP();
         $this->seed();
@@ -37,7 +37,7 @@ class PicturesTest extends TestCase
             'id_event' => factory(Event::class)->create()->id,
         ];
         $this->withoutExceptionHandling();
-        $this->json('POST',route('pictures.store'),$data)
+        $this->json('POST', route('pictures.store'), $data)
             ->assertStatus(201)
             ->assertJson($data);
 
@@ -56,7 +56,7 @@ class PicturesTest extends TestCase
             'id_event' => $event,
         ];
         $this->withoutExceptionHandling();
-        $this->json('PUT',route('pictures.update', $picture),$data)
+        $this->json('PUT', route('pictures.update', $picture), $data)
             ->assertStatus(200)
             ->assertJson($data);
 

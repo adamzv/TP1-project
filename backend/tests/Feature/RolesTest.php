@@ -4,9 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Artisan;
-use RolesSeeder;
 use Tests\TestCase;
 
 /**
@@ -21,7 +18,7 @@ class RolesTest extends TestCase
     /**
      * Setup
      */
-    public function setUp():void
+    public function setUp(): void
     {
         parent::setUP();
         $this->seed();
@@ -34,7 +31,7 @@ class RolesTest extends TestCase
     {
         $data = ['type' => 'test'];
         $this->withoutExceptionHandling();
-        $this->json('POST',route('roles.store'),$data)
+        $this->json('POST', route('roles.store'), $data)
             ->assertStatus(201)
             ->assertJson($data);
 
@@ -50,7 +47,7 @@ class RolesTest extends TestCase
         $role = Role::all()->random()->id;
         $data = ['type' => 'testovanie'];
         $this->withoutExceptionHandling();
-        $this->json('PUT',route('roles.update', $role),$data)
+        $this->json('PUT', route('roles.update', $role), $data)
             ->assertStatus(200)
             ->assertJson($data);
 

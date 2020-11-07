@@ -24,10 +24,26 @@ class EventsController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * StoreFacultyRequest $request
+     * * @return Event
      */
     public function store(Request $request)
     {
-        //
+        if ($request->input('id_repeat') === null) {
+            return Event::create($request->only([
+                'name',
+                'desc',
+                'room',
+                'beginning',
+                'end',
+                'attendance_limit',
+                'id_user',
+                'id_place',
+                'id_faculty',
+                'id_department',
+            ]));
+        }
+
     }
 
     /**
@@ -45,7 +61,22 @@ class EventsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
+        $event = Event::findOrFail($id);
+        $event->update($request->only([
+            'name',
+            'desc',
+            'room',
+            'beginning',
+            'end',
+            'attendance_limit',
+            'id_user',
+            'id_place',
+            'id_faculty',
+            'id_department'
+
+        ]));
+        return $event;
     }
 
     /**
@@ -53,6 +84,6 @@ class EventsController extends Controller
      */
     public function destroy($id)
     {
-        //
+
     }
 }

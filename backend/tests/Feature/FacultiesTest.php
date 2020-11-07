@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\Faculty;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 /**
@@ -19,7 +18,7 @@ class FacultiesTest extends TestCase
     /**
      * Setup
      */
-    public function setUp():void
+    public function setUp(): void
     {
         parent::setUP();
         $this->seed();
@@ -31,9 +30,9 @@ class FacultiesTest extends TestCase
      */
     public function test_can_create_faculty()
     {
-        $data = ['name' => 'test'];
+        $data = ['name' => 'politologia'];
         $this->withoutExceptionHandling();
-        $this->json('POST',route('faculties.store'),$data)
+        $this->json('POST', route('faculties.store'), $data)
             ->assertStatus(201)
             ->assertJson($data);
 
@@ -49,7 +48,7 @@ class FacultiesTest extends TestCase
         $faculty = Faculty::all()->random()->id;
         $data = ['name' => 'testovanie'];
         $this->withoutExceptionHandling();
-        $this->json('PUT',route('faculties.update', $faculty),$data)
+        $this->json('PUT', route('faculties.update', $faculty), $data)
             ->assertStatus(200)
             ->assertJson($data);
 

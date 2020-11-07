@@ -2,9 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use App\Models\Role;
-use Carbon\Carbon;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -21,7 +20,7 @@ class UsersTest extends TestCase
     /**
      * Setup
      */
-    public function setUp():void
+    public function setUp(): void
     {
         parent::setUP();
         $this->seed();
@@ -42,9 +41,9 @@ class UsersTest extends TestCase
             'id_role' => Role::all()->random()->id,
 
 
-            ];
+        ];
         $this->withoutExceptionHandling();
-        $this->json('POST',route('users.store'),$data)
+        $this->json('POST', route('users.store'), $data)
             ->assertStatus(201)
             ->assertJson($data);
 
@@ -68,7 +67,7 @@ class UsersTest extends TestCase
 
         ];
         $this->withoutExceptionHandling();
-        $this->json('PUT',route('users.update', $user),$data)
+        $this->json('PUT', route('users.update', $user), $data)
             ->assertStatus(200)
             ->assertJson($data);
 
