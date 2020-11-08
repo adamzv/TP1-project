@@ -47,6 +47,7 @@ export default {
 .container {
   margin-top: 24px;
   padding: 0 0 !important;
+  text-align: left;
 }
 .level-item {
   margin: 12px 12px;

@@ -20,7 +20,7 @@ services:
     build: ./backend
     image: "backend"
     ports:
-      - 3000:80
+      - 8000:80
     restart: ${DOCKER_RESTART_POLICY:-always}
     networks:
       - network
@@ -29,7 +29,7 @@ services:
     build: ./frontend
     image: "frontend"
     ports:
-      - 8080:8080
+      - 80:80
     restart: ${DOCKER_RESTART_POLICY:-always}
     networks:
       - network

@@ -29,9 +29,12 @@
         </b-navbar-dropdown>
         <b-navbar-item tag="div">
           <div class="buttons">
-            <a class="button is-light">
+            <b-button tag="router-link" to="/pridat" type="is-link">
+              {{ $t("addEvent") }}
+            </b-button>
+            <b-button tag="router-link" to="#" type="is-light">
               {{ $t("login") }}
-            </a>
+            </b-button>
           </div>
         </b-navbar-item>
       </template>
