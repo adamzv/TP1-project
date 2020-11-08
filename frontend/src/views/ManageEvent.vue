@@ -1,6 +1,7 @@
 <template>
   <section>
     <div class="container">
+      <!-- Nova udalost -->
       <h1 class="is-uppercase is-size-4">Vytvorenie novej udalosti</h1>
       <hr class="hr" />
       <form id="app" v-on:submit.prevent="checkForm" method="post">
@@ -33,7 +34,6 @@
                 </b-taginput>
               </b-field>
             </div>
-            <div class="column">TODO</div>
             <div class="column">
               <b-field label="Dátum konania">
                 <b-datetimepicker
@@ -59,6 +59,35 @@
                   </template>
                 </b-datetimepicker>
               </b-field>
+            </div>
+          </div>
+          <div class="columns">
+            <div class="column">
+              <!-- TODO toto je odkaz na modal okno nie b-upload -->
+              <b-upload v-model="file" class="file-label has-text-link">
+                <span>
+                  <i class="mdi mdi-upload"></i>
+                  Nahrať (zvoliť) titulnú fotku
+                </span>
+              </b-upload>
+              <br />
+              <b-upload
+                v-model="file"
+                type="file"
+                accept=".pdf"
+                class="file-label has-text-link"
+              >
+                <span>
+                  <i class="mdi mdi-file-upload"></i>
+                  Nahrať súbor .pdf
+                </span>
+              </b-upload>
+              <span v-if="file">
+                &nbsp;| {{ file.name }}
+                <a @click="file = null">
+                  <i class="mdi mdi-close-thick has-text-danger"></i>
+                </a>
+              </span>
             </div>
           </div>
           <div class="columns">
@@ -93,9 +122,15 @@
                 </b-autocomplete>
               </b-field>
             </div>
+            <div class="column">
+              <b-field label="Miestnosť">
+                <b-input v-model="room"></b-input>
+              </b-field>
+            </div>
             <div class="column"></div>
           </div>
         </div>
+        <!-- Univerzitne nastavenia -->
         <h1 class="is-uppercase is-size-4">Univerzitné nastavenia</h1>
         <hr class="hr" />
         <div class="box">
@@ -126,6 +161,69 @@
                 ></b-autocomplete>
               </b-field>
             </div>
+            <div class="column">
+              <b-field label="Prednášajúci">
+                <b-input v-model="lecturer"></b-input>
+              </b-field>
+            </div>
+          </div>
+          <div class="columns">
+            <div class="column ">
+              <b-field grouped label="Obmedziť počeť miest?">
+                <b-checkbox v-model="isAttendanceLimit"></b-checkbox>
+                <b-input
+                  type="number"
+                  :disabled="!isAttendanceLimit"
+                  v-model="attendanceLimit"
+                ></b-input>
+              </b-field>
+            </div>
+          </div>
+        </div>
+        <!-- Galeria -->
+        <!-- TODO: zobrazit galeriu len pri editovani? -->
+        <!-- TODO: kazdy obrazok sa hned v @input evente nahra na server,
+             server vrati url + id + nazov, co sa vykresli na stranke 
+             (potom pouzivatel moze vymazat obrazok -> hned sa vymaze na serveri) -->
+        <h1 class="is-uppercase is-size-4">Galéria</h1>
+        <hr class="hr" />
+        <div class="box">
+          <div class="columns">
+            <div class="column">
+              <b-field>
+                <b-upload
+                  v-model="pictures"
+                  accept="image/*"
+                  multiple
+                  drag-drop
+                  type="file"
+                >
+                  <section class="section">
+                    <div class="content has-text-centered">
+                      <p>
+                        <b-icon icon="upload" size="is-large"></b-icon>
+                      </p>
+                      <p>Drop your files here or click to upload</p>
+                    </div>
+                  </section>
+                </b-upload>
+              </b-field>
+
+              <div class="tags">
+                <span
+                  v-for="(file, index) in pictures"
+                  :key="index"
+                  class="tag is-info"
+                >
+                  {{ file.name }}
+                  <button
+                    class="delete is-small"
+                    type="button"
+                    @click="deletePicture(index)"
+                  ></button>
+                </span>
+              </div>
+            </div>
           </div>
         </div>
         <div class="level">
@@ -143,11 +241,7 @@
           </div>
           <div class="level-right">
             <div class="level-item">
-              <b-checkbox
-                v-model="createNext"
-                type="is-info"
-                @click="console.log(createNext)"
-              >
+              <b-checkbox v-model="createNext" type="is-info">
                 Vytvoriť ďalší
               </b-checkbox>
             </div>
@@ -186,7 +280,13 @@ export default {
       selectedDepartment: null,
       selectedFaculty: null,
       availableDepartments: [],
-      availableFaculties: []
+      availableFaculties: [],
+      room: null,
+      lecturer: null,
+      file: null,
+      isAttendanceLimit: false,
+      attendanceLimit: null,
+      pictures: []
     };
   },
   methods: {
@@ -231,7 +331,14 @@ export default {
         desc: this.desc,
         categories: this.categories,
         place: this.place,
-        beginning: this.beginning
+        beginning: this.beginning,
+        lecturer: this.lecturer,
+        faculty: this.selectedFaculty,
+        department: this.selectedDepartment,
+        room: this.room,
+        user: "TODO",
+        file: this.file,
+        attendanceLimit: this.attendanceLimit
       });
     },
     getFilteredTags(text) {
@@ -249,6 +356,9 @@ export default {
         this.selectedDepartment = null;
         console.log("true");
       }
+    },
+    deletePicture(index) {
+      this.pictures.splice(index, 1);
     }
   },
   computed: {
