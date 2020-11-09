@@ -15,6 +15,9 @@ export default {
     HeaderComponent,
     FooterComponent
   }
+  // mounted() {
+  //   this.$store.dispatch();
+  // }
 };
 </script>
 

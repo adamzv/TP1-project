@@ -32,9 +32,16 @@
             <b-button tag="router-link" to="/pridat" type="is-link">
               {{ $t("addEvent") }}
             </b-button>
-            <b-button tag="router-link" to="#" type="is-light">
-              {{ $t("login") }}
-            </b-button>
+            <div v-if="!loggedIn">
+              <b-button tag="router-link" to="/login" type="is-light">
+                {{ $t("login") }}
+              </b-button>
+            </div>
+            <div v-if="loggedIn">
+              <b-button @click="logout" type="is-light">
+                {{ $t("logout") }}
+              </b-button>
+            </div>
           </div>
         </b-navbar-item>
       </template>
@@ -121,6 +128,16 @@ export default {
       } else {
         countdown.resetFormat();
       }
+    },
+    logout() {
+      this.$store.dispatch("destroyToken").then(() => {
+        this.$router.push({ name: "home" });
+      });
+    }
+  },
+  computed: {
+    loggedIn() {
+      return this.$store.getters.loggedIn;
     }
   },
   data() {
