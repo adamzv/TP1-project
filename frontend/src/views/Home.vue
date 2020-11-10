@@ -2,17 +2,18 @@
   <div class="home">
     <!-- TODO place for EventListComponent -->
     <FilterComponent />
-    <EventListComponent />
+    <!-- <EventListComponent /> -->
   </div>
 </template>
 
 <script>
-import EventListComponent from "../components/event/EventListComponent";
+// import EventListComponent from "../components/event/EventListComponent";
 import FilterComponent from "@/components/FilterComponent.vue";
 
 export default {
   name: "home",
-  components: { EventListComponent, FilterComponent }
+  // EventListComponent
+  components: { FilterComponent }
 };
 </script>
 

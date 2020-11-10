@@ -12,7 +12,10 @@
             </div>
             <div class="columns">
               <div class="column">
-                <b-field label="Email">
+                <b-field
+                  label="Email"
+                  :type="{ 'is-danger': loginValidation.emailHasErrors }"
+                >
                   <b-input
                     name="email"
                     id="emailLogin"
@@ -24,7 +27,10 @@
             </div>
             <div class="columns">
               <div class="column">
-                <b-field label="Heslo">
+                <b-field
+                  label="Heslo"
+                  :type="{ 'is-danger': loginValidation.passwordHasErrors }"
+                >
                   <b-input
                     name="password"
                     id="passwordLogin"
@@ -68,7 +74,10 @@
             </div>
             <div class="columns">
               <div class="column">
-                <b-field label="Meno">
+                <b-field
+                  label="Meno"
+                  :type="{ 'is-danger': registerValidation.nameHasErrors }"
+                >
                   <b-input
                     name="name"
                     id="nameRegistration"
@@ -79,7 +88,10 @@
             </div>
             <div class="columns">
               <div class="column">
-                <b-field label="Priezvisko">
+                <b-field
+                  label="Priezvisko"
+                  :type="{ 'is-danger': registerValidation.surnameHasErrors }"
+                >
                   <b-input
                     name="surname"
                     id="surnameRegistration"
@@ -90,7 +102,10 @@
             </div>
             <div class="columns">
               <div class="column">
-                <b-field label="Email">
+                <b-field
+                  label="Email"
+                  :type="{ 'is-danger': registerValidation.emailHasErrors }"
+                >
                   <b-input
                     name="email"
                     id="emailRegistration"
@@ -102,7 +117,14 @@
             </div>
             <div class="columns">
               <div class="column">
-                <b-field label="Heslo">
+                <b-field
+                  label="Heslo"
+                  :type="{ 'is-danger': registerValidation.passwordHasErrors }"
+                  :message="{
+                    'Heslo musí obsahovať minimálne 6 znakov':
+                      registerValidation.passwordHasErrors
+                  }"
+                >
                   <b-input
                     name="password"
                     id="passwordRegistration"
@@ -138,7 +160,17 @@ export default {
       emailRegistration: null,
       passwordRegistration: null,
       nameRegistration: null,
-      surnameRegistration: null
+      surnameRegistration: null,
+      loginValidation: {
+        emailHasErrors: false,
+        passwordHasErrors: false
+      },
+      registerValidation: {
+        nameHasErrors: false,
+        surnameHasErrors: false,
+        emailHasErrors: false,
+        passwordHasErrors: false
+      }
     };
   },
   methods: {
@@ -150,30 +182,90 @@ export default {
         })
         .then(() => {
           this.$router.push({ name: "home" });
+        })
+        .catch(() => {
+          this.loginValidation.emailHasErrors = true;
+          this.loginValidation.passwordHasErrors = true;
+          this.$buefy.toast.open({
+            message: "Neplatný pokus o prihlásenie, skúste ešte raz",
+            type: "is-danger",
+            duration: 3000
+          });
         });
     },
     checkRegisterForm() {
-      this.$store
-        .dispatch("register", {
-          name: this.nameRegistration,
-          surname: this.surnameRegistration,
-          email: this.emailRegistration,
-          password: this.passwordRegistration
-        })
-        .then(() => {
-          this.$router.push({ name: "home" }, () => {
-            this.$buefy.toast.open({
-              message: "Boli ste úspešne zaregistrovaná/ý!",
-              type: "is-success"
+      this.registerValidation = {
+        nameHasErrors: false,
+        surnameHasErrors: false,
+        emailHasErrors: false,
+        passwordHasErrors: false
+      };
+      if (this.nameRegistration === null || this.nameRegistration === "") {
+        this.registerValidation.nameHasErrors = true;
+      }
+      if (
+        this.surnameRegistration === null ||
+        this.surnameRegistration === ""
+      ) {
+        this.registerValidation.surnameHasErrors = true;
+      }
+      if (!this.validEmail(this.emailRegistration)) {
+        this.registerValidation.emailHasErrors = true;
+      }
+      if (
+        this.passwordRegistration === null ||
+        this.passwordRegistration.length < 6
+      ) {
+        this.registerValidation.passwordHasErrors = true;
+      }
+      if (
+        !this.registerValidation.nameHasErrors &&
+        !this.registerValidation.surnameHasErrors &&
+        !this.registerValidation.emailHasErrors &&
+        !this.registerValidation.passwordHasErrors
+      ) {
+        this.$store
+          .dispatch("register", {
+            name: this.nameRegistration,
+            surname: this.surnameRegistration,
+            email: this.emailRegistration,
+            password: this.passwordRegistration
+          })
+          .then(() => {
+            this.$router.push({ name: "home" }, () => {
+              this.$buefy.toast.open({
+                message: "Boli ste úspešne zaregistrovaná/ý!",
+                type: "is-success"
+              });
             });
+          })
+          .catch(error => {
+            console.log(error);
+            if (error.data.errors.email) {
+              this.$buefy.toast.open({
+                message: "Zadaný email už existuje v systéme!",
+                type: "is-danger"
+              });
+              this.registerValidation.emailHasErrors = true;
+            }
+            if (error.data.errors.password) {
+              this.$buefy.toast.open({
+                message: "Zadané heslo je neplatné!",
+                type: "is-danger"
+              });
+              this.registerValidation.passwordHasErrors = true;
+            }
           });
-        })
-        .catch(() => {
-          this.$buefy.toast.open({
-            message: "Registrácia bola neúspešná!",
-            type: "is-danger"
-          });
+      } else {
+        this.$buefy.toast.open({
+          message: "Registrácia bola neúspešná!",
+          type: "is-danger"
         });
+      }
+    },
+    validEmail: function(email) {
+      var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(email);
     }
   },
   computed: {
@@ -190,4 +282,10 @@ export default {
 @import "~bulma/bulma.sass";
 @import "~buefy/src/scss/buefy";
 @import "~@creativebulma/bulma-divider";
+</style>
+<style scoped>
+.container {
+  margin-top: 24px;
+  padding: 0 0 !important;
+}
 </style>

@@ -27,23 +27,29 @@
             {{ lang.toLocaleUpperCase() }}
           </b-navbar-item>
         </b-navbar-dropdown>
-        <b-navbar-item tag="div">
-          <div class="buttons">
-            <b-button tag="router-link" to="/pridat" type="is-link">
-              {{ $t("addEvent") }}
-            </b-button>
-            <div v-if="!loggedIn">
-              <b-button tag="router-link" to="/login" type="is-light">
-                {{ $t("login") }}
-              </b-button>
-            </div>
-            <div v-if="loggedIn">
-              <b-button @click="logout" type="is-light">
-                {{ $t("logout") }}
-              </b-button>
-            </div>
-          </div>
+        <b-navbar-item v-if="!loggedIn">
+          <b-button tag="router-link" to="/login" type="is-light">
+            {{ $t("login") }}
+          </b-button>
         </b-navbar-item>
+        <b-navbar-dropdown
+          :right="true"
+          v-if="loggedIn"
+          :collapsible="true"
+          :label="loggedInName"
+        >
+          <b-navbar-item
+            v-if="addEventPermission"
+            tag="router-link"
+            to="/pridat"
+            class="has-text-link"
+          >
+            {{ $t("addEvent") }}
+          </b-navbar-item>
+          <b-navbar-item @click="logout">
+            {{ $t("logout") }}
+          </b-navbar-item>
+        </b-navbar-dropdown>
       </template>
     </b-navbar>
     <b-carousel
@@ -138,6 +144,12 @@ export default {
   computed: {
     loggedIn() {
       return this.$store.getters.loggedIn;
+    },
+    loggedInName() {
+      return this.$store.getters.loggedInName;
+    },
+    addEventPermission() {
+      return this.$store.getters.permissionToAddEvents;
     }
   },
   data() {

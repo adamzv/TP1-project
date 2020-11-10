@@ -25,7 +25,11 @@ router.beforeEach((to, from, next) => {
         name: "login"
       });
     } else {
-      next();
+      if (store.getters.permissionToAddEvents) {
+        next();
+      } else {
+        next({ name: "home" });
+      }
     }
   } else if (to.matched.some(record => record.meta.requiresVisitor)) {
     // this route requires auth, check if logged in
