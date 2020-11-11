@@ -8,7 +8,7 @@ use Illuminate\Validation\Rule;
 /**
  * Class StorePictureRequest
  *
- * @author lacal
+ * @author lacal,angelovicD
  */
 class StorePictureRequest extends FormRequest
 {
@@ -30,13 +30,14 @@ class StorePictureRequest extends FormRequest
     public function rules()
     {
         return [
-            'link' => [
-                'required',
-                Rule::unique('pictures', 'link')->ignore($this->picture)
-            ],
-            'id_event' => [
-                'required'
-            ]
+            'link' =>'required|text',
+            'id_event' => 'required|int',
         ];
+    }
+    public function messages()
+    {
+        return [
+            'picture.link'=>'Invalid picture link',
+        ] ;
     }
 }

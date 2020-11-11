@@ -8,7 +8,7 @@ use Illuminate\Validation\Rule;
 /**
  * Class StoreRepeatRequest
  *
- * @author lacal
+ * @author lacal,angelovicD
  */
 class StoreRepeatRequest extends FormRequest
 {
@@ -30,14 +30,8 @@ class StoreRepeatRequest extends FormRequest
     public function rules()
     {
         return [
-            'repeatUnit' => [
-                'required',
-                Rule::unique('repeats', 'repeatUnit')->ignore($this->repeat)
-            ],
-            'repeatNumber' => [
-                'required',
-                Rule::unique('repeats', 'repeatNumber')->ignore($this->repeat)
-            ]
+            'repeatUnit' =>'varchar|max:255',
+            'repeatNumber' =>'int',
         ];
     }
 }

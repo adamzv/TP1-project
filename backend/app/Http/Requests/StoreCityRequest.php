@@ -8,7 +8,7 @@ use Illuminate\Validation\Rule;
 /**
  * Class StoreCityRequest
  *
- * @author lacal
+ * @author lacal,angelovicD
  */
 class StoreCityRequest extends FormRequest
 {
@@ -30,13 +30,16 @@ class StoreCityRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => [
-                'required',
-                Rule::unique('cities', 'name')->ignore($this->city)
-            ],
-            'id_state' => [
-                'required'
-            ]
+            'name' =>'required|varchar|max:225',
+            'id_state' =>'reauired|int',
+
+            ];
+
+    }
+    public function messages()
+    {
+        return [
+          'city.name'=>'Invalid city name',
         ];
     }
 }

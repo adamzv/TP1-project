@@ -34,4 +34,10 @@ class UserLoginRequest extends FormRequest
             'password' => 'required|string|min:6|max:255',
         ];
     }
+    public function messages()
+    {
+        return[
+            'login.email'=>'Invalid email login',
+        ];
+    }
 }

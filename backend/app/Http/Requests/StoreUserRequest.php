@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 /**
  * Class StoreUserRequest
  *
- * @author lacal
+ * @author lacal,angelovicD
  */
 class StoreUserRequest extends FormRequest
 {
@@ -29,7 +29,17 @@ class StoreUserRequest extends FormRequest
     public function rules()
     {
         return [
+            'name'=>'required|varchar|max:255',
+            'email'=>'required|varchar|max:255',
+            'password'=>'required|varchar|max255',
+            'id.role'=>'required|int',
             //
+        ];
+    }
+    public function messages()
+    {
+        return[
+            'user.name'=>'Invalid user name',
         ];
     }
 }

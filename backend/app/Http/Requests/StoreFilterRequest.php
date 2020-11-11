@@ -8,7 +8,7 @@ use Illuminate\Validation\Rule;
 /**
  * Class StoreFilterRequest
  *
- * @author lacal
+ * @author lacal,angelovicD
  */
 class StoreFilterRequest extends FormRequest
 {
@@ -30,10 +30,13 @@ class StoreFilterRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => [
-                'required',
-                Rule::unique('filters', 'name')->ignore($this->filter)
-            ]
+            'name' => 'required|varchar|max:255',
         ];
+    }
+    public function messages()
+    {
+        return [
+            'filter.name'=>'Invalid filter name',
+        ]   ;
     }
 }

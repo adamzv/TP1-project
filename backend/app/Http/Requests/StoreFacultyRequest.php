@@ -4,7 +4,11 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-
+/**
+ * Class StoreFacultyRequest
+ *
+ * @author lacal,angelovicD
+ */
 class StoreFacultyRequest extends FormRequest
 {
     /**
@@ -25,10 +29,13 @@ class StoreFacultyRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => [
-                'required',
-                Rule::unique('faculties', 'name')->ignore($this->faculty)
-            ]
+            'name' =>'required|varchar|max:255',
+        ];
+    }
+    public function messages()
+    {
+        return [
+            'faculty.name'=>'Invalid faculty name',
         ];
     }
 }

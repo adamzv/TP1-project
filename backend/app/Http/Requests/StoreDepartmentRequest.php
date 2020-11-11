@@ -8,7 +8,7 @@ use Illuminate\Validation\Rule;
 /**
  * Class StoreDepartmentRequest
  *
- * @author lacal
+ * @author lacal,angelovicD
  */
 class StoreDepartmentRequest extends FormRequest
 {
@@ -30,13 +30,14 @@ class StoreDepartmentRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => [
-                'required',
-                Rule::unique('departments', 'name')->ignore($this->department)
-            ],
-            'id_faculty' => [
-                'required'
-            ]
+            'name' =>'required|varchar|max:255',
+            'id_faculty' =>'required|int',
+        ];
+    }
+    public function messages()
+    {
+        return [
+          'department.name'=>'Invalid department name',
         ];
     }
 }

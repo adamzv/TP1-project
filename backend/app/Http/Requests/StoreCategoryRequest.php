@@ -3,12 +3,13 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 /**
  * Class StoreCategoryRequest
  *
- * @author lacal
+ * @author lacal,angelovicD
  */
 class StoreCategoryRequest extends FormRequest
 {
@@ -19,7 +20,7 @@ class StoreCategoryRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return Auth::moderator();
     }
 
     /**
@@ -30,10 +31,15 @@ class StoreCategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => [
-                'required',
-                Rule::unique('categories', 'name')->ignore($this->category)
-            ]
+            'name' => 'required|varchar|max:225',
         ];
+    }
+    public function messages()
+    {
+            //
+            return[ 'category.name'=> 'Invalid category name.',
+
+    ];
+
     }
 }

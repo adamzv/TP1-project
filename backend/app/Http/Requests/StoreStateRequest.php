@@ -8,7 +8,7 @@ use Illuminate\Validation\Rule;
 /**
  * Class StoreStateRequest
  *
- * @author lacal
+ * @author lacal,angelovicD
  */
 class StoreStateRequest extends FormRequest
 {
@@ -30,10 +30,13 @@ class StoreStateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => [
-                'required',
-                Rule::unique('states', 'name')->ignore($this->state)
-            ]
+            'name' =>'required|varchar|max:255',
+        ];
+    }
+    public function messages()
+    {
+        return[
+            'store.name'=>'Invalid store name',
         ];
     }
 }

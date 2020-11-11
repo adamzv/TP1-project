@@ -8,7 +8,7 @@ use Illuminate\Validation\Rule;
 /**
  * Class StoreRoleRequest
  *
- * @author lacal
+ * @author lacal,angelovicD
  */
 class StoreRoleRequest extends FormRequest
 {
@@ -30,10 +30,13 @@ class StoreRoleRequest extends FormRequest
     public function rules()
     {
         return [
-            'type' => [
-                'required',
-                Rule::unique('categories', 'name')->ignore($this->role)
-            ]
+            'type' =>'required|varchar|max:255',
+        ];
+    }
+    public function messages()
+    {
+        return[
+            'role.type'=>'Invalid role type',
         ];
     }
 }
