@@ -49,7 +49,7 @@ class EventsController extends Controller
 
 
           foreach($request->input("categories") AS $category){
-              $category =  Category::firstOrNew(["id" => $category]);
+              $category =  Category::firstOrCreate(["name"=>$category['name'] ]);
               $event->categories()->attach($category->id);
 
 
@@ -79,21 +79,38 @@ class EventsController extends Controller
     {
 
         $event = Event::findOrFail($id);
-        $event->update($request->only([
-            'name',
-            'desc',
-            'room',
-            'beginning',
-            'end',
-            'attendance_limit',
-            'id_user',
-            'id_place',
-            'id_faculty',
-            'id_department'
 
-        ]));
-        return $event;
+
+        $event->name = $request->input('name');
+        $event->desc= $request->input('desc');
+        $event->room = $request->input('room');
+        $event->beginning = $request->input('beginning');
+        $event->end = $request->input('end');
+        $event->attendance_limit = $request->input('attendance_limit');
+        $event->id_user = $request->input('id_user');
+        $event->id_place = $request->input('id_place');
+        $event->id_faculty = $request->input('id_faculty');
+        $event->id_department = $request->input('id_department');
+        $event->save();
+
+        $arr = [];
+        foreach($request->input("categories") AS $category){
+            $category =  Category::firstOrCreate(["name"=>$category['name'] ]);
+
+            array_push($arr,$category->id);
+
+        }
+
+        $event->categories()->sync($arr);
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Event was updated successfully',
+            'event' => $event]);
+
     }
+
 
     /**
      * Remove the specified resource from storage.
