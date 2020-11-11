@@ -1,13 +1,10 @@
 <template>
   <div id="app">
-    <b-loading :is-full-page="true" v-model="loading" :can-cancel="false">
-      <!-- <b-icon
-                    pack="mdi"
-                    icon="sync-alt"
-                    size="is-large"
-                    custom-class="fa-spin">
-                </b-icon> -->
-    </b-loading>
+    <b-loading
+      :is-full-page="true"
+      v-model="loading"
+      :can-cancel="false"
+    ></b-loading>
     <HeaderComponent />
     <router-view />
     <FooterComponent />
