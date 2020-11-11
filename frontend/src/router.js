@@ -2,6 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import Home from "./views/Home.vue";
 import ManageEvent from "./views/ManageEvent.vue";
+import NotFound from "./views/NotFound.vue";
 
 Vue.use(Router);
 
@@ -18,6 +19,10 @@ export default new Router({
       path: "/pridat",
       name: "addEvent",
       component: ManageEvent
+    },
+    {
+      path: "*",
+      component: NotFound
     }
   ]
 });
