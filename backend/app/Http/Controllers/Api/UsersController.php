@@ -25,6 +25,7 @@ class UsersController extends Controller
      */
     public function index()
     {
+        // gets caught in api routes
         return User::orderBy('name', 'asc')->get();
     }
 
