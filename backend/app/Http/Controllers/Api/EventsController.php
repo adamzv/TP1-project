@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Event;
 use Illuminate\Http\Request;
 
@@ -29,20 +30,35 @@ class EventsController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->input('id_repeat') === null) {
-            return Event::create($request->only([
-                'name',
-                'desc',
-                'room',
-                'beginning',
-                'end',
-                'attendance_limit',
-                'id_user',
-                'id_place',
-                'id_faculty',
-                'id_department',
-            ]));
-        }
+
+
+
+          $event =   new Event();
+
+            $event->name = $request->input('name');
+            $event->desc= $request->input('desc');
+            $event->room = $request->input('room');
+            $event->beginning = $request->input('beginning');
+            $event->end = $request->input('end');
+            $event->attendance_limit = $request->input('attendance_limit');
+            $event->id_user = $request->input('id_user');
+            $event->id_place = $request->input('id_place');
+            $event->id_faculty = $request->input('id_faculty');
+            $event->id_department = $request->input('id_department');
+            $event->save();
+
+
+          foreach($request->input("categories") AS $category){
+              $category =  Category::firstOrNew(["id" => $category]);
+              $event->categories()->attach($category->id);
+
+
+          }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Event was created successfully',
+            'event' => $event]);
 
     }
 

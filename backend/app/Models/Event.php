@@ -11,8 +11,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @author lacal
  */
 class Event extends Model
+
+
 {
     use SoftDeletes;
+
 
     /**
      * The attributes that aren't mass assignable
@@ -66,8 +69,8 @@ class Event extends Model
      */
     public function categories()
     {
-        return $this->belongsToMany('App\Models\Category')
-            ->withTimestamps();
+        return $this->belongsToMany('App\Models\Category');
+
     }
 
     /**
@@ -78,4 +81,5 @@ class Event extends Model
         return $this->belongsToMany('App\Models\User')
             ->withTimestamps();
     }
+
 }
