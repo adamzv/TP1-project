@@ -3,6 +3,7 @@ import Router from "vue-router";
 import Home from "./views/Home.vue";
 import ManageEvent from "./views/ManageEvent.vue";
 import NotFound from "./views/NotFound.vue";
+import Login from "./views/Login.vue";
 
 Vue.use(Router);
 
@@ -18,7 +19,18 @@ export default new Router({
     {
       path: "/pridat",
       name: "addEvent",
-      component: ManageEvent
+      component: ManageEvent,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: "/login",
+      name: "login",
+      component: Login,
+      meta: {
+        requiresVisitor: true
+      }
     },
     {
       path: "*",

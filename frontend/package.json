@@ -13,6 +13,7 @@
     "htmlWhitespaceSensitivity": "ignore"
   },
   "dependencies": {
+    "@creativebulma/bulma-divider": "^1.1.0",
     "@mdi/font": "^5.7.55",
     "@mdi/js": "^5.8.55",
     "axios": "^0.20.0",

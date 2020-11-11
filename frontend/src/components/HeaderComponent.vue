@@ -27,16 +27,29 @@
             {{ lang.toLocaleUpperCase() }}
           </b-navbar-item>
         </b-navbar-dropdown>
-        <b-navbar-item tag="div">
-          <div class="buttons">
-            <b-button tag="router-link" to="/pridat" type="is-link">
-              {{ $t("addEvent") }}
-            </b-button>
-            <b-button tag="router-link" to="#" type="is-light">
-              {{ $t("login") }}
-            </b-button>
-          </div>
+        <b-navbar-item v-if="!loggedIn">
+          <b-button tag="router-link" to="/login" type="is-light">
+            {{ $t("login") }}
+          </b-button>
         </b-navbar-item>
+        <b-navbar-dropdown
+          :right="true"
+          v-if="loggedIn"
+          :collapsible="true"
+          :label="loggedInName"
+        >
+          <b-navbar-item
+            v-if="addEventPermission"
+            tag="router-link"
+            to="/pridat"
+            class="has-text-link"
+          >
+            {{ $t("addEvent") }}
+          </b-navbar-item>
+          <b-navbar-item @click="logout">
+            {{ $t("logout") }}
+          </b-navbar-item>
+        </b-navbar-dropdown>
       </template>
     </b-navbar>
     <b-carousel
@@ -121,6 +134,22 @@ export default {
       } else {
         countdown.resetFormat();
       }
+    },
+    logout() {
+      this.$store.dispatch("destroyToken").then(() => {
+        this.$router.push({ name: "home" });
+      });
+    }
+  },
+  computed: {
+    loggedIn() {
+      return this.$store.getters.loggedIn;
+    },
+    loggedInName() {
+      return this.$store.getters.loggedInName;
+    },
+    addEventPermission() {
+      return this.$store.getters.permissionToAddEvents;
     }
   },
   data() {
