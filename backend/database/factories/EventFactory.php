@@ -47,15 +47,15 @@ $factory->define(Event::class, function (Faker $faker) {
      **/
     for ($i = 0; $i <= $cislo; $i++) {
         $idcat = \App\Models\Category::all()->random()->id;
-        $test = DB::table('category_event')->where('id_event', '=', $ev->id)->where('id_category', '=', $idcat)->first();
+        $test = DB::table('category_event')->where('event_id', '=', $ev->id)->where('category_id', '=', $idcat)->first();
 
 
         if ($test === null) {
 
             DB::table('category_event')->insert(
                 [
-                    'id_event' => $ev->id,
-                    'id_category' => $idcat,
+                    'event_id' => $ev->id,
+                    'category_id' => $idcat,
                 ]);
         };
     };
@@ -66,15 +66,15 @@ $factory->define(Event::class, function (Faker $faker) {
      **/
     for ($i = 1; $i <= $user; $i++) {
         $iduser = \App\Models\User::all()->random()->id;
-        $test = DB::table('event_user')->where('id_user', '=', $iduser)->where('id_event', '=', $ev->id)->first();
+        $test = DB::table('event_user')->where('user_id', '=', $iduser)->where('event_id', '=', $ev->id)->first();
 
 
         if ($test === null && $value === 1) {
 
             DB::table('event_user')->insert(
                 [
-                    'id_user' => $iduser,
-                    'id_event' => $ev->id,
+                    'user_id' => $iduser,
+                    'event_id' => $ev->id,
                 ]);
         };
     };
