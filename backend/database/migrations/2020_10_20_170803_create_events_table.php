@@ -25,7 +25,7 @@ class CreateEventsTable extends Migration
             $table->string('room', 255)->nullable();
             $table->dateTime('beginning');
             $table->dateTime('end')->nullable();
-            $table->integer('attendance_limit')->nullable();
+            $table->integer('attendance_limit')->default(-1);
 
             // foreign ids
             $table->unsignedBigInteger('id_user');

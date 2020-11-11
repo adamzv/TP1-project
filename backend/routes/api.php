@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\Event;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -37,21 +35,61 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('users', 'UsersController');
 });
 
-/*
+/**
  * Route for filtering events according parameters
+ *
+ * @author lacal
  */
 Route::get('events', function () {
-    $query = Event::query();
 
-    $query->when(\request()->filled('filter'), function ($query) {
+    // get 'events' with pivot table 'event_user'
+    $query = DB::table('events')
+        ->select('events.*', DB::raw('COUNT(id_event) as participants'))
+        ->leftJoin('event_user', 'events.id', '=', 'event_user.id_event');
+
+    // Find out if request contains 'filter' value
+    if (\request()->filled('filter')) {
+
+        // explode request according ','
         $filters = explode(',', \request('filter'));
+        $query->groupBy('events.id');
+
+        // this value determines, if query should be sorted according actual time, or custom time given by user
+        $datetimeFilter = true;
 
         foreach ($filters as $filter) {
-            [$criteria, $value] = explode(':', $filter);
-            $query->where($criteria, $value);
-        }
-        return $query;
-    });
 
-    return $query->paginate(12);
+            // explode request according '=' on criteria and value
+            [$criteria, $value] = explode('=', $filter);
+
+            if ($criteria == 'beginning') {
+                $query->where($criteria, '>=', $value);
+                $datetimeFilter = false;
+            } elseif ($criteria == 'end') {
+                $query->where('beginning', '<=', $value);
+                $datetimeFilter = false;
+            } elseif ($criteria == 'limit') {
+                $query->havingRaw('COUNT(id_event) != attendance_limit');
+            } elseif (strpos($criteria, 'id_') !== false) {
+                if ($criteria == 'id_user') $query->where('events.id_user', '=', $value);
+                else $query->where($criteria, '=', $value);
+            } else {
+                $query->where($criteria, 'like', '%' . $value . '%');
+            }
+        }
+       if ($datetimeFilter) $query->where('beginning', '>=', date('Y-m-d H:i:s'));
+
+       // return filter query
+        return $query
+            ->orderBy('beginning', 'asc')
+            ->simplePaginate(12);
+    } else {
+
+        // return query with no filter value
+        return $query
+            ->where('beginning', '>=', date('Y-m-d H:i:s'))
+            ->groupBy('events.id')
+            ->orderBy('beginning', 'asc')
+            ->paginate(12);
+    }
 });
