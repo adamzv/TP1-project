@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 /**
  * Class EventsController
  *
- * @author lacal
+ * @author lacal, klukak
  */
 class EventsController extends Controller
 {
@@ -25,40 +25,39 @@ class EventsController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     * StoreFacultyRequest $request
-     * * @return Event
+     * * @return Event, Category
      */
     public function store(Request $request)
     {
 
 
+        $event = new Event();
 
-          $event =   new Event();
-
-            $event->name = $request->input('name');
-            $event->desc= $request->input('desc');
-            $event->room = $request->input('room');
-            $event->beginning = $request->input('beginning');
-            $event->end = $request->input('end');
-            $event->attendance_limit = $request->input('attendance_limit');
-            $event->id_user = $request->input('id_user');
-            $event->id_place = $request->input('id_place');
-            $event->id_faculty = $request->input('id_faculty');
-            $event->id_department = $request->input('id_department');
-            $event->save();
-
-
-          foreach($request->input("categories") AS $category){
-              $category =  Category::firstOrCreate(["name"=>$category['name'] ]);
-              $event->categories()->attach($category->id);
+        $event->name = $request->input('name');
+        $event->desc = $request->input('desc');
+        $event->room = $request->input('room');
+        $event->beginning = $request->input('beginning');
+        $event->end = $request->input('end');
+        $event->attendance_limit = $request->input('attendance_limit');
+        $event->id_user = $request->input('id_user');
+        $event->id_place = $request->input('id_place');
+        $event->id_faculty = $request->input('id_faculty');
+        $event->id_department = $request->input('id_department');
+        $event->save();
 
 
-          }
+        foreach ($request->input("categories") AS $category) {
+            $category = Category::firstOrCreate(["name" => $category['name']]);
+            $event->categories()->attach($category->id);
+
+
+        }
 
         return response()->json([
             'success' => true,
             'message' => 'Event was created successfully',
-            'event' => $event]);
+            'event' => $event],
+            201);
 
     }
 
@@ -82,7 +81,7 @@ class EventsController extends Controller
 
 
         $event->name = $request->input('name');
-        $event->desc= $request->input('desc');
+        $event->desc = $request->input('desc');
         $event->room = $request->input('room');
         $event->beginning = $request->input('beginning');
         $event->end = $request->input('end');
@@ -94,10 +93,10 @@ class EventsController extends Controller
         $event->save();
 
         $arr = [];
-        foreach($request->input("categories") AS $category){
-            $category =  Category::firstOrCreate(["name"=>$category['name'] ]);
+        foreach ($request->input("categories") AS $category) {
+            $category = Category::firstOrCreate(["name" => $category['name']]);
 
-            array_push($arr,$category->id);
+            array_push($arr, $category->id);
 
         }
 
@@ -107,7 +106,7 @@ class EventsController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Event was updated successfully',
-            'event' => $event]);
+            'event' => $event], 200);
 
     }
 
