@@ -134,6 +134,9 @@ class UsersController extends Controller
 
         // create token to the user and return it with user
         $accessToken = $user->createToken('authToken')->accessToken;
+
+        $user->sendEmailVerificationNotification();
+
         return response()->json([
             'success' => true,
             'message' => 'User registered successfully',

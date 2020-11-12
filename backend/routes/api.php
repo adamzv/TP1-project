@@ -13,6 +13,11 @@ use App\Models\Event;
 |
 */
 
+//first
+Auth::routes();
+
+Auth::routes(['verify' => true]);
+
 /*
  * Prefix for user authentication routes
  */
