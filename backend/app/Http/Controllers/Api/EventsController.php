@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Event;
 use Illuminate\Http\Request;
 
 /**
  * Class EventsController
  *
- * @author lacal
+ * @author lacal, klukak
  */
 class EventsController extends Controller
 {
@@ -24,25 +25,39 @@ class EventsController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     * StoreFacultyRequest $request
-     * * @return Event
+     * * @return Event, Category
      */
     public function store(Request $request)
     {
-        if ($request->input('id_repeat') === null) {
-            return Event::create($request->only([
-                'name',
-                'desc',
-                'room',
-                'beginning',
-                'end',
-                'attendance_limit',
-                'id_user',
-                'id_place',
-                'id_faculty',
-                'id_department',
-            ]));
+
+
+        $event = new Event();
+
+        $event->name = $request->input('name');
+        $event->desc = $request->input('desc');
+        $event->room = $request->input('room');
+        $event->beginning = $request->input('beginning');
+        $event->end = $request->input('end');
+        $event->attendance_limit = $request->input('attendance_limit');
+        $event->id_user = $request->input('id_user');
+        $event->id_place = $request->input('id_place');
+        $event->id_faculty = $request->input('id_faculty');
+        $event->id_department = $request->input('id_department');
+        $event->save();
+
+
+        foreach ($request->input("categories") AS $category) {
+            $category = Category::firstOrCreate(["name" => $category['name']]);
+            $event->categories()->attach($category->id);
+
+
         }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Event was created successfully',
+            'event' => $event],
+            201);
 
     }
 
@@ -63,21 +78,38 @@ class EventsController extends Controller
     {
 
         $event = Event::findOrFail($id);
-        $event->update($request->only([
-            'name',
-            'desc',
-            'room',
-            'beginning',
-            'end',
-            'attendance_limit',
-            'id_user',
-            'id_place',
-            'id_faculty',
-            'id_department'
 
-        ]));
-        return $event;
+
+        $event->name = $request->input('name');
+        $event->desc = $request->input('desc');
+        $event->room = $request->input('room');
+        $event->beginning = $request->input('beginning');
+        $event->end = $request->input('end');
+        $event->attendance_limit = $request->input('attendance_limit');
+        $event->id_user = $request->input('id_user');
+        $event->id_place = $request->input('id_place');
+        $event->id_faculty = $request->input('id_faculty');
+        $event->id_department = $request->input('id_department');
+        $event->save();
+
+        $arr = [];
+        foreach ($request->input("categories") AS $category) {
+            $category = Category::firstOrCreate(["name" => $category['name']]);
+
+            array_push($arr, $category->id);
+
+        }
+
+        $event->categories()->sync($arr);
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Event was updated successfully',
+            'event' => $event], 200);
+
     }
+
 
     /**
      * Remove the specified resource from storage.

@@ -22,13 +22,13 @@ class CreateEventUserTable extends Migration
             $table->bigIncrements('id');
 
             // foreign ids
-            $table->unsignedBigInteger('id_user');
-            $table->unsignedBigInteger('id_event');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('event_id');
 
             // foreign relationships
-            $table->foreign('id_user')->references('id')->on('users');
-            $table->foreign('id_event')->references('id')->on('events');
-
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('event_id')->references('id')->on('events');
+            $table->unique(['user_id', 'event_id']);
             $table->softDeletes();
         });
     }
