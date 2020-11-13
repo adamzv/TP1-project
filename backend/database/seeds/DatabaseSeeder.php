@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CategoriesSeeder::class);
         $this->call(FacultiesSeeder::class);
         $this->call(DepartmentsSeeder::class);
-        $this->call(FiltersSeeder::class);
+        //removed $this->call(FiltersSeeder::class);
         $this->call(RolesSeeder::class);
         $this->call(StatesSeeder::class);
         $this->call(CitiesSeeder::class);

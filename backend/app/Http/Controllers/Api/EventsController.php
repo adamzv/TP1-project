@@ -39,6 +39,7 @@ class EventsController extends Controller
         $event->beginning = $request->input('beginning');
         $event->end = $request->input('end');
         $event->attendance_limit = $request->input('attendance_limit');
+        $event->lecturer= $request->input('lecturer');
         $event->id_user = $request->input('id_user');
         $event->id_place = $request->input('id_place');
         $event->id_faculty = $request->input('id_faculty');
@@ -86,6 +87,7 @@ class EventsController extends Controller
         $event->beginning = $request->input('beginning');
         $event->end = $request->input('end');
         $event->attendance_limit = $request->input('attendance_limit');
+        $event->lecturer= $request->input('lecturer');
         $event->id_user = $request->input('id_user');
         $event->id_place = $request->input('id_place');
         $event->id_faculty = $request->input('id_faculty');
