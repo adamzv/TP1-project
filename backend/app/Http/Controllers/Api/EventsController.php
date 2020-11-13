@@ -73,9 +73,7 @@ class EventsController extends Controller
         $event = Event::with('user', 'place', 'department', 'faculty', 'categories')
             ->select('events.*', DB::raw('COUNT(event_user.event_id) as participants'))
             ->leftJoin('event_user', 'events.id', '=', 'event_user.event_id')
-            ->join('category_event', 'category_event.event_id', '=', 'events.id')
-            ->join('categories', 'categories.id', '=', 'category_event.category_id')
-            ->groupBy('events.id', 'categories.id')
+            ->groupBy('events.id')
             ->findOrFail($id);
 
         return response()->json([
