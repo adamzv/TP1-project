@@ -50,16 +50,6 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the filters for the User
-     */
-    public function filters()
-    {
-        return $this->belongsToMany('App\Models\Filter')
-            ->withPivot('filter_value')
-            ->withTimestamps();
-    }
-
-    /**
      * Get the events where the user is registered
      */
     public function events()
