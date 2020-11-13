@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Event;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -43,9 +45,11 @@ Route::namespace('Api')->group(function () {
 Route::get('events', function () {
 
     // get 'events' with pivot table 'event_user'
-    $query = DB::table('events')
-        ->select('events.*', DB::raw('COUNT(id_event) as participants'))
-        ->leftJoin('event_user', 'events.id', '=', 'event_user.id_event');
+    $query = Event::with('user', 'place', 'department', 'faculty', 'categories')
+        ->select('events.*', DB::raw('COUNT(event_user.event_id) as participants'))
+        ->leftJoin('event_user', 'events.id', '=', 'event_user.event_id')
+        ->join('category_event', 'category_event.event_id', '=', 'events.id')
+        ->join('categories', 'categories.id', '=', 'category_event.category_id');
 
     // Find out if request contains 'filter' value
     if (\request()->filled('filter')) {
@@ -69,7 +73,7 @@ Route::get('events', function () {
                 $query->where('beginning', '<=', $value);
                 $datetimeFilter = false;
             } elseif ($criteria == 'limit') {
-                $query->havingRaw('COUNT(id_event) != attendance_limit');
+                $query->havingRaw('COUNT(event_user.event_id) != attendance_limit');
             } elseif (strpos($criteria, 'id_') !== false) {
                 if ($criteria == 'id_user') $query->where('events.id_user', '=', $value);
                 else $query->where($criteria, '=', $value);
@@ -77,9 +81,9 @@ Route::get('events', function () {
                 $query->where($criteria, 'like', '%' . $value . '%');
             }
         }
-       if ($datetimeFilter) $query->where('beginning', '>=', date('Y-m-d H:i:s'));
+        if ($datetimeFilter) $query->where('beginning', '>=', date('Y-m-d H:i:s'));
 
-       // return filter query
+        // return filter query
         return $query
             ->orderBy('beginning', 'asc')
             ->simplePaginate(12);
@@ -88,7 +92,7 @@ Route::get('events', function () {
         // return query with no filter value
         return $query
             ->where('beginning', '>=', date('Y-m-d H:i:s'))
-            ->groupBy('events.id')
+            ->groupBy('events.id', 'categories.id')
             ->orderBy('beginning', 'asc')
             ->paginate(12);
     }
