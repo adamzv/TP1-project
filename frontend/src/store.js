@@ -15,10 +15,10 @@ export default new Vuex.Store({
       return state.token !== null;
     },
     loggedInId(state) {
-      return state.userId !== null;
+      return state.userId || null;
     },
     loggedInUser(state) {
-      return state.user !== null;
+      return state.user || null;
     },
     loggedInName(state) {
       return state.user !== null

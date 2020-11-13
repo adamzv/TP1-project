@@ -1,8 +1,10 @@
 <template>
   <section>
-    <div class="container">
+    <div style="margin-top: 24px;" class="container">
       <!-- Nova udalost -->
-      <h1 class="is-uppercase is-size-4">Vytvorenie novej udalosti</h1>
+      <h1 class="is-uppercase is-size-4">
+        Vytvorenie novej udalosti
+      </h1>
       <hr class="hr" />
       <form id="app" v-on:submit.prevent="checkForm" method="post">
         <div class="box">
@@ -261,6 +263,7 @@
 
 <script>
 import httpClient from "../httpClient.js";
+import moment from "moment";
 
 export default {
   name: "manageEvent",
@@ -286,7 +289,8 @@ export default {
       file: null,
       isAttendanceLimit: false,
       attendanceLimit: null,
-      pictures: []
+      pictures: [],
+      response: null
     };
   },
   methods: {
@@ -306,40 +310,48 @@ export default {
       });
     },
     checkForm() {
-      // TODO add axios post
-      if (this.createNext) {
-        // this console.log simulates POST request
-        console.log(this.generateJSON());
-        this.$buefy.toast.open({
-          message: "Udalosť bola úspešne vytvorená!",
-          type: "is-success"
-        });
-      } else {
-        // this console.log simulates POST request
-        console.log(this.generateJSON());
-        this.$router.push({ name: "home" }, () => {
+      this.generateRequest();
+    },
+    generateRequest() {
+      httpClient
+        .post("/events", {
+          name: this.name,
+          desc: this.desc,
+          room: this.room,
+          categories: this.categories,
+          id_place: this.place ? this.place.id : null,
+          beginning: moment(this.beginning).format("YYYY-MM-DD HH:mm:ss"),
+          end: null,
+          // lecturer: this.lecturer,
+          id_faculty: this.selectedFaculty ? this.selectedFaculty.id : null,
+          id_department: this.selectedDepartment
+            ? this.selectedDepartment.id
+            : null,
+          id_user: parseInt(this.$store.getters.loggedInId),
+          // file: this.file,
+          attendance_limit: this.attendanceLimit || -1
+        })
+        .then(() => {
+          if (this.createNext) {
+            this.$buefy.toast.open({
+              message: "Udalosť bola úspešne vytvorená!",
+              type: "is-success"
+            });
+          } else {
+            this.$router.push({ name: "home" }, () => {
+              this.$buefy.toast.open({
+                message: "Udalosť bola úspešne vytvorená!",
+                type: "is-success"
+              });
+            });
+          }
+        })
+        .catch(() => {
           this.$buefy.toast.open({
-            message: "Udalosť bola úspešne vytvorená!",
-            type: "is-success"
+            message: "Udalosť sa nepodarilo vytvoriť!",
+            type: "is-danger"
           });
         });
-      }
-    },
-    generateJSON() {
-      return JSON.stringify({
-        name: this.name,
-        desc: this.desc,
-        categories: this.categories,
-        place: this.place,
-        beginning: this.beginning,
-        lecturer: this.lecturer,
-        faculty: this.selectedFaculty,
-        department: this.selectedDepartment,
-        room: this.room,
-        user: "TODO",
-        file: this.file,
-        attendanceLimit: this.attendanceLimit
-      });
     },
     getFilteredTags(text) {
       this.filteredCategories = this.availableCategories.filter(option => {
