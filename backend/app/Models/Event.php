@@ -54,14 +54,6 @@ class Event extends Model
     }
 
     /**
-     * Get the repetiton that belongs to the event
-     */
-    public function repeat()
-    {
-        return $this->belongsTo('App\Models\Repeat');
-    }
-
-    /**
      * Get the categories that belong to the event
      */
     public function categories()

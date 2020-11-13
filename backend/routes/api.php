@@ -28,10 +28,8 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('departments', 'DepartmentsController');
     Route::apiResource('events', 'EventsController');
     Route::apiResource('faculties', 'FacultiesController');
-    Route::apiResource('filters', 'FiltersController');
     Route::apiResource('pictures', 'PicturesController');
     Route::apiResource('places', 'PlacesController');
-    Route::apiResource('repeats', 'RepeatsController');
     Route::apiResource('roles', 'RolesController');
     Route::apiResource('states', 'StatesController');
     Route::apiResource('users', 'UsersController');
@@ -56,7 +54,6 @@ Route::get('events', function () {
 
         // explode request according ','
         $filters = explode(',', \request('filter'));
-        $query->groupBy('events.id');
 
         // this value determines, if query should be sorted according actual time, or custom time given by user
         $datetimeFilter = true;
@@ -73,18 +70,20 @@ Route::get('events', function () {
                 $query->where('beginning', '<=', $value);
                 $datetimeFilter = false;
             } elseif ($criteria == 'limit') {
-                $query->havingRaw('COUNT(event_user.event_id) != attendance_limit');
+                $query->havingRaw('participants = attendance_limit');
             } elseif (strpos($criteria, 'id_') !== false) {
                 if ($criteria == 'id_user') $query->where('events.id_user', '=', $value);
                 else $query->where($criteria, '=', $value);
             } else {
-                $query->where($criteria, 'like', '%' . $value . '%');
+                if ($criteria == 'name') $query->where('events.name', 'like', '%' . $value . '%');
+                else $query->where($criteria, 'like', '%' . $value . '%');
             }
         }
         if ($datetimeFilter) $query->where('beginning', '>=', date('Y-m-d H:i:s'));
 
         // return filter query
         return $query
+            ->groupBy('events.id', 'categories.id')
             ->orderBy('beginning', 'asc')
             ->simplePaginate(12);
     } else {
