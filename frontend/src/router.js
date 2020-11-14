@@ -5,6 +5,7 @@ import ManageEvent from "./views/ManageEvent.vue";
 import NotFound from "./views/NotFound.vue";
 import Login from "./views/Login.vue";
 import ViewEvent from "./views/ViewEvent";
+import Profile from "./views/Profile.vue";
 
 Vue.use(Router);
 
@@ -17,18 +18,19 @@ export default new Router({
       name: "home",
       component: Home
     },
+    // TODO: this route will be removed, because add/edit event form will be moved into administration route
     {
       path: "/pridat",
       name: "addEvent",
       component: ManageEvent,
       meta: {
-        requiresAuth: true
+        requiresAdmin: true
       }
     },
     {
       path: "/event/:eventId",
       name: "showEvent",
-      component: ViewEvent,
+      component: ViewEvent
     },
     {
       path: "/login",
@@ -36,6 +38,14 @@ export default new Router({
       component: Login,
       meta: {
         requiresVisitor: true
+      }
+    },
+    {
+      path: "/profile",
+      name: "profile",
+      component: Profile,
+      meta: {
+        requiresAuth: true
       }
     },
     {
