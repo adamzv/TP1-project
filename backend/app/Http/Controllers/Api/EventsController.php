@@ -3,11 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\EventChanged;
 use App\Models\Category;
 use App\Models\Event;
+use App\Models\Place;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Mail;
 
 /**
  * Class EventsController
@@ -93,6 +98,10 @@ class EventsController extends Controller
     {
         $event = Event::findOrFail($id);
 
+        // save the old values of event (place and time)
+        $eventPlaceOld = $event->id_place;
+        $eventBeginningOld = $event->beginning;
+
         $event->name = $request->input('name');
         $event->desc = $request->input('desc');
         $event->room = $request->input('room');
@@ -114,6 +123,47 @@ class EventsController extends Controller
 
         $event->categories()->sync($arr);
 
+        if ($eventPlaceOld != $request->input('id_place') &&
+            $eventBeginningOld != $request->input('beginning')) {
+
+            // find the place
+            $place = Place::findOrFail($request->input('id_place'));
+
+            // create and send mail
+            Mail::to('me@app.com')
+                ->bcc($this->getUsersOfEvent($id))
+                ->send(new EventChanged(
+                    $event,
+                    'both',
+                    $place->name
+                ));
+
+            // if only place or time was updated
+        } elseif ($eventPlaceOld != $request->input('id_place')) {
+
+            // find the place
+            $place = Place::findOrFail($request->input('id_place'));
+
+            // create and send mail
+            Mail::to('me@app.com')
+                ->bcc($this->getUsersOfEvent($id))
+                ->send(new EventChanged(
+                    $event,
+                    'place',
+                    $place->name
+                ));
+        } elseif ($eventBeginningOld != $request->input('beginning')) {
+
+            // create and send mail
+            Mail::to('me@app.com')
+                ->bcc($this->getUsersOfEvent($id))
+                ->send(new EventChanged(
+                    $event,
+                    'beginning',
+                    $request->input('beginning')
+                ));
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Event was updated successfully',
@@ -121,10 +171,24 @@ class EventsController extends Controller
     }
 
     /**
+     * Method gets users that goes to the event
+     *
+     * @param $id
+     * @return Collection
+     */
+    public function getUsersOfEvent($id)
+    {
+        return User::query()
+            ->leftjoin('event_user', 'event_user.user_id', '=', 'users.id')
+            ->where('event_user.event_id', '=', $id)
+            ->get();
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)
     {
-        // TODO
+        // TODO: while implementing destroy method, its also important to send mail to registered users to this event.
     }
 }

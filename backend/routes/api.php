@@ -13,13 +13,24 @@ use App\Models\Event;
 |
 */
 
+//first
+Auth::routes();
+
+Auth::routes(['verify' => true]);
+
 /*
  * Prefix for user authentication routes
  */
 Route::prefix('users')->group(function () {
-    Route::post('login', 'Api\UsersController@login');
-    Route::post('register', 'Api\UsersController@register');
-    Route::get('logout', 'Api\UsersController@logout')->middleware('auth:api');
+    Route::post('login', 'Api\UsersVerificationController@login');
+    Route::post('register', 'Api\UsersVerificationController@register');
+    Route::get('email/resend', 'Auth\VerificationApiController@resend')->name('verificationapi.resend');
+    Route::get('email/verify/{id}', 'Auth\VerificationApiController@verify')->name('verificationapi.verify')->middleware('signed');
+
+    Route::group(['middleware' => 'auth:api'], function () {
+        Route::post('details', 'Api\UsersVerificationController@details')->middleware('verified');
+        Route::get('logout', 'Api\UsersVerificationController@logout')->middleware('verified');
+    }); // will work only when user has verified the email
 });
 
 Route::namespace('Api')->group(function () {

@@ -18,10 +18,18 @@ class RouteServiceProvider extends ServiceProvider
 
     /**
      * The path to the "home" route for your application.
+     * Change it to your own.
      *
      * @var string
      */
-    public const HOME = '/home';
+    public const HOME = 'http://localhost:8080';
+
+    /**
+     * The path to the "login" route for your application.
+     *
+     * @var string
+     */
+    public const LOGIN = self::HOME . '/login';
 
     /**
      * Define your route model bindings, pattern filters, etc.
