@@ -6,6 +6,14 @@
       :can-cancel="false"
     ></b-loading>
     <HeaderComponent />
+    <!--
+    <ul>
+      <li v-for="event in events" :key="event.id">
+        {{event.name}}
+      </li>
+    </ul>
+    -->
+
     <router-view />
     <FooterComponent />
   </div>
@@ -22,9 +30,10 @@ export default {
   },
   data() {
     return {
-      loading: false
+      loading: false,
     };
   },
+
   mounted() {
     this.loading = true;
     this.$store.commit("retrieveUserIdFromStorage");
@@ -44,6 +53,7 @@ export default {
     } else {
       this.loading = false;
     }
+
   }
 };
 </script>

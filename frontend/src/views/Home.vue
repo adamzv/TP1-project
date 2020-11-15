@@ -12,7 +12,7 @@ import FilterComponent from "@/components/FilterComponent.vue";
 
 export default {
   name: "home",
-  components: { EventListComponent, FilterComponent }
+  components: { EventListComponent, FilterComponent },
 };
 </script>
 
