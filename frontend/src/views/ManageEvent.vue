@@ -96,7 +96,7 @@
             <div class="column">
               <b-field label="Popis udalosti">
                 <b-input
-                  maxlength="500"
+                  maxlength="350"
                   v-model="desc"
                   type="textarea"
                 ></b-input>
