@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\VerifyApiEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -57,5 +58,13 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany('App\Models\Event')
             ->withTimestamps();
+    }
+
+    /**
+     * Email notification
+     */
+    public function sendApiEmailVerificationNotification()
+    {
+        $this->notify(new VerifyApiEmail);
     }
 }
