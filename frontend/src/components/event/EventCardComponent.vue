@@ -3,7 +3,8 @@ component takes in all the event data coming from EventListComponent and renders
 * them in a card-like style. * */
 
 <template>
-    <div class="column is-narrow card-container">
+    <router-link :to="{ name: 'showEvent', params: { eventId: this.eventId }}"
+                 class="column is-narrow card-container">
         <!-- Actual event card -->
         <div class="panel _card">
             <!-- Card heading -->
@@ -126,7 +127,7 @@ component takes in all the event data coming from EventListComponent and renders
                 </div>
             </div>
         </div>
-    </div>
+    </router-link>
 </template>
 
 <script>
@@ -226,6 +227,15 @@ component takes in all the event data coming from EventListComponent and renders
                 required: false
             }
         },
+
+        methods: {
+            redirectToView() {
+                this.$router.push({
+                    name: "Event",
+                    params: {data: this.props}
+                });
+            }
+        }
     };
 </script>
 

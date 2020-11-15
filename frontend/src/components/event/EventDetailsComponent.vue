@@ -420,6 +420,12 @@ format. * */
                 return this.eventBeginning.substr(this.eventBeginning.indexOf(" ") + 1);
             }
         },
+
+        created() {
+            console.log(this.getYear());
+            console.log(this.getMonth());
+            console.log(this.getDay());
+        }
     };
 </script>
 
