@@ -83,6 +83,9 @@ Route::get('events', function () {
             } elseif (strpos($criteria, 'id_') !== false) {
                 if ($criteria == 'id_user') $query->where('events.id_user', '=', $value);
                 else $query->where($criteria, '=', $value);
+            } elseif ($criteria == 'event_user_id') {
+                $query->where('event_user.user_id', '=', $value);
+                $datetimeFilter = false;
             } else {
                 if ($criteria == 'name') $query->where('events.name', 'like', '%' . $value . '%');
                 else $query->where($criteria, 'like', '%' . $value . '%');
