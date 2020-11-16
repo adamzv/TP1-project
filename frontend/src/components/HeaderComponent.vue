@@ -41,7 +41,7 @@
           <b-navbar-item
             v-if="addEventPermission"
             tag="router-link"
-            to="/event"
+            to="/pridat"
             class="has-text-link"
           >
             {{ $t("addEvent") }}

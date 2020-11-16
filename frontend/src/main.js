@@ -45,6 +45,8 @@ router.beforeEach((to, from, next) => {
     // if not, redirect to login page.
     if (store.getters.loggedIn) {
       next();
+    } else {
+      next({ name: "login" });
     }
   } else {
     next(); // make sure to always call next()!
