@@ -30,30 +30,23 @@ export default {
   },
   data() {
     return {
-      loading: false,
+      loading: true
     };
   },
-
-  mounted() {
-    this.loading = true;
+  created() {
     this.$store.commit("retrieveUserIdFromStorage");
     if (this.$store.getters.loggedInId) {
-      console.log(this.$store.getters.loggedInId);
       this.$store
         .dispatch("retrieveUserData")
-        .then(response => {
-          console.log(response);
+        .then(() => {
           this.loading = false;
         })
-        .catch(error => {
-          console.log("fatal errorz");
-          console.log(error);
+        .catch(() => {
           this.loading = false;
         });
     } else {
       this.loading = false;
     }
-
   }
 };
 </script>

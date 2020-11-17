@@ -8,7 +8,8 @@ export default new Vuex.Store({
   state: {
     token: localStorage.getItem("access_token") || null,
     userId: null,
-    user: null
+    user: null,
+    newEventSubmitted: false
   },
   getters: {
     loggedIn(state) {
@@ -30,6 +31,9 @@ export default new Vuex.Store({
         state.user !== null &&
         (state.user.id_role === 1 || state.user.id_role === 2)
       );
+    },
+    newEventSubmitted(state) {
+      return state.newEventSubmitted;
     }
   },
   mutations: {
@@ -51,6 +55,9 @@ export default new Vuex.Store({
     },
     retrieveUserIdFromStorage(state) {
       state.userId = localStorage.getItem("id") || null;
+    },
+    submitNewEvent(state, change) {
+      state.newEventSubmitted = change;
     }
   },
   actions: {

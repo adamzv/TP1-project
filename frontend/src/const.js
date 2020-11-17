@@ -35,3 +35,8 @@ export const MANY = [
   " mesiacov",
   " rokov"
 ];
+
+export const ADMIN_ROLE = 1;
+export const MODERATOR_ROLE = 2;
+export const USER_ROLE = 3;
+export const HOST_ROLE = 4;

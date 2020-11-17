@@ -46,6 +46,9 @@
           >
             {{ $t("addEvent") }}
           </b-navbar-item>
+          <b-navbar-item tag="router-link" to="/profile">
+            {{ $t("profile") }}
+          </b-navbar-item>
           <b-navbar-item @click="logout">
             {{ $t("logout") }}
           </b-navbar-item>
@@ -59,17 +62,26 @@
       :interval="4000"
       :repeat="true"
     >
-      <b-carousel-item v-for="(carousel, i) in carousels" :key="i">
-        <section :class="`hero is-medium is-${carousel.color} is-bold`">
+      <b-carousel-item v-for="(event, i) in events" :key="i">
+        <!-- <section :class="`hero is-medium is-${carousel.color} is-bold`"> -->
+        <section class="hero is-medium is-bold is-dark">
           <!-- TODO: find images for background and specify correct size -->
+          <!-- TODO: set color overlay for UKF -->
           <img :src="getImgUrl(i)" width="auto" height="100%" />
           <div
-            :class="
-              `hero-body has-text-centered is-overlay ${carousel.overlay}`
-            "
+            class="hero-body has-text-centered is-overlay"
+            v-bind:class="{
+              'green-overlay': event.faculty.id == 1,
+              'pink-overlay': event.faculty.id == 4,
+              'orange-overlay': event.faculty.id == 3,
+              'blue-overlay': event.faculty.id == 5,
+              'gray-overlay': event.faculty.id == 2,
+              'blue-overlay': event.faculty.id == 6,
+              'brown-overlay': event.faculty.id == 7
+            }"
           >
-            <h1 class="title">{{ carousel.title }}</h1>
-            <h1 class="subtitle">{{ formatRemainingTime(carousel.time) }}</h1>
+            <h1 class="title">{{ event.name }}</h1>
+            <h1 class="subtitle">{{ formatRemainingTime(event.beginning) }}</h1>
           </div>
         </section>
       </b-carousel-item>
@@ -81,12 +93,14 @@
 import moment from "moment";
 import countdown from "countdown";
 import { ONE, FEW, MANY } from "../const.js";
+import httpClient from "../httpClient.js";
 
 export default {
   created: function() {
     // every second an anonymous function will be called which causes re-render of the countdown string
     this.advance();
     this.countdownTranslate();
+    this.loadEvents("/events");
   },
   methods: {
     setLocale(lang) {
@@ -135,6 +149,16 @@ export default {
         countdown.resetFormat();
       }
     },
+    loadEvents(route) {
+      httpClient
+        .get(route)
+        .then(response => {
+          this.events = response.data.data.slice(0, 6);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
     logout() {
       this.$store.dispatch("destroyToken").then(() => {
         this.$router.push({ name: "home" });
@@ -154,6 +178,7 @@ export default {
   },
   data() {
     return {
+      events: [],
       counter: 0,
       langs: this.$i18n.availableLocales,
       locale: this.$i18n.locale,
