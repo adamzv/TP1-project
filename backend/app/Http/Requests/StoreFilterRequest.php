@@ -30,7 +30,10 @@ class StoreFilterRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|varchar|max:255',
+            'name' => [
+                'required|varchar|max:255',
+                Rule::unique('filters', 'name')->ignore($this->filter)
+            ]
         ];
     }
     public function messages()

@@ -30,9 +30,13 @@ class StorePlaceRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' =>'required|varchar|max:255',
-                'id_city' =>'required|int',
-
+            'name' => [
+                'required|varchar|max:255',
+                Rule::unique('places', 'name')->ignore($this->place)
+            ],
+            'id_city' => [
+                'required|int'
+            ]
         ];
     }
     public function messages()

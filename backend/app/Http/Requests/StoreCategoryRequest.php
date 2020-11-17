@@ -31,8 +31,9 @@ class StoreCategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|varchar|max:225',
-        ];
+            'name' => [
+                'required|varchar|max:225',
+                Rule::unique('categories', 'name')->ignore($this->category)]];
     }
     public function messages()
     {

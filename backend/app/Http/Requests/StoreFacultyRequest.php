@@ -28,13 +28,17 @@ class StoreFacultyRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'name' =>'required|varchar|max:255',
+        return ['name' => [
+            'required|varchar|max:255',
+            Rule::unique('faculties', 'name')->ignore($this->faculty)
+        ]
+
         ];
     }
     public function messages()
     {
         return [
+
             'faculty.name'=>'Invalid faculty name',
         ];
     }

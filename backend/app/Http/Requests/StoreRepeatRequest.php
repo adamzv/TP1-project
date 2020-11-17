@@ -29,9 +29,14 @@ class StoreRepeatRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'repeatUnit' =>'varchar|max:255',
-            'repeatNumber' =>'int',
+        return ['repeatUnit' => [
+            'required|varchar|max:255',
+            Rule::unique('repeats', 'repeatUnit')->ignore($this->repeat)
+        ],
+            'repeatNumber' => [
+                'required|int',
+                Rule::unique('repeats', 'repeatNumber')->ignore($this->repeat)
+            ]
         ];
     }
 }

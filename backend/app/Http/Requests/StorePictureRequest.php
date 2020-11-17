@@ -30,8 +30,13 @@ class StorePictureRequest extends FormRequest
     public function rules()
     {
         return [
-            'link' =>'required|text',
-            'id_event' => 'required|int',
+            'link' => [
+                'required|text',
+                Rule::unique('pictures', 'link')->ignore($this->picture)
+            ],
+            'id_event' => [
+                'required|int'
+            ]
         ];
     }
     public function messages()

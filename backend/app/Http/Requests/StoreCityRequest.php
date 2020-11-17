@@ -30,8 +30,13 @@ class StoreCityRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' =>'required|varchar|max:225',
-            'id_state' =>'reauired|int',
+            'name' => [
+                'required|varchar|max:225',
+                Rule::unique('cities', 'name')->ignore($this->city)
+            ],
+            'id_state' => [
+                'required|int',
+            ]
 
             ];
 

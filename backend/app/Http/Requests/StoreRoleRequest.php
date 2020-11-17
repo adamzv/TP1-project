@@ -29,8 +29,10 @@ class StoreRoleRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'type' =>'required|varchar|max:255',
+        return [ 'type' => [
+            'required|varchar|max:255',
+            Rule::unique('categories', 'name')->ignore($this->role)
+        ]
         ];
     }
     public function messages()
