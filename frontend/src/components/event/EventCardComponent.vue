@@ -90,7 +90,7 @@ component takes in all the event data coming from EventListComponent and renders
       </div>
 
       <!-- Details of the event -->
-      <div class="eventDetails" style="overflow-y: scroll;">
+      <div style="overflow-y: scroll;" class="eventDetails">
         <p>
           {{ eventDesc }}
         </p>
@@ -274,6 +274,10 @@ export default {
   max-height: 200px;
 }
 
+.eventDetailsNone {
+  height: 0px;
+}
+
 .eventTags {
   padding: 10px;
 }
@@ -283,7 +287,7 @@ export default {
 }
 
 .eventBackColorLIB {
-  background: #74629e;
+  background: #7f1810;
 }
 
 .eventBackColorFPV {

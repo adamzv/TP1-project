@@ -20,7 +20,7 @@ format. * */
         }"
       >
         <p>{{ eventName }}</p>
-        <button class="delete is-medium" aria-label="delete"></button>
+        <button class="delete is-medium" @click="goBack()"></button>
       </div>
 
       <!-- Individual sections of the card -->
@@ -61,10 +61,7 @@ format. * */
             </b-taglist>
           </div>
 
-          <!-- Seperator line -->
-          <hr class="separator-line" />
-
-          <div>
+          <div style="padding-top: 20px;">
             <b-icon icon="clock-time-four-outline"></b-icon>
             <strong style="padding-left: 5px;">KEDY</strong>
           </div>
@@ -73,7 +70,7 @@ format. * */
             {{ getDay() }}. {{ getMonth() }} {{ getYear() }}
           </p>
 
-          <div style="padding-top: 10px;">
+          <div style="padding-top: 20px;">
             <b-icon icon="map-marker"></b-icon>
             <strong style="padding-left: 5px;">KDE</strong>
           </div>
@@ -85,9 +82,6 @@ format. * */
             <br />
             {{ eventPlace.name }}
           </p>
-
-          <!-- Separator line -->
-          <hr class="separator-line" />
 
           <!-- Available tickets -->
           <div
@@ -101,6 +95,7 @@ format. * */
               eventBackColorUKF: eventIdFaculty == 6,
               eventBackColorLIB: eventIdFaculty == 7
             }"
+            style="margin-top: 10px;"
           >
             <b-icon icon="account"></b-icon>
             <strong style="padding-left: 5px;">LIMIT MIEST:</strong>
@@ -258,9 +253,6 @@ format. * */
               <b-icon icon="school"></b-icon>
             </div>
 
-            <!-- Separator line -->
-            <hr class="section4-separator-line" />
-
             <div class="by">
               {{ eventFaculty.name }}
               <br />
@@ -273,13 +265,14 @@ format. * */
               </span>
             </div>
 
+            <br />
+
             <div class="forLabel">
               VYTVORIL
               <b-icon icon="account"></b-icon>
             </div>
 
-            <!-- Separator line -->
-            <hr class="section4-separator-line" />
+
 
             <div class="by">{{ eventUser.name }} {{ eventUser.surname }}</div>
 
@@ -309,6 +302,7 @@ format. * */
 </template>
 
 <script>
+
 let months = [
   "január",
   "február",
@@ -344,6 +338,10 @@ export default {
 
     getDay() {
       return this.eventBeginning.substr(8, this.eventBeginning.length - 17);
+    },
+
+    goBack() {
+      this.$router.go(-1);
     }
   },
 

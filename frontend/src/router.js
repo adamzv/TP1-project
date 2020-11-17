@@ -8,6 +8,8 @@ import Profile from "./views/Profile.vue";
 
 Vue.use(Router);
 
+// TODO: implement scroll behaviour to router so that it can remember scroll positions
+
 export default new Router({
   mode: "history",
   base: process.env.BASE_URL,

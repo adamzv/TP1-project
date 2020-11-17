@@ -240,8 +240,15 @@ body {
 }
 .carousel {
   overflow: hidden;
+  margin-bottom: 30px;
 }
 .carousel.carousel-items {
   height: 100%;
+}
+
+@media screen and (max-width: 768px) {
+  .carousel {
+    margin-bottom: 0px;
+  }
 }
 </style>
