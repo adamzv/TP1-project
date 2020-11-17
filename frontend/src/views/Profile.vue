@@ -1,7 +1,6 @@
 <template>
   <section>
     <div style="margin-top: 24px;" class="container">
-      <!-- Nova udalost -->
       <h1 class="is-uppercase is-size-4">
         Používateľská sekcia
       </h1>
@@ -28,6 +27,7 @@
           <p><a class="has-text-weight-semibold" href="#">Zmeniť heslo</a></p>
         </div>
       </div>
+      <!-- Pouzivatelska sekcia -->
       <template v-if="isUser">
         <h1 class="is-uppercase is-size-4">
           Navštívené udalosti
@@ -63,8 +63,12 @@
           </template>
         </b-carousel-list>
       </template>
-      <!-- TODO this is for moderator -->
-      <template v-if="isModerator">
+      <!-- Sprava udalosti -->
+      <template v-if="isModerator || isAdmin">
+        <h1 class="is-uppercase is-size-4">
+          Správa udalostí
+        </h1>
+        <hr class="hr" />
         <template v-if="events">
           <EventManager :events="events" />
         </template>
@@ -127,6 +131,12 @@ export default {
       if (newVal) {
         this.getEvents();
       }
+    },
+    newEventSubmitted(newVal) {
+      if (newVal) {
+        this.getEvents();
+        this.$store.commit("submitNewEvent", false);
+      }
     }
   },
   computed: {
@@ -151,6 +161,9 @@ export default {
     },
     isUser() {
       return this.userRole === USER_ROLE;
+    },
+    newEventSubmitted() {
+      return this.$store.getters.newEventSubmitted;
     }
   }
 };
@@ -158,7 +171,7 @@ export default {
 
 <style>
 /* For some reason carousel uses box-shadow 
-   when it goes past first 2 items, this css style reverts it */
+   when it goes past first 2 items, this css style reverts it  */
 .carousel-list.has-shadow {
   -webkit-box-shadow: 0px 0px 0px;
   box-shadow: 0px 0px 0px;
