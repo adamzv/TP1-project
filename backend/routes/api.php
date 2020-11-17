@@ -38,6 +38,10 @@ Route::prefix('users')->group(function () {
         Route::post('details', 'Api\UsersVerificationController@details')->middleware('verified');
         Route::get('logout', 'Api\UsersVerificationController@logout')->middleware('verified');
     }); // will work only when user has verified the email
+
+    //User registration on events
+    Route::post('eventRegister', 'Api\UsersController@eventRegister');
+    Route::post('eventUnregister', 'Api\UsersController@eventUnregister');
 });
 
 Route::namespace('Api')->group(function () {
