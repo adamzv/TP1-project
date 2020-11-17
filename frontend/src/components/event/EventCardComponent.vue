@@ -101,7 +101,6 @@ component takes in all the event data coming from EventListComponent and renders
 
       <!-- Event tags -->
       <div class="eventTags">
-        <!-- TODO: Demo for buefy event tags -->
         <b-taglist>
           <b-tag
             v-for="tag in eventCategories"
@@ -121,32 +120,6 @@ component takes in all the event data coming from EventListComponent and renders
             #{{ tag.name }}
           </b-tag>
         </b-taglist>
-        <div class="tagsSection">
-          <!-- Select a background color based off of the faculty -->
-          <div
-            class="tags"
-            v-bind:class="{
-              eventBackColorFPV: eventIdFaculty == 1,
-              eventBackColorFF: eventIdFaculty == 4,
-              eventBackColorFSS: eventIdFaculty == 3,
-              eventBackColorFP: eventIdFaculty == 5,
-              eventBackColorFSVZ: eventIdFaculty == 2,
-              eventBackColorUKF: eventIdFaculty == 6,
-              eventBackColorLIB: eventIdFaculty == 7
-            }"
-          >
-            <!-- Actual tags -->
-
-            <b-button
-              rounded
-              size="is-small"
-              v-for="tag in eventCategories"
-              :key="tag.id"
-            >
-              #{{ tag.name }}
-            </b-button>
-          </div>
-        </div>
       </div>
     </div>
   </router-link>
@@ -281,12 +254,6 @@ export default {
   }
 }
 
-.tagsSection {
-  padding: 10px;
-  margin: 0;
-  width: max-content;
-}
-
 ._card {
   padding: 0px;
   margin: 10px;
@@ -309,18 +276,6 @@ export default {
 
 .eventTags {
   padding: 10px;
-
-  .button {
-    margin-right: 5px;
-    padding: 10px;
-    opacity: 0.9;
-  }
-
-  .tags {
-    padding: 5px;
-    border-radius: 20px;
-    margin: 0px;
-  }
 }
 
 .eventBackColorUKF {

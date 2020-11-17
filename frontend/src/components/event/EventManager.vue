@@ -56,12 +56,12 @@
       </div>
       <div class="column is-three-quarters">
         <div>
-          <div v-if="addEvent">
+          <template v-if="addEvent">
             <ManageEvent />
-          </div>
-          <div v-if="getSelectedEvent">
-            <ManageEvent />
-          </div>
+          </template>
+          <template v-if="getSelectedEvent">
+            <ManageEvent :event="getSelectedEvent" />
+          </template>
         </div>
       </div>
     </div>
@@ -106,14 +106,14 @@ export default {
   },
   methods: {
     addEventForm() {
-      (this.lastEvent = null), (this.addEvent = true);
+      this.lastEvent = null;
+      this.addEvent = true;
     },
     selectEvent(event) {
       this.lastEvent = event.id;
       this.addEvent = false;
     },
     filter() {
-      console.log(this.filterEvent);
       this.filteredEvents = this.events.filter(option => {
         return (
           option.name

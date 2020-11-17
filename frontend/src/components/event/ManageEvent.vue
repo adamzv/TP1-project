@@ -122,6 +122,7 @@
                 <div class="column">
                   <b-field label="Miesto konania">
                     <b-autocomplete
+                      v-model="placeName"
                       ref="autocomplete"
                       :data="availablePlaces"
                       field="name"
@@ -174,6 +175,7 @@
                 <div class="column">
                   <b-field label="Fakulta">
                     <b-autocomplete
+                      v-model="selectedFacultyName"
                       :keep-first="true"
                       :open-on-focus="true"
                       :data="availableFaculties"
@@ -187,7 +189,7 @@
                 <div class="column">
                   <b-field label="Katedra">
                     <b-autocomplete
-                      v-model="selectedDepartment"
+                      v-model="selectedDepartmentName"
                       :keep-first="true"
                       :open-on-focus="true"
                       :data="getFilteredDepartments"
@@ -307,6 +309,9 @@ import moment from "moment";
 
 export default {
   name: "manageEvent",
+  props: {
+    event: Object
+  },
   data() {
     return {
       newCategoryName: "",
@@ -317,11 +322,11 @@ export default {
       desc: null,
       categories: [],
       beginning: null,
-      place: "",
+      place: null,
       availablePlaces: [],
       createNext: false,
-      selectedDepartment: "",
-      selectedFaculty: "",
+      selectedDepartment: null,
+      selectedFaculty: null,
       availableDepartments: [],
       availableFaculties: [],
       room: null,
@@ -332,7 +337,10 @@ export default {
       pictures: [],
       response: null,
       // collapse settings
-      isOpen: 0
+      isOpen: 0,
+      placeName: "",
+      selectedDepartmentName: "",
+      selectedFacultyName: ""
     };
   },
   methods: {
@@ -404,7 +412,6 @@ export default {
     checkIfDepartmentIsSelected() {
       if (this.selectedFaculty == null && this.selectedDepartment !== null) {
         this.selectedDepartment = null;
-        console.log("true");
       }
     },
     deletePicture(index) {
@@ -416,7 +423,6 @@ export default {
       this.id = null;
       this.categories = [];
       this.beginning = null;
-      // setTimeout(() => (this.place = null), 10);
       this.place = null;
       this.selectedDepartment = "";
       this.selectedFaculty = "";
@@ -426,6 +432,47 @@ export default {
       this.isAttendanceLimit = false;
       this.attendanceLimit = null;
       this.pictures = [];
+      // string properties for some inputs
+      this.placeName = "";
+      this.selectedDepartmentName = "";
+      this.selectedFacultyName = "";
+    },
+    editFormInputs() {
+      this.name = this.getEvent.name;
+      this.desc = this.getEvent.desc;
+      this.id = this.getEvent.id;
+      this.categories = this.getEvent.categories;
+      this.beginning = moment(
+        this.getEvent.beginning,
+        "YYYY-MM-DD HH:mm:ss"
+      ).toDate();
+      this.place = this.getEvent.place;
+      this.selectedDepartment = this.getEvent.department;
+      this.selectedFaculty = this.getEvent.faculty;
+      this.room = this.getEvent.room;
+      this.lecturer = this.getEvent.lecturer;
+      this.file = this.getEvent.file;
+      this.isAttendanceLimit = this.getEvent.attendanceLimit > -1;
+      this.attendanceLimit =
+        this.getEvent.attendanceLimit > -1
+          ? this.getEvent.attendanceLimit
+          : null;
+      this.pictures = this.getEvent.pictures;
+      // string properties for some inputs
+      this.placeName = this.place.name;
+      this.selectedDepartmentName = this.selectedDepartment
+        ? this.selectedDepartment.name
+        : "";
+      this.selectedFacultyName = this.selectedFaculty.name;
+    }
+  },
+  watch: {
+    getEvent(val) {
+      if (val) {
+        this.editFormInputs();
+      } else {
+        this.clearFormInputs();
+      }
     }
   },
   computed: {
@@ -436,6 +483,9 @@ export default {
           department.id_faculty === this.selectedFaculty.id
         );
       });
+    },
+    getEvent() {
+      return this.event;
     }
   },
   created() {
