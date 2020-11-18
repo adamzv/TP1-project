@@ -20,24 +20,13 @@ format. * */
         }"
       >
         <p>{{ eventName }}</p>
-        <button class="delete is-medium" aria-label="delete"></button>
+        <button class="delete is-medium" @click="goBack()"></button>
       </div>
 
       <!-- Individual sections of the card -->
       <div class="columns">
         <!-- Section 1 -->
-        <div
-          class="column is-3-desktop section1"
-          v-bind:class="{
-            eventDetailsHeaderColorFPV: eventIdFaculty == 1,
-            eventDetailsHeaderColorFF: eventIdFaculty == 4,
-            eventDetailsHeaderColorFSS: eventIdFaculty == 3,
-            eventDetailsHeaderColorFP: eventIdFaculty == 5,
-            eventDetailsHeaderColorFSVZ: eventIdFaculty == 2,
-            eventDetailsHeaderColorUKF: eventIdFaculty == 6,
-            eventDetailsHeaderColorLIB: eventIdFaculty == 7
-          }"
-        >
+        <div class="column is-3-desktop section1 eventDetailsHeaderColor">
           <!-- Event tags -->
           <div class="eventTags">
             <b-taglist>
@@ -61,10 +50,7 @@ format. * */
             </b-taglist>
           </div>
 
-          <!-- Seperator line -->
-          <hr class="separator-line" />
-
-          <div>
+          <div style="padding-top: 20px;">
             <b-icon icon="clock-time-four-outline"></b-icon>
             <strong style="padding-left: 5px;">KEDY</strong>
           </div>
@@ -73,7 +59,7 @@ format. * */
             {{ getDay() }}. {{ getMonth() }} {{ getYear() }}
           </p>
 
-          <div style="padding-top: 10px;">
+          <div style="padding-top: 20px;">
             <b-icon icon="map-marker"></b-icon>
             <strong style="padding-left: 5px;">KDE</strong>
           </div>
@@ -86,21 +72,10 @@ format. * */
             {{ eventPlace.name }}
           </p>
 
-          <!-- Separator line -->
-          <hr class="separator-line" />
-
           <!-- Available tickets -->
           <div
             class="number-of-tickets"
-            v-bind:class="{
-              eventBackColorFPV: eventIdFaculty == 1,
-              eventBackColorFF: eventIdFaculty == 4,
-              eventBackColorFSS: eventIdFaculty == 3,
-              eventBackColorFP: eventIdFaculty == 5,
-              eventBackColorFSVZ: eventIdFaculty == 2,
-              eventBackColorUKF: eventIdFaculty == 6,
-              eventBackColorLIB: eventIdFaculty == 7
-            }"
+            style="margin-top: 10px; background-color: #e6e6e6; color: #454545;"
           >
             <b-icon icon="account"></b-icon>
             <strong style="padding-left: 5px;">LIMIT MIEST:</strong>
@@ -110,15 +85,23 @@ format. * */
             </span>
 
             <span v-else>
-              <i>Neobmedzene</i>
+              <i> Neobmedzene</i>
             </span>
           </div>
 
           <!-- Sign up button -->
           <div>
             <b-button
-              type="is-info"
-              style="margin-top: 10px; margin-bottom: 10px;"
+                v-bind:class="{
+                  eventBackColorFPV: eventIdFaculty == 1,
+                  eventBackColorFF: eventIdFaculty == 4,
+                  eventBackColorFSS: eventIdFaculty == 3,
+                  eventBackColorFP: eventIdFaculty == 5,
+                  eventBackColorFSVZ: eventIdFaculty == 2,
+                  eventBackColorUKF: eventIdFaculty == 6,
+                  eventBackColorLIB: eventIdFaculty == 7
+                }"
+              style="margin-top: 10px; margin-bottom: 10px; color: white;"
             >
               Prihlasit sa
             </b-button>
@@ -231,18 +214,7 @@ format. * */
         </div>
 
         <!-- Section 4 -->
-        <div
-          class="column is-3-desktop section4"
-          v-bind:class="{
-            eventDetailsHeaderColorFPV: eventIdFaculty == 1,
-            eventDetailsHeaderColorFF: eventIdFaculty == 4,
-            eventDetailsHeaderColorFSS: eventIdFaculty == 3,
-            eventDetailsHeaderColorFP: eventIdFaculty == 5,
-            eventDetailsHeaderColorFSVZ: eventIdFaculty == 2,
-            eventDetailsHeaderColorUKF: eventIdFaculty == 6,
-            eventDetailsHeaderColorLIB: eventIdFaculty == 7
-          }"
-        >
+        <div class="column is-3-desktop section4 eventDetailsHeaderColor">
           <div class="map-container">
             <h1
               style="font-weight: bold; color: white; margin-left: 150px; margin-top: 90px;"
@@ -258,9 +230,6 @@ format. * */
               <b-icon icon="school"></b-icon>
             </div>
 
-            <!-- Separator line -->
-            <hr class="section4-separator-line" />
-
             <div class="by">
               {{ eventFaculty.name }}
               <br />
@@ -269,17 +238,18 @@ format. * */
               </span>
 
               <span v-else style="font-weight: normal;">
-                Vsetky fakulty
+                Vsetky katedry
               </span>
             </div>
+
+            <br />
 
             <div class="forLabel">
               VYTVORIL
               <b-icon icon="account"></b-icon>
             </div>
 
-            <!-- Separator line -->
-            <hr class="section4-separator-line" />
+
 
             <div class="by">{{ eventUser.name }} {{ eventUser.surname }}</div>
 
@@ -287,10 +257,20 @@ format. * */
 
             <!-- Bulma dropdown for adding to the calendar -->
             <!-- TODO: have to fix the not overflowing thing -->
-            <b-dropdown aria-role="list">
+            <b-dropdown aria-role="list" style=" overflow: visible;">
               <button
-                class="button is-info"
+                class="button"
                 slot="trigger"
+                v-bind:class="{
+                  eventBackColorFPV: eventIdFaculty == 1,
+                  eventBackColorFF: eventIdFaculty == 4,
+                  eventBackColorFSS: eventIdFaculty == 3,
+                  eventBackColorFP: eventIdFaculty == 5,
+                  eventBackColorFSVZ: eventIdFaculty == 2,
+                  eventBackColorUKF: eventIdFaculty == 6,
+                  eventBackColorLIB: eventIdFaculty == 7
+                }"
+                style="color: white;"
                 slot-scope="{ active }"
               >
                 <span>Pridat do kalendara</span>
@@ -309,6 +289,7 @@ format. * */
 </template>
 
 <script>
+
 let months = [
   "január",
   "február",
@@ -344,6 +325,10 @@ export default {
 
     getDay() {
       return this.eventBeginning.substr(8, this.eventBeginning.length - 17);
+    },
+
+    goBack() {
+      this.$router.go(-1);
     }
   },
 
@@ -497,7 +482,7 @@ export default {
   padding: 0px;
   margin-left: 28px;
   margin-right: 28px;
-  border-radius: 10px;
+  border-radius: 5px;
   -webkit-box-shadow: 0px 10px 54px -32px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 0px 10px 54px -32px rgba(0, 0, 0, 0.75);
   box-shadow: 0px 10px 54px -32px rgba(0, 0, 0, 0.75);
@@ -514,7 +499,7 @@ export default {
 
   .section1 {
     padding-left: 20px;
-    border-bottom-left-radius: 8px;
+    border-bottom-left-radius: 5px;
 
     .number-of-tickets {
       color: white;
@@ -565,7 +550,7 @@ export default {
 
   .section4 {
     margin: 0px;
-    border-bottom-right-radius: 8px;
+    border-bottom-right-radius: 5px;
     font-size: medium;
     clear: both;
     overflow: hidden;
@@ -628,28 +613,8 @@ export default {
   background: #f31a33;
 }
 
-.eventDetailsHeaderColorFPV {
-  background: #b2edd5;
-}
-
-.eventDetailsHeaderColorFF {
-  background: #e8bad3;
-}
-
-.eventDetailsHeaderColorFSS {
-  background: #ebd7b9;
-}
-
-.eventDetailsHeaderColorFP {
-  background: #a3d0f0;
-}
-
-.eventDetailsHeaderColorFSVZ {
-  background: #f5c1c7;
-}
-
-.eventDetailsHeaderColorLIB {
-  background: #f1918a;
+.eventDetailsHeaderColor {
+  background: #ededed;
 }
 
 .row {

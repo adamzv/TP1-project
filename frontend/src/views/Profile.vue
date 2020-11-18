@@ -1,78 +1,80 @@
 <template>
   <section>
     <div style="margin-top: 24px;" class="container">
-      <h1 class="is-uppercase is-size-4">
-        Používateľská sekcia
-      </h1>
-      <hr class="hr" />
-      <div class="box">
-        <div v-if="user">
-          <h2 class="is-size-4">{{ loggedInName }}</h2>
-          <p>
-            <span class="has-text-weight-semibold">Emailová adresa:</span>
-            {{ user.email }}
-            <b-tooltip
-              label="Verifikovaný email"
-              position="is-right"
-              type="is-primary"
-            >
-              <b-icon
+      <div class="page-margin">
+        <h1 class="is-uppercase is-size-4">
+          Používateľská sekcia
+        </h1>
+        <hr class="hr" />
+        <div class="box">
+          <div v-if="user">
+            <h2 class="is-size-4">{{ loggedInName }}</h2>
+            <p>
+              <span class="has-text-weight-semibold">Emailová adresa:</span>
+              {{ user.email }}
+              <b-tooltip
+                label="Verifikovaný email"
+                position="is-right"
                 type="is-primary"
-                size="is-small"
-                icon="shield-check"
-                v-if="user.email_verified_at"
-              ></b-icon>
-            </b-tooltip>
-          </p>
-          <p><a class="has-text-weight-semibold" href="#">Zmeniť heslo</a></p>
+              >
+                <b-icon
+                  type="is-primary"
+                  size="is-small"
+                  icon="shield-check"
+                  v-if="user.email_verified_at"
+                ></b-icon>
+              </b-tooltip>
+            </p>
+            <p><a class="has-text-weight-semibold" href="#">Zmeniť heslo</a></p>
+          </div>
         </div>
-      </div>
-      <!-- Pouzivatelska sekcia -->
-      <template v-if="isUser">
-        <h1 class="is-uppercase is-size-4">
-          Navštívené udalosti
-        </h1>
-        <hr class="hr" />
-        <b-carousel-list
-          :animated="true"
-          v-model="test"
-          :data="events"
-          :items-to-show="2"
-        >
-          <template slot="item" slot-scope="event">
-            <EventCardComponent
-              v-bind:event-id="event.id"
-              v-bind:event-name="event.name"
-              v-bind:event-desc="event.desc"
-              v-bind:event-room="event.room"
-              v-bind:event-beginning="event.beginning"
-              v-bind:event-end="event.end"
-              v-bind:event-attendance-limit="event.attendance_limit"
-              v-bind:event-lecturer="event.lecturer"
-              v-bind:event-id-user="event.id_user"
-              v-bind:event-id-place="event.id_place"
-              v-bind:event-id-faculty="event.id_faculty"
-              v-bind:event-id-department="event.id_department"
-              v-bind:event-participants="event.participants"
-              v-bind:event-user="event.user"
-              v-bind:event-place="event.place"
-              v-bind:event-department="event.department"
-              v-bind:event-faculty="event.faculty"
-              v-bind:event-categories="event.categories"
-            />
-          </template>
-        </b-carousel-list>
-      </template>
-      <!-- Sprava udalosti -->
-      <template v-if="isModerator || isAdmin">
-        <h1 class="is-uppercase is-size-4">
-          Správa udalostí
-        </h1>
-        <hr class="hr" />
-        <template v-if="events">
-          <EventManager :events="events" />
+        <!-- Pouzivatelska sekcia -->
+        <template v-if="isUser">
+          <h1 class="is-uppercase is-size-4">
+            Navštívené udalosti
+          </h1>
+          <hr class="hr" />
+          <b-carousel-list
+            :animated="true"
+            v-model="test"
+            :data="events"
+            :items-to-show="2"
+          >
+            <template slot="item" slot-scope="event">
+              <EventCardComponent
+                v-bind:event-id="event.id"
+                v-bind:event-name="event.name"
+                v-bind:event-desc="event.desc"
+                v-bind:event-room="event.room"
+                v-bind:event-beginning="event.beginning"
+                v-bind:event-end="event.end"
+                v-bind:event-attendance-limit="event.attendance_limit"
+                v-bind:event-lecturer="event.lecturer"
+                v-bind:event-id-user="event.id_user"
+                v-bind:event-id-place="event.id_place"
+                v-bind:event-id-faculty="event.id_faculty"
+                v-bind:event-id-department="event.id_department"
+                v-bind:event-participants="event.participants"
+                v-bind:event-user="event.user"
+                v-bind:event-place="event.place"
+                v-bind:event-department="event.department"
+                v-bind:event-faculty="event.faculty"
+                v-bind:event-categories="event.categories"
+              />
+            </template>
+          </b-carousel-list>
         </template>
-      </template>
+        <!-- Sprava udalosti -->
+        <template v-if="isModerator || isAdmin">
+          <h1 class="is-uppercase is-size-4">
+            Správa udalostí
+          </h1>
+          <hr class="hr" />
+          <template v-if="events">
+            <EventManager :events="events" />
+          </template>
+        </template>
+      </div>
     </div>
   </section>
 </template>
@@ -176,4 +178,9 @@ export default {
   -webkit-box-shadow: 0px 0px 0px;
   box-shadow: 0px 0px 0px;
 }
+
+  .page-margin {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
 </style>

@@ -5,14 +5,7 @@
       v-model="loading"
       :can-cancel="false"
     ></b-loading>
-    <HeaderComponent />
-    <!--
-    <ul>
-      <li v-for="event in events" :key="event.id">
-        {{event.name}}
-      </li>
-    </ul>
-    -->
+    <HeaderComponent class="element"/>
 
     <router-view />
     <FooterComponent />
@@ -30,10 +23,12 @@ export default {
   },
   data() {
     return {
-      loading: true
+      loading: true,
+      carouselHeight: Number
     };
   },
   created() {
+    window.addEventListener('resize', this.listenToCarouselHeight);
     this.$store.commit("retrieveUserIdFromStorage");
     if (this.$store.getters.loggedInId) {
       this.$store
@@ -46,6 +41,22 @@ export default {
         });
     } else {
       this.loading = false;
+    }
+  },
+
+  destroyed() { window.removeEventListener('resize', this.listenToCarouselHeight); },
+
+  methods: {
+
+      // Setting the carouselHeight in VUEX states
+      listenToCarouselHeight () {
+      const element = document.querySelector('.element');
+      var style = getComputedStyle(element);
+      this.carouselHeight = style.height;
+      this.$store.commit("changeCarouselHeight", style.height);
+
+      // Print the carouselHeight (this variable is accessible from any component
+      console.log(this.$store.state.carouselHeight);
     }
   }
 };

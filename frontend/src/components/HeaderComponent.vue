@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-navbar class="is-dark" :transparent="true">
+    <b-navbar class="is-dark" :transparent="true" style="z-index: 1001;">
       <template slot="brand">
         <b-navbar-item tag="router-link" :to="{ path: '/' }">
           <img src="../assets/logoukf.png" alt="UKF Logo" />
@@ -243,5 +243,11 @@ body {
 }
 .carousel.carousel-items {
   height: 100%;
+}
+
+@media screen and (max-width: 768px) {
+  .carousel {
+    margin-bottom: 0px;
+  }
 }
 </style>
