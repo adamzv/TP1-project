@@ -26,18 +26,7 @@ format. * */
       <!-- Individual sections of the card -->
       <div class="columns">
         <!-- Section 1 -->
-        <div
-          class="column is-3-desktop section1"
-          v-bind:class="{
-            eventDetailsHeaderColorFPV: eventIdFaculty == 1,
-            eventDetailsHeaderColorFF: eventIdFaculty == 4,
-            eventDetailsHeaderColorFSS: eventIdFaculty == 3,
-            eventDetailsHeaderColorFP: eventIdFaculty == 5,
-            eventDetailsHeaderColorFSVZ: eventIdFaculty == 2,
-            eventDetailsHeaderColorUKF: eventIdFaculty == 6,
-            eventDetailsHeaderColorLIB: eventIdFaculty == 7
-          }"
-        >
+        <div class="column is-3-desktop section1 eventDetailsHeaderColor">
           <!-- Event tags -->
           <div class="eventTags">
             <b-taglist>
@@ -86,16 +75,7 @@ format. * */
           <!-- Available tickets -->
           <div
             class="number-of-tickets"
-            v-bind:class="{
-              eventBackColorFPV: eventIdFaculty == 1,
-              eventBackColorFF: eventIdFaculty == 4,
-              eventBackColorFSS: eventIdFaculty == 3,
-              eventBackColorFP: eventIdFaculty == 5,
-              eventBackColorFSVZ: eventIdFaculty == 2,
-              eventBackColorUKF: eventIdFaculty == 6,
-              eventBackColorLIB: eventIdFaculty == 7
-            }"
-            style="margin-top: 10px;"
+            style="margin-top: 10px; background-color: #e6e6e6; color: #454545;"
           >
             <b-icon icon="account"></b-icon>
             <strong style="padding-left: 5px;">LIMIT MIEST:</strong>
@@ -112,8 +92,16 @@ format. * */
           <!-- Sign up button -->
           <div>
             <b-button
-              type="is-info"
-              style="margin-top: 10px; margin-bottom: 10px;"
+                v-bind:class="{
+                  eventBackColorFPV: eventIdFaculty == 1,
+                  eventBackColorFF: eventIdFaculty == 4,
+                  eventBackColorFSS: eventIdFaculty == 3,
+                  eventBackColorFP: eventIdFaculty == 5,
+                  eventBackColorFSVZ: eventIdFaculty == 2,
+                  eventBackColorUKF: eventIdFaculty == 6,
+                  eventBackColorLIB: eventIdFaculty == 7
+                }"
+              style="margin-top: 10px; margin-bottom: 10px; color: white;"
             >
               Prihlasit sa
             </b-button>
@@ -226,18 +214,7 @@ format. * */
         </div>
 
         <!-- Section 4 -->
-        <div
-          class="column is-3-desktop section4"
-          v-bind:class="{
-            eventDetailsHeaderColorFPV: eventIdFaculty == 1,
-            eventDetailsHeaderColorFF: eventIdFaculty == 4,
-            eventDetailsHeaderColorFSS: eventIdFaculty == 3,
-            eventDetailsHeaderColorFP: eventIdFaculty == 5,
-            eventDetailsHeaderColorFSVZ: eventIdFaculty == 2,
-            eventDetailsHeaderColorUKF: eventIdFaculty == 6,
-            eventDetailsHeaderColorLIB: eventIdFaculty == 7
-          }"
-        >
+        <div class="column is-3-desktop section4 eventDetailsHeaderColor">
           <div class="map-container">
             <h1
               style="font-weight: bold; color: white; margin-left: 150px; margin-top: 90px;"
@@ -280,10 +257,20 @@ format. * */
 
             <!-- Bulma dropdown for adding to the calendar -->
             <!-- TODO: have to fix the not overflowing thing -->
-            <b-dropdown aria-role="list">
+            <b-dropdown aria-role="list" style=" overflow: visible;">
               <button
-                class="button is-info"
+                class="button"
                 slot="trigger"
+                v-bind:class="{
+                  eventBackColorFPV: eventIdFaculty == 1,
+                  eventBackColorFF: eventIdFaculty == 4,
+                  eventBackColorFSS: eventIdFaculty == 3,
+                  eventBackColorFP: eventIdFaculty == 5,
+                  eventBackColorFSVZ: eventIdFaculty == 2,
+                  eventBackColorUKF: eventIdFaculty == 6,
+                  eventBackColorLIB: eventIdFaculty == 7
+                }"
+                style="color: white;"
                 slot-scope="{ active }"
               >
                 <span>Pridat do kalendara</span>
@@ -626,28 +613,8 @@ export default {
   background: #f31a33;
 }
 
-.eventDetailsHeaderColorFPV {
-  background: #b2edd5;
-}
-
-.eventDetailsHeaderColorFF {
-  background: #e8bad3;
-}
-
-.eventDetailsHeaderColorFSS {
-  background: #ebd7b9;
-}
-
-.eventDetailsHeaderColorFP {
-  background: #a3d0f0;
-}
-
-.eventDetailsHeaderColorFSVZ {
-  background: #f5c1c7;
-}
-
-.eventDetailsHeaderColorLIB {
-  background: #f1918a;
+.eventDetailsHeaderColor {
+  background: #ededed;
 }
 
 .row {
