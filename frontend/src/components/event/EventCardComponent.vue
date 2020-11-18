@@ -81,7 +81,7 @@ component takes in all the event data coming from EventListComponent and renders
           </strong>
 
           <strong v-else style="color: white;">
-            Univerzita
+            Vsetky katedry
           </strong>
         </h1>
 
