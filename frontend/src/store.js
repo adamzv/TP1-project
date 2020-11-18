@@ -9,7 +9,8 @@ export default new Vuex.Store({
     token: localStorage.getItem("access_token") || null,
     userId: null,
     user: null,
-    newEventSubmitted: false
+    newEventSubmitted: false,
+    carouselHeight: 500
   },
   getters: {
     loggedIn(state) {
@@ -37,6 +38,9 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    changeCarouselHeight(state, payload) {
+      state.carouselHeight = payload;
+    },
     retrieveToken(state, token) {
       state.token = token;
     },

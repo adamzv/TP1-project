@@ -240,7 +240,6 @@ body {
 }
 .carousel {
   overflow: hidden;
-  margin-bottom: 30px;
 }
 .carousel.carousel-items {
   height: 100%;

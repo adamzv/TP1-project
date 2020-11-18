@@ -1,32 +1,34 @@
 <template>
   <div class="container is-fluid filterPanel">
 
-    <b-collapse
-      aria-id="contentIdForA11y2"
-      class="panel collapse"
-      animation="slide"
-      v-model="isOpen"
-    :open="false">
-      <div
-        slot="trigger"
-        class="panel-heading filterHeading"
-        role="button"
-        aria-controls="contentIdForA11y2">
+    <!-- This was the only way I could make it work, too much time spent, had to compromise for sanity reasons. -->
+    <!-- Filter view for mobile screen sizes  -->
+    <div v-if="showMobile == true && showDesktop == false">
+      <b-collapse
+              aria-id="contentIdForA11y2"
+              class="panel collapse"
+              animation="slide"
+              v-model="isOpen"
+              :open="isOpen = false">
+        <div
+                slot="trigger"
+                class="panel-heading filterHeading"
+                role="button"
+                v-if="windowWidth <= 768"
+                aria-controls="contentIdForA11y2">
 
-        <strong>Filter </strong>
-        <b-icon icon="filter"></b-icon>
-      </div>
+          <b-icon icon="filter" style="" size="is-large" v-if="windowWidth <= 768"></b-icon>
+        </div>
 
-      <div class="panel-block filterBlock" style="padding-bottom: 30px;">
-        <div class="columns" style="width: 100%;">
-          <div class="column filterItem">
-            <b-field label="Dátum konania">
+        <div class="panel-block filterBlock">
+          <div class="columns columnsPos">
+            <div class="column filterItem">
               <b-datetimepicker
                       v-model="beginning"
-                      placeholder="Vybrať dátum a čas"
                       icon="calendar-today"
                       :locale="'sk-SK'"
                       ref="datepicker"
+                      placeholder="Dátum konania"
                       horizontal-time-picker>
 
                 <template slot="left">
@@ -43,11 +45,9 @@
                   ></b-button>
                 </template>
               </b-datetimepicker>
-            </b-field>
-          </div>
+            </div>
 
-          <div class="column filterItem">
-            <b-field label="Kategórie">
+            <div class="column filterItem">
               <b-taginput
                       v-model="categories"
                       :data="filteredCategories"
@@ -57,15 +57,27 @@
                       :open-on-focus="true"
                       :keep-first="true"
                       icon="label"
-                      placeholder="Pridať kategóriu"
+                      placeholder="Kategórie"
                       @typing="getFilteredTags">
 
               </b-taginput>
-            </b-field>
-          </div>
+            </div>
 
-          <div class="column filterItem">
-            <b-field label="Katedra">
+            <div class="column filterItem">
+              <b-autocomplete
+                      v-model="selectedFacultyName"
+                      :keep-first="true"
+                      :open-on-focus="true"
+                      placeholder="Fakulta"
+                      :data="availableFaculties"
+                      field="name"
+                      @select="option => (selectedFaculty = option)"
+                      v-on:select="checkIfDepartmentIsSelected"
+                      :clearable="true">
+              </b-autocomplete>
+            </div>
+
+            <div class="column filterItem">
               <b-autocomplete
                       v-model="selectedDepartmentName"
                       :keep-first="true"
@@ -73,28 +85,12 @@
                       :data="getFilteredDepartments"
                       field="name"
                       :disabled="selectedFaculty == null"
+                      placeholder="Katedra"
                       :clearable="true">
               </b-autocomplete>
-            </b-field>
-          </div>
+            </div>
 
-          <div class="column filterItem">
-            <b-field label="Fakulta">
-              <b-autocomplete
-                      v-model="selectedFacultyName"
-                      :keep-first="true"
-                      :open-on-focus="true"
-                      :data="availableFaculties"
-                      field="name"
-                      @select="option => (selectedFaculty = option)"
-                      v-on:select="checkIfDepartmentIsSelected"
-                      :clearable="true">
-              </b-autocomplete>
-            </b-field>
-          </div>
-
-          <div class="column filterItem">
-            <b-field label="Miesto konania">
+            <div class="column filterItem">
               <b-autocomplete
                       v-model="placeName"
                       ref="autocomplete"
@@ -103,7 +99,7 @@
                       :keep-first="true"
                       :open-on-focus="true"
                       :clearable="true"
-                      placeholder="Vybrať miesto konania udalosti"
+                      placeholder="Miesto konania"
                       @select="option => (place = option)">
 
                 <template slot="header">
@@ -112,73 +108,208 @@
                   </a>
                 </template>
               </b-autocomplete>
-            </b-field>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="level is-mobile filterBottomPart">
-        <div class="level-left"></div>
-        <div class="level-right filterButton">
-          <b-button class="level-item is-primary" outlined style="margin-right: 35px; margin-left: 30px;">Filtrovať</b-button>
+        <div style="padding-right: 35px;" v-if="windowWidth <= 768">
+          <div class="level-right filterButton" style=" padding-bottom: 2px; padding-left: 12px;">
+            <b-button class="level-item" icon-left="filter" style="width: 100%;">Filtrovať</b-button>
+          </div>
         </div>
-      </div>
-    </b-collapse>
+      </b-collapse>
+    </div>
+
+    <!-- Filter view for desktop and tablet screen sizes  -->
+    <div v-else-if="showMobile == false && showDesktop == true">
+      <b-collapse
+              aria-id="contentIdForA11y2"
+              class="panel collapse"
+              animation="slide"
+              v-model="isOpen"
+              :open="isOpen = true">
+
+        <div class="panel-block filterBlock">
+          <b-icon icon="filter" style="position: absolute; margin-left: 60px;" size="is-large" v-if="windowWidth > 1840">
+          </b-icon>
+
+          <div class="columns columnsPos">
+            <div class="column filterItem">
+              <b-datetimepicker
+                      v-model="beginning"
+                      icon="calendar-today"
+                      :locale="'sk-SK'"
+                      ref="datepicker"
+                      placeholder="Dátum konania"
+                      horizontal-time-picker>
+
+                <template slot="left">
+                  <b-button disabled style="visibility:hidden"></b-button>
+                </template>
+
+                <template slot="right">
+                  <b-button
+                          outlined
+                          class="button is-success"
+                          type="button"
+                          icon-left="check"
+                          @click="$refs.datepicker.toggle()"
+                  ></b-button>
+                </template>
+              </b-datetimepicker>
+            </div>
+
+            <div class="column filterItem">
+              <b-taginput
+                      v-model="categories"
+                      :data="filteredCategories"
+                      field="name"
+                      autocomplete
+                      :allow-new="false"
+                      :open-on-focus="true"
+                      :keep-first="true"
+                      icon="label"
+                      placeholder="Kategórie"
+                      @typing="getFilteredTags">
+              </b-taginput>
+            </div>
+
+            <div class="column filterItem">
+              <b-autocomplete
+                      v-model="selectedFacultyName"
+                      :keep-first="true"
+                      :open-on-focus="true"
+                      placeholder="Fakulta"
+                      :data="availableFaculties"
+                      field="name"
+                      @select="option => (selectedFaculty = option)"
+                      v-on:select="checkIfDepartmentIsSelected"
+                      :clearable="true">
+              </b-autocomplete>
+            </div>
+
+            <div class="column filterItem">
+              <b-autocomplete
+                      v-model="selectedDepartmentName"
+                      :keep-first="true"
+                      :open-on-focus="true"
+                      :data="getFilteredDepartments"
+                      field="name"
+                      :disabled="selectedFaculty == null"
+                      placeholder="Katedra"
+                      :clearable="true">
+              </b-autocomplete>
+            </div>
+
+            <div class="column filterItem">
+              <b-autocomplete
+                      v-model="placeName"
+                      ref="autocomplete"
+                      :data="availablePlaces"
+                      field="name"
+                      :keep-first="true"
+                      :open-on-focus="true"
+                      :clearable="true"
+                      placeholder="Miesto konania"
+                      @select="option => (place = option)">
+
+                <template slot="header">
+                  <a @click="console.log('todo')">
+                    <span>Pridať nové miesto</span>
+                  </a>
+                </template>
+              </b-autocomplete>
+            </div>
+
+            <div class="column" style="text-align: right;" v-if="windowWidth <= 1840 && windowWidth > 768">
+              <b-button class="" icon-left="filter" style="width: auto !important;">Filtrovať</b-button>
+            </div>
+
+            <div>
+              <div class="level-right filterButton" align="right" style="position: absolute; right: 35px;">
+                <b-button class="level-item" icon-left="filter" style="" v-if="windowWidth > 1840">Filtrovať</b-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </b-collapse>
+    </div>
   </div>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      isOpen: true
-    };
-  }
-};
+  const MOBILE_SIZE = 768;
+  const CHECK_INTERVAL = 50;
+
+  export default {
+    data() {
+      return {
+        isOpen: true,
+        windowWidth: window.innerWidth,
+        showDesktop: true,
+        showMobile: false
+      };
+    },
+
+    methods: {
+      checkScreenSize () {
+        this.windowWidth = window.innerWidth;
+
+        if (this.windowWidth <= MOBILE_SIZE) {
+          this.showMobile = true;
+          this.showDesktop = false;
+        } else if (this.windowWidth > MOBILE_SIZE) {
+          this.showDesktop = true;
+          this.showMobile = false;
+          this.isOpen = true;
+        }
+      }
+    },
+
+    created() {
+      window.setInterval(() => { this.checkScreenSize(); }, CHECK_INTERVAL);
+    }
+  };
 </script>
 
 <style>
-.container {
-  margin-top: 24px;
-  padding: 0 0 !important;
-  text-align: left;
-}
-.level-item {
-  margin: 12px 12px;
-}
+  .container {
+    margin-top: 24px;
+    padding: 0 0 !important;
+    text-align: left;
+  }
 
-  .filterItem {
-    margin-left: 20px;
+  .filter {
+    background: rgb(219,219,219);
+    background: linear-gradient(0deg, rgba(219,219,219,1) 0%, rgba(241,241,241,1) 100%);
+  }
+
+  .level-item {
+    margin: 12px 12px;
   }
 
   .filterHeading {
-      text-align: center;
-  }
-
-  .filterBlock {
-    background: white;
+    text-align: center;
   }
 
   .filterPanel {
-    width: 1536px !important;
+    width: 100%;
     border-radius: 10px;
   }
 
-  .filterBottomPart {
-    background: white;
-    border-bottom-right-radius: 10px;
-    border-bottom-left-radius: 10px;
+  .columnsPos {
+    width: 1560px; margin: 0 auto !important;
   }
 
-@media screen and (max-width: 1547px) {
-  .filterPanel {
-    width: 100% !important;
+  @media screen and (max-width: 1547px) {
+    .filterPanel {
+      width: 100% !important;
+    }
   }
-}
 
-@media screen and (max-width: 768px) {
-  .filterButton {
-    width: 100%;
+  @media screen and (max-width: 768px) {
+    .filterButton {
+      width: 100%;
+    }
   }
-}
 </style>

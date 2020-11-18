@@ -101,7 +101,7 @@ component takes in all the event data coming from EventListComponent and renders
       </div>
 
       <div style="overflow-y: scroll;" class="eventDetails" v-else>
-        <p>
+        <p style="color: #adadad;">
           Bez popisu.
         </p>
       </div>
