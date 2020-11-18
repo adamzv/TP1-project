@@ -79,6 +79,10 @@ component takes in all the event data coming from EventListComponent and renders
           <strong v-if="eventDepartment" style="color: white;">
             {{ eventDepartment.name }}
           </strong>
+
+          <strong v-else style="color: white;">
+            Vsetky katedry
+          </strong>
         </h1>
 
         <!-- Place of the event -->
@@ -90,9 +94,15 @@ component takes in all the event data coming from EventListComponent and renders
       </div>
 
       <!-- Details of the event -->
-      <div style="overflow-y: scroll;" class="eventDetails">
+      <div style="overflow-y: scroll;" class="eventDetails" v-if="eventDesc">
         <p>
           {{ eventDesc }}
+        </p>
+      </div>
+
+      <div style="overflow-y: scroll;" class="eventDetails" v-else>
+        <p>
+          Bez popisu.
         </p>
       </div>
 
@@ -257,7 +267,7 @@ export default {
 ._card {
   padding: 0px;
   margin: 10px;
-  border-radius: 10px;
+  border-radius: 5px;
   -webkit-box-shadow: 0px 18px 42px -17px rgba(0, 0, 0, 0.74);
   -moz-box-shadow: 0px 18px 42px -17px rgba(0, 0, 0, 0.74);
   box-shadow: 0px 18px 42px -17px rgba(0, 0, 0, 0.74);

@@ -105,7 +105,7 @@ format. * */
             </span>
 
             <span v-else>
-              <i>Neobmedzene</i>
+              <i> Neobmedzene</i>
             </span>
           </div>
 
@@ -261,7 +261,7 @@ format. * */
               </span>
 
               <span v-else style="font-weight: normal;">
-                Vsetky fakulty
+                Vsetky katedry
               </span>
             </div>
 
@@ -495,7 +495,7 @@ export default {
   padding: 0px;
   margin-left: 28px;
   margin-right: 28px;
-  border-radius: 10px;
+  border-radius: 5px;
   -webkit-box-shadow: 0px 10px 54px -32px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 0px 10px 54px -32px rgba(0, 0, 0, 0.75);
   box-shadow: 0px 10px 54px -32px rgba(0, 0, 0, 0.75);
@@ -512,7 +512,7 @@ export default {
 
   .section1 {
     padding-left: 20px;
-    border-bottom-left-radius: 8px;
+    border-bottom-left-radius: 5px;
 
     .number-of-tickets {
       color: white;
@@ -563,7 +563,7 @@ export default {
 
   .section4 {
     margin: 0px;
-    border-bottom-right-radius: 8px;
+    border-bottom-right-radius: 5px;
     font-size: medium;
     clear: both;
     overflow: hidden;

@@ -3,9 +3,10 @@
 
     <b-collapse
       aria-id="contentIdForA11y2"
-      class="panel"
+      class="panel collapse"
       animation="slide"
-      v-model="isOpen">
+      v-model="isOpen"
+    :open="false">
       <div
         slot="trigger"
         class="panel-heading filterHeading"
@@ -151,7 +152,7 @@ export default {
   }
 
   .filterHeading {
-    text-align: left;
+      text-align: center;
   }
 
   .filterBlock {
@@ -168,12 +169,6 @@ export default {
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
   }
-
-@media screen and (max-width: 1075px) {
-  .filterHeading {
-    text-align: center;
-  }
-}
 
 @media screen and (max-width: 1547px) {
   .filterPanel {
