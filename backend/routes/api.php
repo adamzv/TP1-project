@@ -27,6 +27,13 @@ Route::prefix('users')->group(function () {
     Route::get('email/resend', 'Auth\VerificationApiController@resend')->name('verificationapi.resend');
     Route::get('email/verify/{id}', 'Auth\VerificationApiController@verify')->name('verificationapi.verify')->middleware('signed');
 
+    // password reset routes
+    Route::group(['namespace' => 'Auth', 'middleware' => 'api', 'prefix' => 'password'], function () {
+        Route::post('create', 'PasswordResetController@create');
+        Route::get('find/{token}', 'PasswordResetController@find');
+        Route::post('reset', 'PasswordResetController@reset');
+    });
+
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('details', 'Api\UsersVerificationController@details')->middleware('verified');
         Route::get('logout', 'Api\UsersVerificationController@logout')->middleware('verified');
