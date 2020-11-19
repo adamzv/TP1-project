@@ -284,7 +284,7 @@
         <div class="level">
           <div class="level-left"></div>
           <div class="level-right">
-            <div class="level-item">
+            <div class="level-item" v-if="!id">
               <b-checkbox v-model="createNext" type="is-info">
                 Vytvoriť ďalší
               </b-checkbox>
@@ -363,41 +363,75 @@ export default {
       this.generateRequest();
     },
     generateRequest() {
-      httpClient
-        .post("/events", {
-          name: this.name,
-          desc: this.desc,
-          room: this.room,
-          categories: this.categories,
-          id_place: this.place ? this.place.id : null,
-          beginning: moment(this.beginning).format("YYYY-MM-DD HH:mm:ss"),
-          end: null,
-          // lecturer: this.lecturer,
-          id_faculty: this.selectedFaculty ? this.selectedFaculty.id : null,
-          id_department: this.selectedDepartment
-            ? this.selectedDepartment.id
-            : null,
-          id_user: parseInt(this.$store.getters.loggedInId),
-          // file: this.file,
-          attendance_limit: this.attendanceLimit || -1
-        })
-        .then(() => {
-          if (!this.createNext) {
-            // clear form inputs
-            this.clearFormInputs();
-          }
-          this.$store.commit("submitNewEvent", true);
-          this.$buefy.toast.open({
-            message: "Udalosť bola úspešne vytvorená!",
-            type: "is-success"
+      if (this.id) {
+        httpClient
+          .put(`/events/${this.id}`, {
+            name: this.name,
+            desc: this.desc,
+            room: this.room,
+            categories: this.categories,
+            id_place: this.place ? this.place.id : null,
+            beginning: moment(this.beginning).format("YYYY-MM-DD HH:mm:ss"),
+            end: null,
+            // lecturer: this.lecturer,
+            id_faculty: this.selectedFaculty ? this.selectedFaculty.id : null,
+            id_department: this.selectedDepartment
+              ? this.selectedDepartment.id
+              : null,
+            id_user: parseInt(this.$store.getters.loggedInId),
+            // file: this.file,
+            attendance_limit: this.attendanceLimit || -1
+          })
+          .then(() => {
+            this.$store.commit("submitNewEvent", true);
+            this.$buefy.toast.open({
+              message: "Udalosť bola úspešne aktualizovaná!",
+              type: "is-success"
+            });
+          })
+          .catch(() => {
+            this.$buefy.toast.open({
+              message: "Udalosť sa nepodarilo aktualizovať!",
+              type: "is-danger"
+            });
           });
-        })
-        .catch(() => {
-          this.$buefy.toast.open({
-            message: "Udalosť sa nepodarilo vytvoriť!",
-            type: "is-danger"
+      } else {
+        httpClient
+          .post("/events", {
+            name: this.name,
+            desc: this.desc,
+            room: this.room,
+            categories: this.categories,
+            id_place: this.place ? this.place.id : null,
+            beginning: moment(this.beginning).format("YYYY-MM-DD HH:mm:ss"),
+            end: null,
+            // lecturer: this.lecturer,
+            id_faculty: this.selectedFaculty ? this.selectedFaculty.id : null,
+            id_department: this.selectedDepartment
+              ? this.selectedDepartment.id
+              : null,
+            id_user: parseInt(this.$store.getters.loggedInId),
+            // file: this.file,
+            attendance_limit: this.attendanceLimit || -1
+          })
+          .then(() => {
+            if (!this.createNext) {
+              // clear form inputs
+              this.clearFormInputs();
+            }
+            this.$store.commit("submitNewEvent", true);
+            this.$buefy.toast.open({
+              message: "Udalosť bola úspešne vytvorená!",
+              type: "is-success"
+            });
+          })
+          .catch(() => {
+            this.$buefy.toast.open({
+              message: "Udalosť sa nepodarilo vytvoriť!",
+              type: "is-danger"
+            });
           });
-        });
+      }
     },
     getFilteredTags(text) {
       this.filteredCategories = this.availableCategories.filter(option => {
