@@ -350,7 +350,7 @@ export default {
 }
 
 .panel:hover {
-  transform: scale(1.05);
+  transform: scale(1.02);
   cursor: pointer;
 }
 

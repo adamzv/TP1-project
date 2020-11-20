@@ -24,6 +24,7 @@
 <script>
 import HeaderComponent from "@/components/HeaderComponent.vue";
 import FooterComponent from "@/components/FooterComponent.vue";
+import httpClient from "./httpClient";
 
 export default {
   components: {
@@ -33,10 +34,12 @@ export default {
   data() {
     return {
       loading: true,
-      carouselHeight: Number
+      carouselHeight: Number,
+      filteredEvents: Object
     };
   },
   created() {
+
     window.addEventListener("resize", this.listenToCarouselHeight);
     this.$store.commit("retrieveUserIdFromStorage");
     if (this.$store.getters.loggedInId) {
@@ -66,10 +69,20 @@ export default {
       console.log(this.$store.state.carouselHeight);
     }
   },
+
   computed: {
     isLoading() {
       return this.$store.getters.loading.length > 0;
     }
+  },
+
+  mounted() {
+    // App hned po starte
+    httpClient.get(`/events`)
+      .then(response => {
+        this.$store.commit('setCurrentlyInFilter', response.data);
+      });
+
   }
 };
 </script>

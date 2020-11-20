@@ -12,7 +12,11 @@ export default new Vuex.Store({
     newEventSubmitted: false,
     carouselHeight: 500,
     loading: [],
-    fileUploadLoading: false
+    fileUploadLoading: false,
+    allowFiltering: false,
+    currentlyInFilter: Object,
+
+    URL_API_FILTER: `/events`
   },
   getters: {
     fileUploadLoading(state) {
@@ -43,6 +47,15 @@ export default new Vuex.Store({
     },
     newEventSubmitted(state) {
       return state.newEventSubmitted;
+    },
+    getAllowFiltering(state) {
+      return state.allowFiltering;
+    },
+    getCurrentlyInFilter(state) {
+      return state.currentlyInFilter;
+    },
+    getURL_API_FILTER(state) {
+      return state.URL_API_FILTER;
     }
   },
   mutations: {
@@ -79,6 +92,15 @@ export default new Vuex.Store({
     },
     submitNewEvent(state, change) {
       state.newEventSubmitted = change;
+    },
+    setAllowFiltering(state, change) {
+      state.allowFiltering = change;
+    },
+    setCurrentlyInFilter(state, change) {
+      state.currentlyInFilter = change;
+    },
+    setURL_API_FILTER(state, change) {
+      state.URL_API_FILTER = change;
     }
   },
   actions: {
