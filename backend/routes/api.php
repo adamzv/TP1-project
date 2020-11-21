@@ -56,6 +56,25 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('roles', 'RolesController');
     Route::apiResource('states', 'StatesController');
     Route::apiResource('users', 'UsersController');
+
+    Route::prefix('files')->group(function () {
+
+        // pdfs
+        Route::post('pdf/{id}', 'FilesController@uploadPdf');
+        Route::get('pdf/{id}', 'FilesController@downloadPdf');
+        Route::delete('pdf/{id}', 'FilesController@deletePdf');
+
+        // title images
+        Route::post('titleImg/{id}', 'FilesController@uploadTitleImg');
+        Route::get('titleImg/{id}', 'FilesController@downloadTitleImg');
+        Route::delete('titleImg/{id}', 'FilesController@deleteTitleImg');
+
+        // images
+        Route::post('image/{id}', 'FilesController@uploadImage');
+        Route::get('image/{id}', 'FilesController@downloadImage');
+        Route::delete('image/{id}', 'FilesController@deleteImage');
+        Route::delete('imageAll/{id}', 'FilesController@deleteAllImages');
+    });
 });
 
 /**
