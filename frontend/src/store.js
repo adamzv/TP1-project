@@ -10,9 +10,13 @@ export default new Vuex.Store({
     userId: null,
     user: null,
     newEventSubmitted: false,
-    carouselHeight: 500
+    carouselHeight: 500,
+    loading: []
   },
   getters: {
+    loading(state) {
+      return state.loading;
+    },
     loggedIn(state) {
       return state.token !== null;
     },
@@ -38,6 +42,12 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    pushToLoading(state, component) {
+      state.loading.push(component);
+    },
+    finishLoading(state, component) {
+      state.loading.splice(state.loading.indexOf(component), 1);
+    },
     changeCarouselHeight(state, payload) {
       state.carouselHeight = payload;
     },

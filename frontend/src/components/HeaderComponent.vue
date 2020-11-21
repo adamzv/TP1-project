@@ -150,13 +150,16 @@ export default {
       }
     },
     loadEvents(route) {
+      this.$store.commit("pushToLoading", "HeaderComponent");
       httpClient
         .get(route)
         .then(response => {
           this.events = response.data.data.slice(0, 6);
+          this.$store.commit("finishLoading", "HeaderComponent");
         })
         .catch(error => {
           console.log(error);
+          this.$store.commit("finishLoading", "HeaderComponent");
         });
     },
     logout() {
@@ -182,46 +185,7 @@ export default {
       counter: 0,
       langs: this.$i18n.availableLocales,
       locale: this.$i18n.locale,
-      carousel: 0,
-      // hardcoded 'events' to test carousel features
-      carousels: [
-        {
-          title: "Univerzitná knižnica",
-          time: 1603806300000,
-          color: "dark",
-          overlay: "brown-overlay"
-        },
-        {
-          title: "Fakulta sociálnych vied a zdravotníctva",
-          time: 1603806300000,
-          color: "dark",
-          overlay: "gray-overlay"
-        },
-        {
-          title: "Pedagogická fakulta",
-          time: 1603806300000,
-          color: "dark",
-          overlay: "blue-overlay"
-        },
-        {
-          title: "Fakulta prírodných vied",
-          time: 1603806300000,
-          color: "dark",
-          overlay: "green-overlay"
-        },
-        {
-          title: "Fakulta stredoeurópskych štúdií",
-          time: 1603806300000,
-          color: "dark",
-          overlay: "orange-overlay"
-        },
-        {
-          title: "Filozofická fakulta",
-          time: 1603806300000,
-          color: "dark",
-          overlay: "pink-overlay"
-        }
-      ]
+      carousel: 0
     };
   }
 };
