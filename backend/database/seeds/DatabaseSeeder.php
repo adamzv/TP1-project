@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PlacesSeeder::class);
         $this->call(UsersSeeder::class);
         $this->call(EventsSeeder::class);
-        $this->call(PicturesSeeder::class);
+        //removed $this->call(PicturesSeeder::class);
         Model::reguard();
 
 
