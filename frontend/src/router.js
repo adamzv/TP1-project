@@ -1,10 +1,14 @@
 import Vue from "vue";
 import Router from "vue-router";
 import Home from "./views/Home.vue";
-import ManageEvent from "./views/ManageEvent.vue";
 import NotFound from "./views/NotFound.vue";
+import Login from "./views/Login.vue";
+import ViewEvent from "./views/ViewEvent";
+import Profile from "./views/Profile.vue";
 
 Vue.use(Router);
+
+// TODO: implement scroll behaviour to router so that it can remember scroll positions
 
 export default new Router({
   mode: "history",
@@ -16,9 +20,25 @@ export default new Router({
       component: Home
     },
     {
-      path: "/pridat",
-      name: "addEvent",
-      component: ManageEvent
+      path: "/event/:eventId",
+      name: "showEvent",
+      component: ViewEvent
+    },
+    {
+      path: "/login",
+      name: "login",
+      component: Login,
+      meta: {
+        requiresVisitor: true
+      }
+    },
+    {
+      path: "/profile",
+      name: "profile",
+      component: Profile,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: "*",

@@ -3,20 +3,27 @@ component takes in all the event data coming from EventListComponent and renders
 * them in a card-like style. * */
 
 <template>
-  <div class="column is-narrow card-container">
+  <router-link
+    :to="{ name: 'showEvent', params: { eventId: this.eventId } }"
+    class="column is-narrow card-container"
+  >
     <!-- Actual event card -->
-    <article class="panel _card">
+    <div class="panel _card">
       <!-- Card heading -->
       <div
         class="panel-heading"
         v-bind:class="{
-          eventBackColorFPV: eventFaculty == 'FPV',
-          eventBackColorFF: eventFaculty == 'FF',
-          eventBackColorFSS: eventFaculty == 'FSS'
+          eventBackColorFPV: eventIdFaculty == 1,
+          eventBackColorFF: eventIdFaculty == 4,
+          eventBackColorFSS: eventIdFaculty == 3,
+          eventBackColorFP: eventIdFaculty == 5,
+          eventBackColorFSVZ: eventIdFaculty == 2,
+          eventBackColorUKF: eventIdFaculty == 6,
+          eventBackColorLIB: eventIdFaculty == 7
         }"
       >
         <!-- Event name -->
-        <p class="alignLeft">
+        <p class="alignLeft" v-if="eventName">
           {{ eventName }}
         </p>
 
@@ -25,7 +32,7 @@ component takes in all the event data coming from EventListComponent and renders
           class="alignRight"
           style="font-style: italic; font-size: 15px; padding-top: 5px;"
         >
-          {{ eventFaculty }}
+          {{ eventFaculty.name }}
         </p>
 
         <div style="clear: both;"></div>
@@ -44,44 +51,58 @@ component takes in all the event data coming from EventListComponent and renders
       <div
         class="quickDetailsHeader"
         v-bind:class="{
-          eventDetailsHeaderColorFPV: eventFaculty == 'FPV',
-          eventDetailsHeaderColorFF: eventFaculty == 'FF',
-          eventDetailsHeaderColorFSS: eventFaculty == 'FSS'
+          eventBackColorFPV: eventIdFaculty == 1,
+          eventBackColorFF: eventIdFaculty == 4,
+          eventBackColorFSS: eventIdFaculty == 3,
+          eventBackColorFP: eventIdFaculty == 5,
+          eventBackColorFSVZ: eventIdFaculty == 2,
+          eventBackColorUKF: eventIdFaculty == 6,
+          eventBackColorLIB: eventIdFaculty == 7
         }"
       >
         <!-- Event date -->
         <h1 class="alignLeft">
-          <strong>
-            {{ eventDate }}
+          <strong style="color: white;">
+            {{ eventDateSplit }}
           </strong>
         </h1>
 
         <!-- Event time -->
-        <h1 class="alignRight" style="font-style: italic;">
-          {{ eventTime }}
+        <h1 class="alignRight" style="font-style: italic; color: white;">
+          {{ eventTimeSplit }}
         </h1>
 
         <br />
 
         <!-- School department -->
         <h1 class="alignLeft">
-          <strong>
-            {{ eventDepartment }}
+          <strong v-if="eventDepartment" style="color: white;">
+            {{ eventDepartment.name }}
+          </strong>
+
+          <strong v-else style="color: white;">
+            Vsetky katedry
           </strong>
         </h1>
 
         <!-- Place of the event -->
-        <h1 class="alignRight" style="font-style: italic;">
-          {{ eventPlace }}
+        <h1 class="alignRight" style="color: white; font-style: italic;">
+          {{ eventPlace.name }}
         </h1>
 
         <div style="clear: both;"></div>
       </div>
 
       <!-- Details of the event -->
-      <div class="eventDetails">
+      <div style="overflow-y: scroll;" class="eventDetails" v-if="eventDesc">
         <p>
           {{ eventDesc }}
+        </p>
+      </div>
+
+      <div style="overflow-y: scroll;" class="eventDetails" v-else>
+        <p style="color: #adadad;">
+          Bez popisu.
         </p>
       </div>
 
@@ -90,30 +111,28 @@ component takes in all the event data coming from EventListComponent and renders
 
       <!-- Event tags -->
       <div class="eventTags">
-        <div class="tagsSection">
-          <!-- Select a background color based off of the faculty -->
-          <div
-            class="tags"
+        <b-taglist>
+          <b-tag
+            v-for="tag in eventCategories"
+            :key="tag.id"
+            size="is-medium"
+            class="has-text-white"
             v-bind:class="{
-              eventDetailsHeaderColorFPV: eventFaculty == 'FPV',
-              eventDetailsHeaderColorFF: eventFaculty == 'FF',
-              eventDetailsHeaderColorFSS: eventFaculty == 'FSS'
+              eventBackColorFPV: eventIdFaculty == 1,
+              eventBackColorFF: eventIdFaculty == 4,
+              eventBackColorFSS: eventIdFaculty == 3,
+              eventBackColorFP: eventIdFaculty == 5,
+              eventBackColorFSVZ: eventIdFaculty == 2,
+              eventBackColorUKF: eventIdFaculty == 6,
+              eventBackColorLIB: eventIdFaculty == 7
             }"
           >
-            <!-- Actual tags -->
-            <b-button
-              rounded
-              size="is-small"
-              v-for="tag in eventTags"
-              :key="tag.id"
-            >
-              #{{ tag.value }}
-            </b-button>
-          </div>
-        </div>
+            #{{ tag.name }}
+          </b-tag>
+        </b-taglist>
       </div>
-    </article>
-  </div>
+    </div>
+  </router-link>
 </template>
 
 <script>
@@ -126,43 +145,98 @@ export default {
     };
   },
 
+  computed: {
+    eventDateSplit: function() {
+      return this.eventBeginning.substr(0, this.eventBeginning.indexOf(" "));
+    },
+
+    eventTimeSplit: function() {
+      return this.eventBeginning.substr(this.eventBeginning.indexOf(" ") + 1);
+    }
+  },
+
   // Props that this component is expecting to be passed from EventListComponent
   props: {
     eventId: {
       type: Number,
-      required: true
+      required: false
     },
     eventName: {
       type: String,
-      required: true
+      required: false
     },
     eventDesc: {
       type: String,
-      required: true
+      required: false
     },
-    eventDate: {
+    eventRoom: {
       type: String,
-      required: true
+      required: false
     },
-    eventTime: {
+    eventBeginning: {
       type: String,
-      required: true
+      required: false
+    },
+    eventEnd: {
+      type: String,
+      required: false
+    },
+    eventAttendanceLimit: {
+      type: Number,
+      required: false
+    },
+    eventLecturer: {
+      type: String,
+      required: false
+    },
+    eventIdUser: {
+      type: Number,
+      required: false
+    },
+    eventIdPlace: {
+      type: Number,
+      required: false
+    },
+    eventIdFaculty: {
+      type: Number,
+      required: false
+    },
+    eventIdDepartment: {
+      type: Number,
+      required: false
+    },
+    eventParticipants: {
+      type: Number,
+      required: false
+    },
+    eventUser: {
+      type: Object,
+      required: false
     },
     eventPlace: {
-      type: String,
-      required: true
-    },
-    eventFaculty: {
-      type: String,
-      required: true
+      type: Object,
+      required: false
     },
     eventDepartment: {
-      type: String,
-      required: true
+      type: Object,
+      required: false
     },
-    eventTags: {
+    eventFaculty: {
+      type: Object,
+      required: false
+    },
+    eventCategories: {
       type: Array,
-      required: true
+      required: false
+    }
+  },
+
+  methods: {
+    redirectToView() {
+      this.$router.push({
+        name: "Event",
+        params: { data: this.props }
+      });
     }
   }
 };
@@ -171,11 +245,13 @@ export default {
 <style lang="scss" scoped>
 .card-container {
   max-width: 500px;
+  color: #525252;
 }
 
 .alignLeft {
   float: left !important;
 }
+
 .alignRight {
   float: right !important;
 }
@@ -188,16 +264,10 @@ export default {
   }
 }
 
-.tagsSection {
-  padding: 10px;
-  margin: 0;
-  width: max-content;
-}
-
 ._card {
   padding: 0px;
   margin: 10px;
-  border-radius: 10px;
+  border-radius: 5px;
   -webkit-box-shadow: 0px 18px 42px -17px rgba(0, 0, 0, 0.74);
   -moz-box-shadow: 0px 18px 42px -17px rgba(0, 0, 0, 0.74);
   box-shadow: 0px 18px 42px -17px rgba(0, 0, 0, 0.74);
@@ -214,48 +284,73 @@ export default {
   max-height: 200px;
 }
 
+.eventDetailsNone {
+  height: 0px;
+}
+
 .eventTags {
   padding: 10px;
+}
 
-  .button {
-    margin-right: 5px;
-    padding: 10px;
-    opacity: 0.9;
-  }
+.eventBackColorUKF {
+  background: #55c8d9;
+}
 
-  .tags {
-    padding: 5px;
-    border-radius: 20px;
-    margin: 0px;
-  }
+.eventBackColorLIB {
+  background: #7f1810;
 }
 
 .eventBackColorFPV {
-  background: #55c8d9;
-}
-.eventBackColorFF {
-  background: #ffc161;
-}
-.eventBackColorFSS {
-  background: #26cb86;
+  background: #00a360;
 }
 
-.eventDetailsHeaderColorFPV {
-  background: #d5f8fe;
+.eventBackColorFF {
+  background: #d40075;
 }
-.eventDetailsHeaderColorFF {
-  background: #f8e3c4;
+
+.eventBackColorFSS {
+  background: #f39200;
 }
-.eventDetailsHeaderColorFSS {
-  background: #aadcc7;
+
+.eventBackColorFP {
+  background: #0062a7;
+}
+
+.eventBackColorFSVZ {
+  background: #f31a33;
 }
 
 .panel {
   transition: all 0.14s ease-in-out;
 }
+
 .panel:hover {
   transform: scale(1.05);
   cursor: pointer;
+}
+
+/* Scrollbar style */
+/* Width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+  margin: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 /* Media queries */

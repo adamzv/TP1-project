@@ -4,17 +4,17 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UserLoginRequest;
-use App\Http\Requests\UserRegisterRequest;
-use App\Models\Role;
+use App\Mail\EventRegister;
+use App\Models\Email;
+use App\Models\Event;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use Mail;
 
 /**
  * Class UsersController
  *
- * @author lacal
+ * @author lacal, klukak
  */
 class UsersController extends Controller
 {
@@ -25,6 +25,7 @@ class UsersController extends Controller
      */
     public function index()
     {
+        // gets caught in api routes
         return User::orderBy('name', 'asc')->get();
     }
 
@@ -77,7 +78,6 @@ class UsersController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
@@ -85,81 +85,81 @@ class UsersController extends Controller
     }
 
     /**
-     * Login user
-     *
-     * @param UserLoginRequest $request
-     * @return JsonResponse
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function login(UserLoginRequest $request)
+    public function eventRegister(Request $request)
     {
-        // Attempt to login
-        if (!Auth::attempt([
-            'email' => $request->input('email'),
-            'password' => $request->input('password'),
-        ])) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You have entered the wrong login information!']);
-        }
 
-        // create token to user and return it
-        $accessToken = Auth::user()->createToken('authToken')->accessToken;
-        return response()->json([
-            'success' => true,
-            'message' => 'Login was successful',
-            'user' => Auth::user(),
-            'access_token' => $accessToken]);
-    }
-
-    /**
-     * Register new user
-     *
-     * @param UserRegisterRequest $request
-     * @return JsonResponse
-     */
-    public function register(UserRegisterRequest $request)
-    {
-        // get data from request
-        $input = [
-            'name' => $request->input('name'),
-            'surname' => $request->input('surname'),
-            'email' => $request->input('email'),
-            'id_role' => Role::where('type', 'pouzivatel')->value('id'),
-            'password' => bcrypt($request->input('password')),
-        ];
-
-        // create new user
-        $user = User::create($input);
-
-        // create token to the user and return it with user
-        $accessToken = $user->createToken('authToken')->accessToken;
-        return response()->json([
-            'success' => true,
-            'message' => 'User registered successfully',
-            'user' => $user,
-            'access_token' => $accessToken]);
-    }
-
-    /**
-     * Logout user
-     *
-     * @return JsonResponse
-     */
-    public function logout()
-    {
-        if (Auth::user()) {
-            $user = Auth::user()->token();
-            $user->revoke();
+        if ($request->input('email') == null) {
+            $event = Event::findOrFail($request->input('event_id'));
+            $event->attendance()->attach($request->input('user_id'));
 
             return response()->json([
                 'success' => true,
-                'message' => 'Logout successfully'
-            ]);
-        } else {
+                'message' => 'User was successfully registered on event'],
+                201);
+        } elseif ($request->input('user_id') == null) {
+
+            $eventid = $request->input('event_id');
+            $mail = $request->input('email');
+            Mail::to($mail)
+                ->send(new EventRegister(
+                    $eventid, $mail
+                ));
             return response()->json([
-                'success' => false,
-                'message' => 'Unable to Logout'
-            ]);
+                'success' => true,
+                'message' => 'Email send'],
+                201);
         }
+
+
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function eventUnregister(Request $request)
+    {
+        if ($request->input('email') == null) {
+            $event = Event::findOrFail($request->input('event_id'));
+            $event->attendance()->detach($request->input('user_id'));
+
+            return response()->json([
+                'success' => true,
+                'message' => 'User was successfully removed from event'],
+                200);
+
+        } elseif ($request->input('user_id') == null) {
+            $event = Event::findOrFail($request->input('event_id'));
+            $mail = Email::where('email', '=', $request->input('email'))->firstOrFail();
+            $event->emails()->detach($mail->id);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Email was successfully removed from event'],
+                200);
+        }
+
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function eventEmail(Request $request)
+    {
+
+        $event = Event::findOrFail($request->input('event_id'));
+        $mail = Email::firstOrCreate(["email" => $request->input('email')]);
+        //$event->emails()->attach($mail->id);
+        if (!$event->emails->contains($mail->id)) {
+            $event->emails()->save($mail);
+        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Email was successfully registered on event'],
+            201);
     }
 }

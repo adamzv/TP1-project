@@ -32,11 +32,10 @@ class StorePlaceRequest extends FormRequest
         return [
             'name' => [
                 'required',
-                Rule::unique('places', 'name')->ignore($this->place)
+                'string',
+                'max:255'
             ],
-            'id_city' => [
-                'required'
-            ]
+            'id_city' => 'required'
         ];
     }
 }

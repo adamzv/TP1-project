@@ -13,7 +13,9 @@
         "fruitcake/laravel-cors": "^2.0",
         "laravel/framework": "^6.18.35",
         "laravel/passport": "^8.0",
-        "laravel/tinker": "^2.0"
+        "laravel/tinker": "^2.0",
+        "matthewbdaly/laravel-azure-storage": "^1.6",
+        "nesbot/carbon": "^2.41"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.8",

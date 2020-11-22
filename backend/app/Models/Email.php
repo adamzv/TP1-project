@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Class CreateRepeatsTable
+ * Class Email
  *
  * @author klukak
  */
-class Repeat extends Model
+class Email extends Model
 {
     use SoftDeletes;
 
@@ -23,5 +23,10 @@ class Repeat extends Model
      */
     protected $guarded = ['id'];
 
+
+    public function events()
+    {
+        return $this->belongsToMany('App\Models\Event');
+    }
 
 }

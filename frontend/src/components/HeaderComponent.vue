@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-navbar class="is-dark" :transparent="true">
+    <b-navbar class="is-dark" :transparent="true" style="z-index: 1001;">
       <template slot="brand">
         <b-navbar-item tag="router-link" :to="{ path: '/' }">
           <img src="../assets/logoukf.png" alt="UKF Logo" />
@@ -27,16 +27,32 @@
             {{ lang.toLocaleUpperCase() }}
           </b-navbar-item>
         </b-navbar-dropdown>
-        <b-navbar-item tag="div">
-          <div class="buttons">
-            <b-button tag="router-link" to="/pridat" type="is-link">
-              {{ $t("addEvent") }}
-            </b-button>
-            <b-button tag="router-link" to="#" type="is-light">
-              {{ $t("login") }}
-            </b-button>
-          </div>
+        <b-navbar-item v-if="!loggedIn">
+          <b-button tag="router-link" to="/login" type="is-light">
+            {{ $t("login") }}
+          </b-button>
         </b-navbar-item>
+        <b-navbar-dropdown
+          :right="true"
+          v-if="loggedIn"
+          :collapsible="true"
+          :label="loggedInName"
+        >
+          <b-navbar-item
+            v-if="addEventPermission"
+            tag="router-link"
+            to="/pridat"
+            class="has-text-link"
+          >
+            {{ $t("addEvent") }}
+          </b-navbar-item>
+          <b-navbar-item tag="router-link" to="/profile">
+            {{ $t("profile") }}
+          </b-navbar-item>
+          <b-navbar-item @click="logout">
+            {{ $t("logout") }}
+          </b-navbar-item>
+        </b-navbar-dropdown>
       </template>
     </b-navbar>
     <b-carousel
@@ -46,17 +62,26 @@
       :interval="4000"
       :repeat="true"
     >
-      <b-carousel-item v-for="(carousel, i) in carousels" :key="i">
-        <section :class="`hero is-medium is-${carousel.color} is-bold`">
+      <b-carousel-item v-for="(event, i) in events" :key="i">
+        <!-- <section :class="`hero is-medium is-${carousel.color} is-bold`"> -->
+        <section class="hero is-medium is-bold is-dark">
           <!-- TODO: find images for background and specify correct size -->
+          <!-- TODO: set color overlay for UKF -->
           <img :src="getImgUrl(i)" width="auto" height="100%" />
           <div
-            :class="
-              `hero-body has-text-centered is-overlay ${carousel.overlay}`
-            "
+            class="hero-body has-text-centered is-overlay"
+            v-bind:class="{
+              'green-overlay': event.faculty.id == 1,
+              'pink-overlay': event.faculty.id == 4,
+              'orange-overlay': event.faculty.id == 3,
+              'blue-overlay': event.faculty.id == 5,
+              'gray-overlay': event.faculty.id == 2,
+              'blue-overlay': event.faculty.id == 6,
+              'brown-overlay': event.faculty.id == 7
+            }"
           >
-            <h1 class="title">{{ carousel.title }}</h1>
-            <h1 class="subtitle">{{ formatRemainingTime(carousel.time) }}</h1>
+            <h1 class="title">{{ event.name }}</h1>
+            <h1 class="subtitle">{{ formatRemainingTime(event.beginning) }}</h1>
           </div>
         </section>
       </b-carousel-item>
@@ -68,12 +93,14 @@
 import moment from "moment";
 import countdown from "countdown";
 import { ONE, FEW, MANY } from "../const.js";
+import httpClient from "../httpClient.js";
 
 export default {
   created: function() {
     // every second an anonymous function will be called which causes re-render of the countdown string
     this.advance();
     this.countdownTranslate();
+    this.loadEvents("/events");
   },
   methods: {
     setLocale(lang) {
@@ -121,53 +148,44 @@ export default {
       } else {
         countdown.resetFormat();
       }
+    },
+    loadEvents(route) {
+      this.$store.commit("pushToLoading", "HeaderComponent");
+      httpClient
+        .get(route)
+        .then(response => {
+          this.events = response.data.data.slice(0, 6);
+          this.$store.commit("finishLoading", "HeaderComponent");
+        })
+        .catch(error => {
+          console.log(error);
+          this.$store.commit("finishLoading", "HeaderComponent");
+        });
+    },
+    logout() {
+      this.$store.dispatch("destroyToken").then(() => {
+        this.$router.push({ name: "home" });
+      });
+    }
+  },
+  computed: {
+    loggedIn() {
+      return this.$store.getters.loggedIn;
+    },
+    loggedInName() {
+      return this.$store.getters.loggedInName;
+    },
+    addEventPermission() {
+      return this.$store.getters.permissionToAddEvents;
     }
   },
   data() {
     return {
+      events: [],
       counter: 0,
       langs: this.$i18n.availableLocales,
       locale: this.$i18n.locale,
-      carousel: 0,
-      // hardcoded 'events' to test carousel features
-      carousels: [
-        {
-          title: "Univerzitná knižnica",
-          time: 1603806300000,
-          color: "dark",
-          overlay: "brown-overlay"
-        },
-        {
-          title: "Fakulta sociálnych vied a zdravotníctva",
-          time: 1603806300000,
-          color: "dark",
-          overlay: "gray-overlay"
-        },
-        {
-          title: "Pedagogická fakulta",
-          time: 1603806300000,
-          color: "dark",
-          overlay: "blue-overlay"
-        },
-        {
-          title: "Fakulta prírodných vied",
-          time: 1603806300000,
-          color: "dark",
-          overlay: "green-overlay"
-        },
-        {
-          title: "Fakulta stredoeurópskych štúdií",
-          time: 1603806300000,
-          color: "dark",
-          overlay: "orange-overlay"
-        },
-        {
-          title: "Filozofická fakulta",
-          time: 1603806300000,
-          color: "dark",
-          overlay: "pink-overlay"
-        }
-      ]
+      carousel: 0
     };
   }
 };
@@ -189,5 +207,11 @@ body {
 }
 .carousel.carousel-items {
   height: 100%;
+}
+
+@media screen and (max-width: 768px) {
+  .carousel {
+    margin-bottom: 0px;
+  }
 }
 </style>

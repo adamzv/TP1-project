@@ -7,80 +7,101 @@ format. * */
     <!-- Actual card -->
     <article class="_card message is-medium">
       <!-- Card header -->
-      <div class="message-header">
-        <p>Kerierny den</p>
-        <button class="delete is-medium" aria-label="delete"></button>
+      <div
+        class="message-header"
+        v-bind:class="{
+          eventBackColorFPV: eventIdFaculty == 1,
+          eventBackColorFF: eventIdFaculty == 4,
+          eventBackColorFSS: eventIdFaculty == 3,
+          eventBackColorFP: eventIdFaculty == 5,
+          eventBackColorFSVZ: eventIdFaculty == 2,
+          eventBackColorUKF: eventIdFaculty == 6,
+          eventBackColorLIB: eventIdFaculty == 7
+        }"
+      >
+        <p>{{ eventName }}</p>
+        <button class="delete is-medium" @click="goBack()"></button>
       </div>
 
       <!-- Individual sections of the card -->
       <div class="columns">
         <!-- Section 1 -->
-        <div class="column is-3-desktop section1">
+        <div class="column is-3-desktop section1 eventDetailsHeaderColor">
           <!-- Event tags -->
           <div class="eventTags">
-            <div class="tagsSection">
-              <!-- Select a background color based off of the faculty -->
-              <div class="tags">
-                <!-- Actual tags -->
-                <b-button rounded size="is-small">
-                  #tag
-                </b-button>
-
-                <!-- Actual tags -->
-                <b-button rounded size="is-small">
-                  #tag
-                </b-button>
-
-                <!-- Actual tags -->
-                <b-button rounded size="is-small">
-                  #tag
-                </b-button>
-              </div>
-            </div>
+            <b-taglist>
+              <b-tag
+                v-for="tag in eventCategories"
+                :key="tag.id"
+                size="is-medium"
+                class="has-text-white"
+                v-bind:class="{
+                  eventBackColorFPV: eventIdFaculty == 1,
+                  eventBackColorFF: eventIdFaculty == 4,
+                  eventBackColorFSS: eventIdFaculty == 3,
+                  eventBackColorFP: eventIdFaculty == 5,
+                  eventBackColorFSVZ: eventIdFaculty == 2,
+                  eventBackColorUKF: eventIdFaculty == 6,
+                  eventBackColorLIB: eventIdFaculty == 7
+                }"
+              >
+                #{{ tag.name }}
+              </b-tag>
+            </b-taglist>
           </div>
 
-          <!-- Seperator line -->
-          <hr class="separator-line" />
-
-          <div>
+          <div style="padding-top: 20px;">
             <b-icon icon="clock-time-four-outline"></b-icon>
             <strong style="padding-left: 5px;">KEDY</strong>
           </div>
 
           <p style="font-size: medium; padding-top: 10px;">
-            21. decembra 2020 12:30
+            {{ getDay() }}. {{ getMonth() }} {{ getYear() }}
           </p>
 
-          <div style="padding-top: 10px;">
+          <div style="padding-top: 20px;">
             <b-icon icon="map-marker"></b-icon>
             <strong style="padding-left: 5px;">KDE</strong>
           </div>
 
           <p style="font-size: medium; padding-top: 10px;">
-            Miestnosť P-2
+            Miestnost {{ eventRoom }}
             <br />
-            Fakulta prírodných vied
+            {{ eventFaculty.name }}
             <br />
-            Univerzita Konštantína Filozofa v Nitre
-            <br />
-            Tr. A. Hlinku 1, 949 01 Nitra
+            {{ eventPlace.name }}
           </p>
 
-          <!-- Separator line -->
-          <hr class="separator-line" />
-
           <!-- Available tickets -->
-          <div class="number-of-tickets">
+          <div
+            class="number-of-tickets"
+            style="margin-top: 10px; background-color: #e6e6e6; color: #454545;"
+          >
             <b-icon icon="account"></b-icon>
-            <strong style="padding-left: 5px;">POCET MIEST:</strong>
-            <i>5/100</i>
+            <strong style="padding-left: 5px;">LIMIT MIEST:</strong>
+
+            <span v-if="eventAttendanceLimit >= 1">
+              <i>{{ eventAttendanceLimit }}</i>
+            </span>
+
+            <span v-else>
+              <i> Neobmedzene</i>
+            </span>
           </div>
 
           <!-- Sign up button -->
           <div>
             <b-button
-              type="is-info"
-              style="margin-top: 10px; margin-bottom: 10px;"
+                v-bind:class="{
+                  eventBackColorFPV: eventIdFaculty == 1,
+                  eventBackColorFF: eventIdFaculty == 4,
+                  eventBackColorFSS: eventIdFaculty == 3,
+                  eventBackColorFP: eventIdFaculty == 5,
+                  eventBackColorFSVZ: eventIdFaculty == 2,
+                  eventBackColorUKF: eventIdFaculty == 6,
+                  eventBackColorLIB: eventIdFaculty == 7
+                }"
+              style="margin-top: 10px; margin-bottom: 10px; color: white;"
             >
               Prihlasit sa
             </b-button>
@@ -96,7 +117,18 @@ format. * */
           </div>
 
           <!-- Category info -->
-          <div class="alignRight categoryInfo">
+          <div
+            class="alignRight categoryInfo"
+            v-bind:class="{
+              eventBackColorFPV: eventIdFaculty == 1,
+              eventBackColorFF: eventIdFaculty == 4,
+              eventBackColorFSS: eventIdFaculty == 3,
+              eventBackColorFP: eventIdFaculty == 5,
+              eventBackColorFSVZ: eventIdFaculty == 2,
+              eventBackColorUKF: eventIdFaculty == 6,
+              eventBackColorLIB: eventIdFaculty == 7
+            }"
+          >
             <div class="alignLeft">
               Kategoria |
             </div>
@@ -115,7 +147,7 @@ format. * */
 
           <!-- Event details -->
           <div class="event-details" v-repeat="10">
-            {{ eventDetailsTest }}
+            {{ eventDesc }}
           </div>
         </div>
 
@@ -182,12 +214,13 @@ format. * */
         </div>
 
         <!-- Section 4 -->
-        <div class="column is-3-desktop section4">
+        <div class="column is-3-desktop section4 eventDetailsHeaderColor">
           <div class="map-container">
-            <HereMap
-              :center="center"
-              style="width: 100%; height: 200px; overflow: hidden; margin: 0px;"
-            />
+            <h1
+              style="font-weight: bold; color: white; margin-left: 150px; margin-top: 90px;"
+            >
+              Map
+            </h1>
           </div>
 
           <!-- Other details about the event -->
@@ -197,37 +230,47 @@ format. * */
               <b-icon icon="school"></b-icon>
             </div>
 
-            <!-- Separator line -->
-            <hr class="section4-separator-line" />
-
             <div class="by">
-              Fakulta prirodnych vied
+              {{ eventFaculty.name }}
               <br />
-              <span style="font-weight: normal;">
-                <i>Katedra informatiky</i>
+              <span style="font-weight: normal;" v-if="eventDepartment">
+                {{ eventDepartment.name }}
+              </span>
+
+              <span v-else style="font-weight: normal;">
+                Vsetky katedry
               </span>
             </div>
+
+            <br />
 
             <div class="forLabel">
               VYTVORIL
               <b-icon icon="account"></b-icon>
             </div>
 
-            <!-- Separator line -->
-            <hr class="section4-separator-line" />
 
-            <div class="by">
-              RNDr. Miroslav Lukac, Ph.D.
-            </div>
+
+            <div class="by">{{ eventUser.name }} {{ eventUser.surname }}</div>
 
             <br />
 
             <!-- Bulma dropdown for adding to the calendar -->
             <!-- TODO: have to fix the not overflowing thing -->
-            <b-dropdown aria-role="list">
+            <b-dropdown aria-role="list" style=" overflow: visible;">
               <button
-                class="button is-info"
+                class="button"
                 slot="trigger"
+                v-bind:class="{
+                  eventBackColorFPV: eventIdFaculty == 1,
+                  eventBackColorFF: eventIdFaculty == 4,
+                  eventBackColorFSS: eventIdFaculty == 3,
+                  eventBackColorFP: eventIdFaculty == 5,
+                  eventBackColorFSVZ: eventIdFaculty == 2,
+                  eventBackColorUKF: eventIdFaculty == 6,
+                  eventBackColorLIB: eventIdFaculty == 7
+                }"
+                style="color: white;"
                 slot-scope="{ active }"
               >
                 <span>Pridat do kalendara</span>
@@ -246,15 +289,47 @@ format. * */
 </template>
 
 <script>
-// Importing Here Map
-import HereMap from "../map/HereMap";
+
+let months = [
+  "január",
+  "február",
+  "marec",
+  "apríl",
+  "máj",
+  "jún",
+  "júl",
+  "august",
+  "september",
+  "október",
+  "november",
+  "december"
+];
 
 export default {
   name: "EventDetailsComponent",
 
   // Registering the components
-  components: {
-    HereMap
+  components: {},
+
+  methods: {
+    getYear() {
+      return this.eventBeginning.substr(0, this.eventBeginning.indexOf("-"));
+    },
+
+    getMonth() {
+      let month_id = parseInt(
+        this.eventBeginning.substr(5, this.eventBeginning.indexOf("-") - 2)
+      );
+      return months[month_id - 1];
+    },
+
+    getDay() {
+      return this.eventBeginning.substr(8, this.eventBeginning.length - 17);
+    },
+
+    goBack() {
+      this.$router.go(-1);
+    }
   },
 
   data() {
@@ -268,62 +343,100 @@ export default {
       isImageModalActive: false,
       isCardModalActive: false,
       imageGalleryLink:
-        "https://journavel.com/wp-content/uploads/2014/10/img-placeholder-dark.jpg",
-      eventDetailsTest:
-        "Tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam\n" +
-        "                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam\n" +
-        "                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam\n" +
-        "                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam\n" +
-        "                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam\n" +
-        "                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam\n" +
-        "                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam\n" +
-        "                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.\n" +
-        "                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam\n" +
-        "                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam\n" +
-        "                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam\n" +
-        "                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam\n" +
-        "                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam."
+        "https://journavel.com/wp-content/uploads/2014/10/img-placeholder-dark.jpg"
     };
   },
 
-  // All the props regarding the event
+  // Props that this component is expecting to be passed from EventListComponent
   props: {
     eventId: {
       type: Number,
-      required: true
+      required: false
     },
     eventName: {
       type: String,
-      required: true
+      required: false
     },
     eventDesc: {
       type: String,
-      required: true
+      required: false
     },
-    eventDate: {
+    eventRoom: {
       type: String,
-      required: true
+      required: false
     },
-    eventTime: {
+    eventBeginning: {
       type: String,
-      required: true
+      required: false
+    },
+    eventEnd: {
+      type: String,
+      required: false
+    },
+    eventAttendanceLimit: {
+      type: Number,
+      required: false
+    },
+    eventLecturer: {
+      type: String,
+      required: false
+    },
+    eventIdUser: {
+      type: Number,
+      required: false
+    },
+    eventIdPlace: {
+      type: Number,
+      required: false
+    },
+    eventIdFaculty: {
+      type: Number,
+      required: false
+    },
+    eventIdDepartment: {
+      type: Number,
+      required: false
+    },
+    eventParticipants: {
+      type: Number,
+      required: false
+    },
+    eventUser: {
+      type: Object,
+      required: false
     },
     eventPlace: {
-      type: String,
-      required: true
-    },
-    eventFaculty: {
-      type: String,
-      required: true
+      type: Object,
+      required: false
     },
     eventDepartment: {
-      type: String,
-      required: true
+      type: Object,
+      required: false
     },
-    eventTags: {
+    eventFaculty: {
+      type: Object,
+      required: false
+    },
+    eventCategories: {
       type: Array,
-      required: true
+      required: false
     }
+  },
+
+  computed: {
+    eventDateSplit: function() {
+      return this.eventBeginning.substr(0, this.eventBeginning.indexOf(" "));
+    },
+
+    eventTimeSplit: function() {
+      return this.eventBeginning.substr(this.eventBeginning.indexOf(" ") + 1);
+    }
+  },
+
+  created() {
+    console.log(this.getYear());
+    console.log(this.getMonth());
+    console.log(this.getDay());
   }
 };
 </script>
@@ -332,6 +445,7 @@ export default {
 .alignLeft {
   float: left !important;
 }
+
 .alignRight {
   float: right !important;
 }
@@ -348,7 +462,6 @@ export default {
 
   .message-header {
     color: white;
-    background: #55c8d9;
   }
 
   .message-body {
@@ -369,7 +482,7 @@ export default {
   padding: 0px;
   margin-left: 28px;
   margin-right: 28px;
-  border-radius: 10px;
+  border-radius: 5px;
   -webkit-box-shadow: 0px 10px 54px -32px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 0px 10px 54px -32px rgba(0, 0, 0, 0.75);
   box-shadow: 0px 10px 54px -32px rgba(0, 0, 0, 0.75);
@@ -378,24 +491,6 @@ export default {
 .eventTags {
   padding-top: 10px;
   padding-bottom: 10px;
-
-  .button {
-    margin-right: 5px;
-    padding: 10px;
-    opacity: 0.9;
-  }
-
-  .tags {
-    padding: 5px;
-    border-radius: 20px;
-    margin: 0px;
-    background: #96e5f1;
-  }
-}
-
-.tagsSection {
-  margin: 0;
-  width: max-content;
 }
 
 .columns {
@@ -403,12 +498,11 @@ export default {
   text-align: justify;
 
   .section1 {
-    background: #d5f8fe;
     padding-left: 20px;
-    border-bottom-left-radius: 8px;
+    border-bottom-left-radius: 5px;
 
     .number-of-tickets {
-      background: #96e5f1;
+      color: white;
       width: max-content;
       padding: 5px 10px 5px 10px;
       border-radius: 8px;
@@ -425,7 +519,7 @@ export default {
     }
 
     .categoryInfo {
-      background: #96e5f1;
+      color: white;
       width: max-content;
 
       padding-left: 10px;
@@ -456,8 +550,7 @@ export default {
 
   .section4 {
     margin: 0px;
-    background: #d5f8fe;
-    border-bottom-right-radius: 8px;
+    border-bottom-right-radius: 5px;
     font-size: medium;
     clear: both;
     overflow: hidden;
@@ -468,9 +561,11 @@ export default {
       clear: both;
       overflow: hidden;
       width: 100%;
+      height: 200px;
       border: 1px solid #b3b3b3;
       border-radius: 5px;
       margin-bottom: 10px;
+      background-color: #000000;
     }
 
     .other-details {
@@ -488,6 +583,38 @@ export default {
       }
     }
   }
+}
+
+.eventBackColorUKF {
+  background: #55c8d9;
+}
+
+.eventBackColorLIB {
+  background: #7f1810;
+}
+
+.eventBackColorFPV {
+  background: #00a360;
+}
+
+.eventBackColorFF {
+  background: #d40075;
+}
+
+.eventBackColorFSS {
+  background: #f39200;
+}
+
+.eventBackColorFP {
+  background: #0062a7;
+}
+
+.eventBackColorFSVZ {
+  background: #f31a33;
+}
+
+.eventDetailsHeaderColor {
+  background: #ededed;
 }
 
 .row {
@@ -529,16 +656,19 @@ export default {
 ::-webkit-scrollbar {
   width: 10px;
 }
+
 /* Track */
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 10px;
 }
+
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: #888;
   border-radius: 10px;
 }
+
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;

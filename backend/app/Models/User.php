@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Notifications\VerifyApiEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -12,7 +14,7 @@ use Laravel\Passport\HasApiTokens;
  *
  * @author klukak, lacal
  */
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use SoftDeletes, Notifiable, HasApiTokens;
 
@@ -50,21 +52,19 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the filters for the User
-     */
-    public function filters()
-    {
-        return $this->belongsToMany('App\Models\Filter')
-            ->withPivot('filter_value')
-            ->withTimestamps();
-    }
-
-    /**
      * Get the events where the user is registered
      */
     public function events()
     {
-        return $this->belongsToMany('App\Models\Event')
-            ->withTimestamps();
+        return $this->belongsToMany('App\Models\Event');
+
+    }
+
+    /**
+     * Email notification
+     */
+    public function sendApiEmailVerificationNotification()
+    {
+        $this->notify(new VerifyApiEmail);
     }
 }

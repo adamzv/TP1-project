@@ -5,11 +5,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Class CreateRepeatsTable
+ * Class CreatePasswordResetsTable
  *
- * @author klukak
+ * @author lacal
  */
-class CreateRepeatsTable extends Migration
+class CreatePasswordResetsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,12 +18,11 @@ class CreateRepeatsTable extends Migration
      */
     public function up()
     {
-        Schema::create('repeats', function (Blueprint $table) {
+        Schema::create('password_resets', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('repeatUnit', 255);
-            $table->integer('repeatNumber');
-            $table->dateTime('repeatUntil')->nullable();
-            $table->softDeletes();
+            $table->string('email')->index();
+            $table->string('token');
+            $table->timestamps();
         });
     }
 
@@ -34,6 +33,6 @@ class CreateRepeatsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('repeats');
+        Schema::dropIfExists('password_resets');
     }
 }

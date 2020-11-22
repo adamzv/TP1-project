@@ -32,6 +32,8 @@ class StoreCityRequest extends FormRequest
         return [
             'name' => [
                 'required',
+                'string',
+                'max:255',
                 Rule::unique('cities', 'name')->ignore($this->city)
             ],
             'id_state' => [

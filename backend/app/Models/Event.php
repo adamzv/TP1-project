@@ -26,7 +26,7 @@ class Event extends Model
      */
     public function user()
     {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo('App\Models\User', 'id_user');
     }
 
     /**
@@ -34,7 +34,7 @@ class Event extends Model
      */
     public function place()
     {
-        return $this->belongsTo('App\Models\Place');
+        return $this->belongsTo('App\Models\Place', 'id_place');
     }
 
     /**
@@ -42,7 +42,7 @@ class Event extends Model
      */
     public function faculty()
     {
-        return $this->belongsTo('App\Models\Place');
+        return $this->belongsTo('App\Models\Faculty', 'id_faculty');
     }
 
     /**
@@ -50,15 +50,7 @@ class Event extends Model
      */
     public function department()
     {
-        return $this->belongsTo('App\Models\Department');
-    }
-
-    /**
-     * Get the repetiton that belongs to the event
-     */
-    public function repeat()
-    {
-        return $this->belongsTo('App\Models\Repeat');
+        return $this->belongsTo('App\Models\Department', 'id_department');
     }
 
     /**
@@ -66,8 +58,8 @@ class Event extends Model
      */
     public function categories()
     {
-        return $this->belongsToMany('App\Models\Category')
-            ->withTimestamps();
+        return $this->belongsToMany('App\Models\Category');
+
     }
 
     /**
@@ -75,7 +67,13 @@ class Event extends Model
      */
     public function attendance()
     {
-        return $this->belongsToMany('App\Models\User')
-            ->withTimestamps();
+        return $this->belongsToMany('App\Models\User');
+
+    }
+
+
+    public function emails()
+    {
+        return $this->belongsToMany('App\Models\Email', 'event_user');
     }
 }

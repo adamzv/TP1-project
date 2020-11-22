@@ -20,13 +20,13 @@ class CreateCategoryEventTable extends Migration
     {
         Schema::create('category_event', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('id_event');
-            $table->unsignedBigInteger('id_category');
+            $table->unsignedBigInteger('event_id');
+            $table->unsignedBigInteger('category_id');
 
             // foreign relationships
-            $table->foreign('id_event')->references('id')->on('events')->onDelete('cascade');
-            $table->foreign('id_category')->references('id')->on('categories')->onDelete('cascade');
-            $table->unique(['id_event', 'id_category']);
+            $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+            $table->unique(['event_id', 'category_id']);
 
             $table->softDeletes();
         });

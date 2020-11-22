@@ -15,6 +15,44 @@ Vue.config.productionTip = false;
 Vue.use(Buefy);
 Vue.use(momentCountdown);
 
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAdmin)) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    if (!store.getters.loggedIn) {
+      next({
+        name: "login"
+      });
+    } else {
+      if (store.getters.permissionToAddEvents) {
+        next();
+      } else {
+        next({ name: "home" });
+      }
+    }
+  } else if (to.matched.some(record => record.meta.requiresVisitor)) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    if (store.getters.loggedIn) {
+      next({
+        name: "home"
+      });
+    } else {
+      next();
+    }
+  } else if (to.matched.some(record => record.meta.requiresAuth)) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    if (store.getters.loggedIn) {
+      next();
+    } else {
+      next({ name: "login" });
+    }
+  } else {
+    next(); // make sure to always call next()!
+  }
+});
+
 new Vue({
   router,
   store,

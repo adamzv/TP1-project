@@ -17,11 +17,26 @@ class RouteServiceProvider extends ServiceProvider
     protected $namespace = 'App\Http\Controllers';
 
     /**
-     * The path to the "home" route for your application.
+     * The path to the "home" route for application.
+     * Change it to your own.
      *
      * @var string
      */
-    public const HOME = '/home';
+    public const HOME = 'http://localhost:8080';
+
+    /**
+     * The path to the "login" route for application.
+     *
+     * @var string
+     */
+    public const LOGIN = self::HOME . '/login';
+
+    /**
+     * The path to the "password reset form" route for application.
+     *
+     * @var string
+     */
+    public const PASSWORD_RESET = self::HOME . '/passwordReset';
 
     /**
      * Define your route model bindings, pattern filters, etc.
