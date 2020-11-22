@@ -32,7 +32,9 @@ class StoreRoleRequest extends FormRequest
         return [
             'type' => [
                 'required',
-                Rule::unique('categories', 'name')->ignore($this->role)
+                'string',
+                'max:255',
+                Rule::unique('roles', 'name')->ignore($this->role)
             ]
         ];
     }

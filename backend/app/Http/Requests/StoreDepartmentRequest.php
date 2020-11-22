@@ -32,6 +32,7 @@ class StoreDepartmentRequest extends FormRequest
         return [
             'name' => [
                 'required',
+                'max:255',
                 Rule::unique('departments', 'name')->ignore($this->department)
             ],
             'id_faculty' => [
