@@ -56,8 +56,8 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function events()
     {
-        return $this->belongsToMany('App\Models\Event')
-            ->withTimestamps();
+        return $this->belongsToMany('App\Models\Event');
+
     }
 
     /**

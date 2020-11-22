@@ -67,7 +67,13 @@ class Event extends Model
      */
     public function attendance()
     {
-        return $this->belongsToMany('App\Models\User')
-            ->withTimestamps();
+        return $this->belongsToMany('App\Models\User');
+
+    }
+
+
+    public function emails()
+    {
+        return $this->belongsToMany('App\Models\Email', 'event_user');
     }
 }
