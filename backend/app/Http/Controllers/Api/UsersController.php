@@ -93,6 +93,11 @@ class UsersController extends Controller
         if($request->input('email')== null) {
             $event = Event::findOrFail($request->input('event_id'));
             $event->attendance()->attach($request->input('user_id'));
+
+            return response()->json([
+                'success' => true,
+                'message' => 'User was successfully registered on event'],
+                201);
         }elseif($request->input('user_id')== null){
 
             $eventid = $request->input('event_id');
@@ -101,42 +106,61 @@ class UsersController extends Controller
                 ->send(new EventRegister(
                     $eventid, $mail
                 ));
-
+            return response()->json([
+                'success' => true,
+                'message' => 'Email send'],
+                201);
         }
 
 
 
 
-        return response()->json([
-            'success' => true,
-            'message' => 'User was successfully registered on event'],
-            201);
+
     }
 
     /**
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function eventUnregister(Request $request){
+    public function eventUnregister(Request $request)
+    {
+        if ($request->input('email') == null) {
+            $event = Event::findOrFail($request->input('event_id'));
+            $event->attendance()->detach($request->input('user_id'));
 
-        $event = Event::findOrFail($request->input('event_id'));
-        $event->attendance()->detach($request->input('user_id'));
+            return response()->json([
+                'success' => true,
+                'message' => 'User was successfully removed from event'],
+                200);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'User was successfully removed from event'],
-            200);
+        }elseif($request->input('user_id')== null){
+            $event = Event::findOrFail($request->input('event_id'));
+            $mail = Email::where('email','=', $request->input('email'))->firstOrFail();
+            $event->emails()->detach($mail->id);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Email was successfully removed from event'],
+                200);
+        }
+
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function eventEmail(Request $request){
 
         $event = Event::findOrFail($request->input('event_id'));
         $mail = Email::firstOrCreate(["email" => $request->input('email')]);
-        $event->emails()->attach($mail->id);
-
+        //$event->emails()->attach($mail->id);
+        if (! $event->emails->contains($mail->id)) {
+            $event->emails()->save($mail);
+        }
         return response()->json([
             'success' => true,
-            'message' => 'User was successfully registered on event'],
+            'message' => 'Email was successfully registered on event'],
             201);
     }
 }

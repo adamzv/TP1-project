@@ -1,38 +1,32 @@
 <!DOCTYPE html>
 <html>
+
+
+
+
 <body>
-<p>Dobrý deň, </p>
+<a> Dobrý deň</a>
+
+
+<form  method="post" action="{{action ('Api\UsersController@eventEmail')}}" target="_blank">
+
+    <input type="text" name="event_id" style="display:none" value="{{$eventid}}"/>
+
+    <input type="text" name="email"  style="display:none" value="{{$email}}"/>
+    <input type="text" name="_token" style="display:none" value="{{csrf_token()}}"/>
+    <input type="submit" value="Prihlásiť" />
+</form>
 
 
 
-<p> Pre prihlásenie na event kliknite sem ->  <button class="odoslat">Prihlasit</button></p>
+<form  method="post" action="{{action ('Api\UsersController@eventUnregister')}}" target="_blank">
 
+    <input type="text" name="event_id" style="display:none" value="{{$eventid}}"/>
 
-<p> Pre odhlásenie na event kliknite sem -> </p>
+    <input type="text" name="email"  style="display:none" value="{{$email}}"/>
+    <input type="text" name="_token" style="display:none" value="{{csrf_token()}}"/>
+    <input type="submit" value="Odhlasit" />
+</form>
 
 </body>
-
-
-<script type="text/javascript">
-
-
-
-    $(".odoslat").click(function(e){
-
-        //e.preventDefault();
-
-        let eventid = ${{{$eventid}}};
-        let email = ${{{$email}}};
-
-        $.ajax({
-            type:'POST',
-            url:"/TP1-project/backend/api/users/eventEmail",
-            data:{event_id:eventid, email:email},
-            success:function(data){
-                alert(data.success);
-            }
-        });
-
-    });
-</script>
 </html>
