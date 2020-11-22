@@ -179,8 +179,8 @@ export default {
   box-shadow: 0px 0px 0px;
 }
 
-  .page-margin {
-    margin-left: 20px;
-    margin-right: 20px;
-  }
+.page-margin {
+  margin-left: 20px;
+  margin-right: 20px;
+}
 </style>

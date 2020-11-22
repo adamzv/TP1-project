@@ -523,22 +523,29 @@ export default {
     }
   },
   created() {
-    // loads categories from backend
+    this.$store.commit("pushToLoading", "ManageEventCategories");
     httpClient.get("/categories").then(response => {
       this.availableCategories = response.data;
       this.filteredCategories = response.data;
+      this.$store.commit("finishLoading", "ManageEventCategories");
     });
 
+    this.$store.commit("pushToLoading", "ManageEventPlaces");
     httpClient.get("/places").then(response => {
       this.availablePlaces = response.data;
+      this.$store.commit("finishLoading", "ManageEventPlaces");
     });
 
+    this.$store.commit("pushToLoading", "ManageEventDepartments");
     httpClient.get("/departments").then(response => {
       this.availableDepartments = response.data;
+      this.$store.commit("finishLoading", "ManageEventDepartments");
     });
 
+    this.$store.commit("pushToLoading", "ManageEventFaculties");
     httpClient.get("/faculties").then(response => {
       this.availableFaculties = response.data;
+      this.$store.commit("finishLoading", "ManageEventFaculties");
     });
   }
 };
