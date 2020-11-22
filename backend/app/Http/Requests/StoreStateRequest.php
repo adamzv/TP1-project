@@ -32,6 +32,8 @@ class StoreStateRequest extends FormRequest
         return [
             'name' => [
                 'required',
+                'string',
+                'max:255',
                 Rule::unique('states', 'name')->ignore($this->state)
             ]
         ];

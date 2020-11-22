@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreEventRequest;
 use App\Mail\EventChanged;
 use App\Models\Category;
 use App\Models\Event;
 use App\Models\Place;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Mail;
@@ -35,10 +35,10 @@ class EventsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param StoreEventRequest $request
      * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(StoreEventRequest $request)
     {
         $event = new Event();
 
@@ -90,11 +90,11 @@ class EventsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param StoreEventRequest $request
      * @param $id
      * @return JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(StoreEventRequest $request, $id)
     {
         $event = Event::findOrFail($id);
 

@@ -5,6 +5,11 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
+/**
+ * Class StoreFacultyRequest
+ *
+ * @author lacal
+ */
 class StoreFacultyRequest extends FormRequest
 {
     /**
@@ -27,6 +32,8 @@ class StoreFacultyRequest extends FormRequest
         return [
             'name' => [
                 'required',
+                'string',
+                'max:255',
                 Rule::unique('faculties', 'name')->ignore($this->faculty)
             ]
         ];
