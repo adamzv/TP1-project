@@ -88,9 +88,10 @@ class UsersController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function eventRegister(Request $request){
+    public function eventRegister(Request $request)
+    {
 
-        if($request->input('email')== null) {
+        if ($request->input('email') == null) {
             $event = Event::findOrFail($request->input('event_id'));
             $event->attendance()->attach($request->input('user_id'));
 
@@ -98,7 +99,7 @@ class UsersController extends Controller
                 'success' => true,
                 'message' => 'User was successfully registered on event'],
                 201);
-        }elseif($request->input('user_id')== null){
+        } elseif ($request->input('user_id') == null) {
 
             $eventid = $request->input('event_id');
             $mail = $request->input('email');
@@ -111,9 +112,6 @@ class UsersController extends Controller
                 'message' => 'Email send'],
                 201);
         }
-
-
-
 
 
     }
@@ -133,9 +131,9 @@ class UsersController extends Controller
                 'message' => 'User was successfully removed from event'],
                 200);
 
-        }elseif($request->input('user_id')== null){
+        } elseif ($request->input('user_id') == null) {
             $event = Event::findOrFail($request->input('event_id'));
-            $mail = Email::where('email','=', $request->input('email'))->firstOrFail();
+            $mail = Email::where('email', '=', $request->input('email'))->firstOrFail();
             $event->emails()->detach($mail->id);
 
             return response()->json([
@@ -150,12 +148,13 @@ class UsersController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function eventEmail(Request $request){
+    public function eventEmail(Request $request)
+    {
 
         $event = Event::findOrFail($request->input('event_id'));
         $mail = Email::firstOrCreate(["email" => $request->input('email')]);
         //$event->emails()->attach($mail->id);
-        if (! $event->emails->contains($mail->id)) {
+        if (!$event->emails->contains($mail->id)) {
             $event->emails()->save($mail);
         }
         return response()->json([
