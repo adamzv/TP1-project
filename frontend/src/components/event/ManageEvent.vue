@@ -93,6 +93,7 @@
                     type="file"
                     accept=".pdf"
                     class="file-label has-text-link"
+                    @input="postPDF(file)"
                   >
                     <span>
                       <i class="mdi mdi-file-upload"></i>
@@ -101,9 +102,18 @@
                   </b-upload>
                   <span v-if="file">
                     &nbsp;| {{ file.name }}
-                    <a @click="file = null">
-                      <i class="mdi mdi-close-thick has-text-danger"></i>
-                    </a>
+                    <b-button
+                      v-if="fileUploadLoading"
+                      :loading="fileUploadLoading"
+                      size="is-small"
+                    ></b-button>
+                    <b-button
+                      v-else
+                      @click="removePDF"
+                      type="is-danger"
+                      size="is-small"
+                      icon-right="delete"
+                    ></b-button>
                   </span>
                 </div>
               </div>
@@ -340,7 +350,8 @@ export default {
       isOpen: 0,
       placeName: "",
       selectedDepartmentName: "",
-      selectedFacultyName: ""
+      selectedFacultyName: "",
+      fileLoading: false
     };
   },
   methods: {
@@ -361,6 +372,31 @@ export default {
     },
     checkForm() {
       this.generateRequest();
+    },
+    postPDF(file) {
+      this.$store.dispatch("updateLoading");
+      var reader = new window.FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        var result = reader.result.split(",").pop();
+        httpClient
+          .post(`/files/pdf/${this.id}`, {
+            pdf: result
+          })
+          .then(response => {
+            console.log(response);
+            this.$store.dispatch("updateLoading");
+          })
+          .catch(error => console.log(error));
+      };
+      reader.onerror = function(error) {
+        console.log("Error: ", error);
+      };
+    },
+    removePDF() {
+      httpClient.delete(`/files/pdf/${this.id}`).then(() => {
+        this.file = null;
+      });
     },
     generateRequest() {
       if (this.id) {
@@ -507,6 +543,21 @@ export default {
       } else {
         this.clearFormInputs();
       }
+    },
+    id(val) {
+      if (val) {
+        this.$store.commit("pushToLoading", "EventPDF");
+        httpClient
+          .get(`/files/pdf/${this.id}`)
+          .then(response => {
+            this.file = {};
+            this.file.name = response.data.pdfs_path.pdf1_path;
+            this.$store.commit("finishLoading", "EventPDF");
+          })
+          .catch(() => {
+            this.$store.commit("finishLoading", "EventPDF");
+          });
+      }
     }
   },
   computed: {
@@ -520,6 +571,9 @@ export default {
     },
     getEvent() {
       return this.event;
+    },
+    fileUploadLoading() {
+      return this.$store.getters.fileUploadLoading;
     }
   },
   created() {
