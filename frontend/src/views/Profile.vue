@@ -116,13 +116,16 @@ export default {
      * This is a generic function which loads available events into this.events property.
      */
     loadEvents(route) {
+      this.$store.commit("pushToLoading", "Profile");
       httpClient
         .get(route)
         .then(response => {
           this.events = response.data.data;
+          this.$store.commit("finishLoading", "Profile");
         })
         .catch(error => {
           console.log(error);
+          this.$store.commit("finishLoading", "Profile");
         });
     }
   },

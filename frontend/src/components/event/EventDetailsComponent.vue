@@ -85,22 +85,27 @@ format. * */
             </span>
 
             <span v-else>
-              <i> Neobmedzene</i>
+              <i>Neobmedzene</i>
             </span>
+          </div>
+
+          <!-- TODO -->
+          <div>
+            <a @click.prevent="downloadItem(item)">Stiahnuť pdf</a>
           </div>
 
           <!-- Sign up button -->
           <div>
             <b-button
-                v-bind:class="{
-                  eventBackColorFPV: eventIdFaculty == 1,
-                  eventBackColorFF: eventIdFaculty == 4,
-                  eventBackColorFSS: eventIdFaculty == 3,
-                  eventBackColorFP: eventIdFaculty == 5,
-                  eventBackColorFSVZ: eventIdFaculty == 2,
-                  eventBackColorUKF: eventIdFaculty == 6,
-                  eventBackColorLIB: eventIdFaculty == 7
-                }"
+              v-bind:class="{
+                eventBackColorFPV: eventIdFaculty == 1,
+                eventBackColorFF: eventIdFaculty == 4,
+                eventBackColorFSS: eventIdFaculty == 3,
+                eventBackColorFP: eventIdFaculty == 5,
+                eventBackColorFSVZ: eventIdFaculty == 2,
+                eventBackColorUKF: eventIdFaculty == 6,
+                eventBackColorLIB: eventIdFaculty == 7
+              }"
               style="margin-top: 10px; margin-bottom: 10px; color: white;"
             >
               Prihlasit sa
@@ -249,8 +254,6 @@ format. * */
               <b-icon icon="account"></b-icon>
             </div>
 
-
-
             <div class="by">{{ eventUser.name }} {{ eventUser.surname }}</div>
 
             <br />
@@ -289,7 +292,6 @@ format. * */
 </template>
 
 <script>
-
 let months = [
   "január",
   "február",
@@ -304,6 +306,7 @@ let months = [
   "november",
   "december"
 ];
+import httpClient from "../../httpClient.js";
 
 export default {
   name: "EventDetailsComponent",
@@ -329,9 +332,20 @@ export default {
 
     goBack() {
       this.$router.go(-1);
+    },
+    downloadItem() {
+      httpClient
+        .get(`/files/pdf/${this.eventId}`)
+        .then(response => {
+          const pdf = response.data.pdfs.pdf1;
+          const link = document.createElement("a");
+          link.href = `data:application/pdf;base64,${pdf}`;
+          link.download = response.data.pdfs_path.pdf1_path;
+          link.click();
+        })
+        .catch(console.error);
     }
   },
-
   data() {
     return {
       // Default map location
@@ -422,7 +436,6 @@ export default {
       required: false
     }
   },
-
   computed: {
     eventDateSplit: function() {
       return this.eventBeginning.substr(0, this.eventBeginning.indexOf(" "));
@@ -432,7 +445,6 @@ export default {
       return this.eventBeginning.substr(this.eventBeginning.indexOf(" ") + 1);
     }
   },
-
   created() {
     console.log(this.getYear());
     console.log(this.getMonth());
