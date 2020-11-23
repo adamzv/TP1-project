@@ -60,6 +60,18 @@ class EventsController extends Controller
             $event->categories()->attach($category->id);
         }
 
+        // find if files paths exists in request
+        if ($request->has('pdfPath')) {
+            $pdfFile = $request->input('pdfPath');
+
+            // if path is not null
+            if ($pdfFile != 'null') $this->movePdfPath($event->id, $pdfFile);
+        }
+        if ($request->has('titleImgPath')) {
+            $titleImageFile = $request->input('titleImgPath');
+            if ($titleImageFile != 'null') $this->moveTitleImagePath($event->id, $titleImageFile);
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Event was created successfully',
@@ -190,5 +202,29 @@ class EventsController extends Controller
     public function destroy($id)
     {
         // TODO: while implementing destroy method, its also important to send mail to registered users to this event.
+    }
+
+    /**
+     * Move pdf file from one path to another
+     *
+     * @param $id
+     * @param $path
+     */
+    public function movePdfPath($id, $path)
+    {
+        $fileNmae = basename($path);
+        \Storage::disk('azure')->move($path, 'pdf/' . $id . '/' . $fileNmae);
+    }
+
+    /**
+     * Move title image from one path to another
+     *
+     * @param $id
+     * @param $path
+     */
+    public function moveTitleImagePath($id, $path)
+    {
+        $fileNmae = basename($path);
+        \Storage::disk('azure')->move($path, 'titleImg/' . $id . '/' . $fileNmae);
     }
 }
