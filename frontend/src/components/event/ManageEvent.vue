@@ -101,7 +101,7 @@
                     </span>
                   </b-upload>
                   <span v-if="file">
-                    &nbsp;| {{ file.name }}
+                    &nbsp;| {{ file.name.split("/")[2] }}.pdf
                     <b-button
                       v-if="fileUploadLoading"
                       :loading="fileUploadLoading"
@@ -253,6 +253,9 @@
             <div class="content">
               <div class="columns">
                 <div class="column">
+                  <div class="is-warning notification" v-if="!id">
+                    Obrázky sa dajú vkladať až po skončení udalosti
+                  </div>
                   <b-field>
                     <b-upload
                       v-model="pictures"
@@ -260,6 +263,8 @@
                       multiple
                       drag-drop
                       type="file"
+                      :disabled="!id"
+                      @input="uploadPictures()"
                     >
                       <section class="section">
                         <div class="content has-text-centered">
@@ -279,10 +284,21 @@
                       class="tag is-info"
                     >
                       {{ file.name }}
+                      <Spinner
+                        v-if="
+                          !uploadingPicturesState.find(
+                            state => state.name === file.name
+                          )
+                        "
+                        size="tiny"
+                        line-fg-color="#000"
+                        style="margin-left: 4px; margin-right: -4px"
+                      />
                       <button
+                        v-else
                         class="delete is-small"
                         type="button"
-                        @click="deletePicture(index)"
+                        @click="deletePicture(index, file.name)"
                       ></button>
                     </span>
                   </div>
@@ -316,9 +332,13 @@
 <script>
 import httpClient from "../../httpClient.js";
 import moment from "moment";
+import Spinner from "vue-simple-spinner";
 
 export default {
   name: "manageEvent",
+  components: {
+    Spinner
+  },
   props: {
     event: Object
   },
@@ -345,6 +365,7 @@ export default {
       isAttendanceLimit: false,
       attendanceLimit: null,
       pictures: [],
+      uploadingPicturesState: [],
       response: null,
       // collapse settings
       isOpen: 0,
@@ -484,8 +505,50 @@ export default {
         this.selectedDepartment = null;
       }
     },
-    deletePicture(index) {
+    deletePicture(index, name) {
       this.pictures.splice(index, 1);
+      const pathName = this.uploadingPicturesState.find(
+        picture => picture.name === name
+      );
+      var path = pathName.path.split("/")[2];
+      httpClient
+        .delete(`/files/image/${this.id}/${path}`)
+        .then(response => {
+          console.log(response);
+          this.uploadingPicturesState = this.uploadingPicturesState.filter(
+            picture => picture.name !== name
+          );
+        })
+        .catch(error => console.log(error));
+    },
+    uploadPictures() {
+      console.log(this.pictures);
+      for (const picture of this.pictures) {
+        if (
+          !this.uploadingPicturesState.find(state => state === picture.name)
+        ) {
+          var reader = new window.FileReader();
+          reader.readAsDataURL(picture);
+          reader.onloadend = () => {
+            var result = reader.result.split(",").pop();
+            httpClient
+              .post(`/files/image/${this.id}`, {
+                image: result
+              })
+              .then(response => {
+                console.log(picture);
+                console.log(response);
+                this.uploadingPicturesState.push({
+                  name: picture.name,
+                  path: response.data.path
+                });
+              })
+              .catch(error => {
+                console.log(error);
+              });
+          };
+        }
+      }
     },
     clearFormInputs() {
       this.name = "";

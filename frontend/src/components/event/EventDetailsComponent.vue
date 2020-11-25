@@ -169,52 +169,23 @@ format. * */
 
           <!-- Event gallery -->
           <div class="event-image-gallery">
-            <img
-              @click="isImageModalActive = true"
-              :src="imageGalleryLink"
-              class="imageLink"
-            />
-            <img
-              @click="isImageModalActive = true"
-              :src="imageGalleryLink"
-              class="imageLink"
-            />
-            <img
-              @click="isImageModalActive = true"
-              :src="imageGalleryLink"
-              class="imageLink"
-            />
-            <img
-              @click="isImageModalActive = true"
-              :src="imageGalleryLink"
-              class="imageLink"
-            />
-            <img
-              @click="isImageModalActive = true"
-              :src="imageGalleryLink"
-              class="imageLink"
-            />
-            <img
-              @click="isImageModalActive = true"
-              :src="imageGalleryLink"
-              class="imageLink"
-            />
-            <img
-              @click="isImageModalActive = true"
-              :src="imageGalleryLink"
-              class="imageLink"
-            />
-            <img
-              @click="isImageModalActive = true"
-              :src="imageGalleryLink"
-              class="imageLink"
-            />
-
-            <b-modal v-model="isImageModalActive">
-              <p class="image">
-                <img :src="imageGalleryLink" />
-              </p>
-            </b-modal>
+            <div v-if="images">
+              <img
+                v-for="image in images"
+                :key="image"
+                :src="getImgUrl(image)"
+                class="imageLink"
+                @click="
+                  isImageModalActive = true;
+                  imageModal = image;
+                "
+              />
+              <b-modal v-model="isImageModalActive">
+                <p class="image">
+                  <img :src="getImgUrl(imageModal)" />
+                </p>
+              </b-modal>
+            </div>
           </div>
         </div>
 
@@ -344,6 +315,9 @@ export default {
           link.click();
         })
         .catch(console.error);
+    },
+    getImgUrl(value) {
+      return process.env.VUE_APP_IMAGES_STORAGE_URL + value;
     }
   },
   data() {
@@ -353,7 +327,8 @@ export default {
         lat: 40.73061,
         lng: -73.935242
       },
-
+      images: [],
+      imageModal: null,
       isImageModalActive: false,
       isCardModalActive: false,
       imageGalleryLink:
@@ -446,9 +421,16 @@ export default {
     }
   },
   created() {
-    console.log(this.getYear());
-    console.log(this.getMonth());
-    console.log(this.getDay());
+    this.$store.commit("pushToLoading", "EventDetailsLoadImages");
+    httpClient
+      .get(`/files/image/${this.eventId}`)
+      .then(response => {
+        this.images = response.data.images_path;
+        this.$store.commit("finishLoading", "EventDetailsLoadImages");
+      })
+      .catch(() => {
+        this.$store.commit("finishLoading", "EventDetailsLoadImages");
+      });
   }
 };
 </script>
