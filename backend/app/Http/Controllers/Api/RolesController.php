@@ -14,6 +14,11 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class RolesController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('auth:api', ['scopes: admin-user']);
+    }
+
     /**
      * Display a listing of the resource.
      *

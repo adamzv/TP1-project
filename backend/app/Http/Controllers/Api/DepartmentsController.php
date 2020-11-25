@@ -14,6 +14,11 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class DepartmentsController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('auth:api', ['scopes: admin-user,moderator-user'])->except(['index', 'show']);
+    }
+
     /**
      * Display a listing of the resource.
      *

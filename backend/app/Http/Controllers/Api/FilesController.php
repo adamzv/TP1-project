@@ -15,6 +15,11 @@ use Illuminate\Support\Facades\Storage;
  */
 class FilesController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('auth:api', ['scopes: admin-user,moderator-user'])
+            ->except(['downloadPdf', 'downloadTitleImg', 'downloadImage']);
+    }
 
     /**
      * Uploads pdf file and returns path

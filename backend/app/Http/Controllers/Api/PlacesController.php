@@ -13,6 +13,11 @@ use App\Models\Place;
  */
 class PlacesController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware('auth:api', ['scopes: admin-user,moderator-user'])->except(['index', 'show']);
+    }
+    
     /**
      * Display a listing of the resource.
      *
