@@ -15,7 +15,7 @@ class StatesController extends Controller
 {
     function __construct()
     {
-        $this->middleware('auth:api', ['scopes: admin-user,moderator-user'])->except(['index', 'show']);
+        $this->middleware(['auth:api', 'scope:admin-user,moderator-user'])->except(['index', 'show']);
     }
 
     /**

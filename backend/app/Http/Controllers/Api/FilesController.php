@@ -17,8 +17,7 @@ class FilesController extends Controller
 {
     function __construct()
     {
-        $this->middleware('auth:api', ['scopes: admin-user,moderator-user'])
-            ->except(['downloadPdf', 'downloadTitleImg', 'downloadImage']);
+        $this->middleware(['auth:api', 'scope:admin-user,moderator-user'])->except(['downloadPdf', 'downloadTitleImg', 'downloadImage']);
     }
 
     /**

@@ -33,8 +33,9 @@ class AuthServiceProvider extends ServiceProvider
         Passport::routes();
 
         Passport::tokensCan([
+            'logged-user' => 'Logged user',
+            'moderator-user' => 'Moderator user',
             'admin-user' => 'Admin user',
-            'moderator-user' => 'Moderátor user'
         ]);
     }
 }

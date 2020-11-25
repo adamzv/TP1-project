@@ -51,7 +51,7 @@ class UsersVerificationController extends Controller
                 } else {
 
                     // create token to user and return it
-                    $accessToken = Auth::user()->createToken('authToken')->accessToken;
+                    $accessToken = Auth::user()->createToken('authToken', ['logged-user'])->accessToken;
                 }
 
                 $success['message'] = 'Login successfull';

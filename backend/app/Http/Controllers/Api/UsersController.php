@@ -21,8 +21,8 @@ class UsersController extends Controller
 {
     function __construct()
     {
-        $this->middleware('auth:api', ['scopes: admin-user'])
-            ->except(['eventRegister', 'eventUnregister', 'eventEmail']);
+        $this->middleware(['auth:api', 'scope:admin-user'])->except(['eventRegister', 'eventUnregister', 'eventEmail', 'show']);
+        $this->middleware(['auth:api', 'scope:moderator-user,logged-user,admin-user'])->only(['show']);
     }
 
     /**

@@ -16,7 +16,7 @@ class RolesController extends Controller
 {
     function __construct()
     {
-        $this->middleware('auth:api', ['scopes: admin-user']);
+        $this->middleware(['auth:api', 'scope:admin-user']);
     }
 
     /**
