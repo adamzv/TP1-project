@@ -72,7 +72,7 @@ Route::namespace('Api')->group(function () {
         // images
         Route::post('image/{id}', 'FilesController@uploadImage');
         Route::get('image/{id}', 'FilesController@downloadImage');
-        Route::delete('image/{id}', 'FilesController@deleteImage');
+        Route::delete('image/{id}/{imageName}', 'FilesController@deleteImage');
         Route::delete('imageAll/{id}', 'FilesController@deleteAllImages');
     });
 });
