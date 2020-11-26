@@ -7,6 +7,7 @@ use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegisterRequest;
 use App\Models\Role;
 use App\Models\User;
+use App\Notifications\EmailVerifyRequest;
 use Auth;
 use Illuminate\Foundation\Auth\VerifiesEmails;
 use Illuminate\Http\JsonResponse;
@@ -80,7 +81,7 @@ class UsersVerificationController extends Controller
         // create token to the user and return it with user
         $accessToken = $user->createToken('authToken')->accessToken;
 
-        $user->sendApiEmailVerificationNotification();
+        $user->notify(new EmailVerifyRequest());
 
         $success['message'] = 'Please confirm yourself by clicking on verify user button sent to you on your email';
 
