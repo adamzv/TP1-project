@@ -73,8 +73,9 @@
                         class="button"
                         type="is-danger"
                         icon-left="delete-outline"
-                        @click="beginning = null"
-              ></b-button>
+                        @click="beginning = null">
+                Vymazať dátum
+              </b-button>
             </div>
 
             <div class="column filterItem">
@@ -144,6 +145,13 @@
           <div class="level-right filterButton"
                style=" padding-bottom: 2px; padding-left: 12px;">
 
+            <b-button class="level-item is-danger"
+                      icon-left="delete-outline"
+                      style="width: 100%;"
+                      @click="clearFilter()">
+              Vymazať filter
+            </b-button>
+
             <b-button class="level-item is-info"
                       icon-left="filter"
                       style="width: 100%;"
@@ -206,8 +214,8 @@
                       class="button btn-desktop-remove-date"
                       type="button"
                       icon-left="delete-outline"
-                      @click="beginning = null"
-            ></b-button>
+                      @click="beginning = null">
+            </b-button>
 
             <div class="column filterItem">
               <b-taginput v-model="categories"
@@ -270,11 +278,18 @@
             <div class="column" style="text-align: right;"
                  v-if="windowWidth <= 1840 && windowWidth > 768">
 
-              <b-button class="is-outlined is-info"
+              <b-button class="is-danger"
+                        icon-left="delete-outline"
+                        style="width: auto !important; margin-right: -1px; border-top-right-radius: 0px; border-bottom-right-radius: 0px;"
+                        @click="clearFilter()">
+
+              </b-button>
+
+              <b-button class="is-info"
                         icon-left="filter"
-                        style="width: auto !important;"
+                        style="width: auto !important; margin-left: 0px; border-top-left-radius: 0px; border-bottom-left-radius: 0px;"
                         @click="sendDataToParent()">
-                Filtrovať
+
               </b-button>
             </div>
 
@@ -282,11 +297,20 @@
               <div class="level-right filterButton" align="right"
                    style="position: absolute; right: 35px;">
 
-                <b-button class="level-item is-outlined is-info"
+                <b-button class="level-item is-danger"
+                          icon-left="delete-outline"
+                          @click="clearFilter()"
+                          v-if="windowWidth > 1840"
+                          style="margin-right: 0px; border-top-right-radius: 0px; border-bottom-right-radius: 0px;">
+
+                </b-button>
+
+                <b-button class="level-item is-info"
                           icon-left="filter"
                           @click="sendDataToParent()"
-                          v-if="windowWidth > 1840">
-                  Filtrovať
+                          v-if="windowWidth > 1840"
+                          style="margin-left: 0px; border-top-left-radius: 0px; border-bottom-left-radius: 0px;">
+
                 </b-button>
               </div>
             </div>
@@ -346,8 +370,6 @@
           this.showMobile = false;
           this.isOpen = true;
         }
-
-        console.log(this.$store.getters.getCurrentlyInFilter)
       },
 
       addOpenIndex() {
@@ -375,11 +397,26 @@
         this.createFilterRequest();
       },
 
+      clearFilter() {
+        httpClient.get(`/events`)
+          .then(response => {
+            this.$store.commit('setCurrentlyInFilter', response.data);
+            this.$store.commit('setURL_API_FILTER', `/events`);
+
+            this.$emit('clicked', {
+              'filteredEvents': response.data
+            });
+          });
+
+        this.setFilterOptionsClear();
+        this.setFilterOptions();
+      },
+
       getRequestFilteredEvents(apiUrl) {
         httpClient.get(apiUrl)
           .then(response => {
             this.$store.commit('setCurrentlyInFilter', response.data);
-            this.$store.commit('setURL_API_FILTER', apiUrl)
+            this.$store.commit('setURL_API_FILTER', apiUrl);
 
             this.$emit('clicked', {
               'filteredEvents': response.data
@@ -388,6 +425,9 @@
       },
 
       createFilterRequest() {
+        this.setFilterOptions();
+        //this.getRequestFilteredEvents(`/events?filter=name=${this.eventName},id_faculty=${this.selectedFaculty.id},beginning=${this.eventDateSplit()} ${this.eventTimeSplit()}`);
+
         if (this.eventName != null && this.selectedFaculty == null) {
           this.getRequestFilteredEvents(`/events?filter=name=${this.eventName}`);
         } else if (this.eventName == null && this.selectedFaculty != null) {
@@ -395,6 +435,33 @@
         } else {
           this.getRequestFilteredEvents(`/events?filter=name=${this.eventName},id_faculty=${this.selectedFaculty.id}`);
         }
+
+      },
+
+      retrieveFilterOptions() {
+        this.eventName = this.$store.getters.getFilterEventName;
+        this.beginning = this.$store.getters.getFilterBeginning;
+        //this.eventCategories = this.$store.getters.getFilterCategories;
+        this.selectedFacultyName = this.$store.getters.getFilterFaculty;
+        this.selectedDepartmentName = this.$store.getters.getFilterDepartment;
+        this.placeName = this.$store.getters.getFilterPlace;
+      },
+
+      setFilterOptions() {
+        this.$store.commit('setFilterEventName', this.eventName);
+        this.$store.commit('setFilterBeginning', this.beginning);
+        this.$store.commit('setFilterFaculty', this.selectedFacultyName);
+        this.$store.commit('setFilterDepartment', this.selectedDepartmentName);
+        this.$store.commit('setFilterPlace', this.placeName);
+      },
+
+      setFilterOptionsClear() {
+        this.eventName = "";
+        this.beginning = "";
+        //this.eventCategories = this.$store.getters.getFilterCategories;
+        this.selectedFacultyName = "";
+        this.selectedDepartmentName = "";
+        this.placeName = "";
       }
     },
 
@@ -407,10 +474,19 @@
           );
         });
       },
+
+      eventDateSplit: function() {
+        return this.beginning.substr(0, this.eventBeginning.indexOf(" "));
+      },
+
+      eventTimeSplit: function() {
+        return this.beginning.substr(this.eventBeginning.indexOf(" ") + 1);
+      }
     },
 
     created() {
       window.setInterval(() => { this.checkScreenSize(); }, CHECK_INTERVAL);
+      this.retrieveFilterOptions();
 
       // loads categories from backend
       httpClient.get("/categories").then(response => {

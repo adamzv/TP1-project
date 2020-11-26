@@ -116,30 +116,6 @@ format. * */
             <strong style="padding-left: 5px;">POPIS UDALOSTI</strong>
           </div>
 
-          <!-- Category info -->
-          <div
-            class="alignRight categoryInfo"
-            v-bind:class="{
-              eventBackColorFPV: eventIdFaculty == 1,
-              eventBackColorFF: eventIdFaculty == 4,
-              eventBackColorFSS: eventIdFaculty == 3,
-              eventBackColorFP: eventIdFaculty == 5,
-              eventBackColorFSVZ: eventIdFaculty == 2,
-              eventBackColorUKF: eventIdFaculty == 6,
-              eventBackColorLIB: eventIdFaculty == 7
-            }"
-          >
-            <div class="alignLeft">
-              Kategoria |
-            </div>
-
-            <div class="alignRight">
-              <b-icon icon="apps"></b-icon>
-            </div>
-
-            <div style="clear: both;"></div>
-          </div>
-
           <div style="clear: both;"></div>
 
           <!-- Separator line -->

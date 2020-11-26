@@ -13,18 +13,24 @@ component takes in all the event data coming from EventListComponent and renders
       <div
         class="panel-heading"
         v-bind:class="{
-          eventBackColorFPV: eventIdFaculty == 1,
-          eventBackColorFF: eventIdFaculty == 4,
-          eventBackColorFSS: eventIdFaculty == 3,
-          eventBackColorFP: eventIdFaculty == 5,
+          eventBackColorFPV:  eventIdFaculty == 1,
+          eventBackColorFF:   eventIdFaculty == 4,
+          eventBackColorFSS:  eventIdFaculty == 3,
+          eventBackColorFP:   eventIdFaculty == 5,
           eventBackColorFSVZ: eventIdFaculty == 2,
-          eventBackColorUKF: eventIdFaculty == 6,
-          eventBackColorLIB: eventIdFaculty == 7
-        }"
-      >
+          eventBackColorUKF:  eventIdFaculty == 6,
+          eventBackColorLIB:  eventIdFaculty == 7
+        }">
+
         <!-- Event name -->
         <p class="alignLeft" v-if="eventName">
-          {{ eventName }}
+          <span v-if="eventName.length <= 11">
+            {{ eventName }}
+          </span>
+
+          <span v-else>
+            {{ shortenName }}
+          </span>
         </p>
 
         <!-- Faculty name -->
@@ -51,13 +57,13 @@ component takes in all the event data coming from EventListComponent and renders
       <div
         class="quickDetailsHeader"
         v-bind:class="{
-          eventBackColorFPV: eventIdFaculty == 1,
-          eventBackColorFF: eventIdFaculty == 4,
-          eventBackColorFSS: eventIdFaculty == 3,
-          eventBackColorFP: eventIdFaculty == 5,
+          eventBackColorFPV:  eventIdFaculty == 1,
+          eventBackColorFF:   eventIdFaculty == 4,
+          eventBackColorFSS:  eventIdFaculty == 3,
+          eventBackColorFP:   eventIdFaculty == 5,
           eventBackColorFSVZ: eventIdFaculty == 2,
-          eventBackColorUKF: eventIdFaculty == 6,
-          eventBackColorLIB: eventIdFaculty == 7
+          eventBackColorUKF:  eventIdFaculty == 6,
+          eventBackColorLIB:  eventIdFaculty == 7
         }"
       >
         <!-- Event date -->
@@ -118,13 +124,13 @@ component takes in all the event data coming from EventListComponent and renders
             size="is-medium"
             class="has-text-white"
             v-bind:class="{
-              eventBackColorFPV: eventIdFaculty == 1,
-              eventBackColorFF: eventIdFaculty == 4,
-              eventBackColorFSS: eventIdFaculty == 3,
-              eventBackColorFP: eventIdFaculty == 5,
+              eventBackColorFPV:  eventIdFaculty == 1,
+              eventBackColorFF:   eventIdFaculty == 4,
+              eventBackColorFSS:  eventIdFaculty == 3,
+              eventBackColorFP:   eventIdFaculty == 5,
               eventBackColorFSVZ: eventIdFaculty == 2,
-              eventBackColorUKF: eventIdFaculty == 6,
-              eventBackColorLIB: eventIdFaculty == 7
+              eventBackColorUKF:  eventIdFaculty == 6,
+              eventBackColorLIB:  eventIdFaculty == 7
             }"
           >
             #{{ tag.name }}
@@ -152,6 +158,14 @@ export default {
 
     eventTimeSplit: function() {
       return this.eventBeginning.substr(this.eventBeginning.indexOf(" ") + 1);
+    },
+
+    shortenName: function () {
+      return this.eventName.substr(0, 12) + "...";
+    },
+
+    shortenDepartment: function () {
+      return this.eventDepartment.substr(0, 12) + "...";
     }
   },
 
