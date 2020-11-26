@@ -18,6 +18,10 @@
 
     <router-view />
     <FooterComponent />
+
+    <back-to-top bottom="50px" right="50px">
+      <button type="button" class="btn-to-top"><b-icon icon="chevron-up" /></button>
+    </back-to-top>
   </div>
 </template>
 
@@ -25,11 +29,13 @@
 import HeaderComponent from "@/components/HeaderComponent.vue";
 import FooterComponent from "@/components/FooterComponent.vue";
 import httpClient from "./httpClient";
+import BackToTop from 'vue-backtotop';
 
 export default {
   components: {
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    BackToTop
   },
   data() {
     return {
@@ -110,4 +116,16 @@ export default {
 .loading-z-pos {
   z-index: 2000;
 }
+  .btn-to-top {
+    width: 60px;
+    height: 60px;
+    padding: 10px 16px;
+    font-size: 22px;
+    line-height: 22px;
+    opacity: 0.7;
+  }
+
+  .btn-to-top:hover {
+    opacity: 1.0;
+  }
 </style>

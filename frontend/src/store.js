@@ -15,6 +15,12 @@ export default new Vuex.Store({
     fileUploadLoading: false,
     allowFiltering: false,
     currentlyInFilter: Object,
+    filterEventName: "",
+    filterBeginning: "",
+    filterCategories: "",
+    filterFaculty: "",
+    filterDepartment: "",
+    filterPlace: "",
 
     URL_API_FILTER: `/events`
   },
@@ -56,6 +62,24 @@ export default new Vuex.Store({
     },
     getURL_API_FILTER(state) {
       return state.URL_API_FILTER;
+    },
+    getFilterEventName(state) {
+      return state.filterEventName;
+    },
+    getFilterBeginning(state) {
+      return state.filterBeginning;
+    },
+    getFilterCategories(state) {
+      return state.filterCategories;
+    },
+    getFilterFaculty(state) {
+      return state.filterFaculty;
+    },
+    getFilterDepartment(state) {
+      return state.filterDepartment;
+    },
+    getFilterPlace(state) {
+      return state.filterPlace;
     }
   },
   mutations: {
@@ -101,6 +125,24 @@ export default new Vuex.Store({
     },
     setURL_API_FILTER(state, change) {
       state.URL_API_FILTER = change;
+    },
+    setFilterEventName(state, change) {
+      state.filterEventName = change;
+    },
+    setFilterBeginning(state, change) {
+      state.filterBeginning = change;
+    },
+    setFilterCategories(state, change) {
+      state.filterCategories = change;
+    },
+    setFilterFaculty(state, change) {
+      state.filterFaculty = change;
+    },
+    setFilterDepartment(state, change) {
+      state.filterDepartment = change;
+    },
+    setFilterPlace(state, change) {
+      state.filterPlace = change;
     }
   },
   actions: {
