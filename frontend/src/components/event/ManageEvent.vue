@@ -81,12 +81,26 @@
               <div class="columns">
                 <div class="column">
                   <!-- TODO toto je odkaz na modal okno nie b-upload -->
-                  <b-upload v-model="file" class="file-label has-text-link">
+                  <b-upload
+                    v-model="titleImage"
+                    type="image"
+                    class="file-label has-text-link"
+                    @input="postTitleImage(titleImage)"
+                  >
                     <span>
                       <i class="mdi mdi-upload"></i>
                       Nahrať (zvoliť) titulnú fotku
                     </span>
                   </b-upload>
+                  <span v-if="titleImage">
+                    &nbsp;| {{ titleImage.name }}
+                    <b-button
+                      @click="removeTitleImage"
+                      type="is-danger"
+                      size="is-small"
+                      icon-right="delete"
+                    ></b-button>
+                  </span>
                   <br />
                   <b-upload
                     v-model="file"
@@ -263,7 +277,7 @@
                       multiple
                       drag-drop
                       type="file"
-                      :disabled="!id"
+                      :disabled="!id || loadedImages != null"
                       @input="uploadPictures()"
                     >
                       <section class="section">
@@ -278,6 +292,23 @@
                   </b-field>
 
                   <div class="tags">
+                    <template v-if="loadedImages">
+                      <span
+                        v-for="(image, index) in loadedImages"
+                        :key="index"
+                        class="tag is-info"
+                      >
+                        {{ image.split("/")[2] }}
+                      </span>
+                      <b-button
+                        @click="deleteGallery()"
+                        type="is-danger"
+                        size="is-small"
+                        icon-left="delete"
+                      >
+                        Odstrániť galériu
+                      </b-button>
+                    </template>
                     <span
                       v-for="(file, index) in pictures"
                       :key="index"
@@ -362,6 +393,7 @@ export default {
       room: null,
       lecturer: null,
       file: null,
+      filePath: null,
       isAttendanceLimit: false,
       attendanceLimit: null,
       pictures: [],
@@ -372,7 +404,10 @@ export default {
       placeName: "",
       selectedDepartmentName: "",
       selectedFacultyName: "",
-      fileLoading: false
+      fileLoading: false,
+      loadedImages: null,
+      titleImage: null,
+      titleImagePath: null
     };
   },
   methods: {
@@ -394,6 +429,30 @@ export default {
     checkForm() {
       this.generateRequest();
     },
+    postTitleImage(file) {
+      var reader = new window.FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        var result = reader.result.split(",").pop();
+        httpClient
+          .post(`/files/titleImg/${this.id}`, {
+            title_image: result
+          })
+          .then(response => {
+            console.log(response);
+            this.titleImagePath = response.data.path;
+          })
+          .catch(error => console.log(error));
+      };
+      reader.onerror = function(error) {
+        console.log("Error: ", error);
+      };
+    },
+    removeTitleImage() {
+      httpClient.delete(`/files/titleImg/${this.id}`).then(() => {
+        this.titleImage = null;
+      });
+    },
     postPDF(file) {
       this.$store.dispatch("updateLoading");
       var reader = new window.FileReader();
@@ -407,6 +466,7 @@ export default {
           .then(response => {
             console.log(response);
             this.$store.dispatch("updateLoading");
+            this.filePath = response.data.path;
           })
           .catch(error => console.log(error));
       };
@@ -437,7 +497,9 @@ export default {
               : null,
             id_user: parseInt(this.$store.getters.loggedInId),
             // file: this.file,
-            attendance_limit: this.attendanceLimit || -1
+            attendance_limit: this.attendanceLimit || -1,
+            pdfPath: this.filePath,
+            titleImgPath: this.titleImagePath
           })
           .then(() => {
             this.$store.commit("submitNewEvent", true);
@@ -446,7 +508,8 @@ export default {
               type: "is-success"
             });
           })
-          .catch(() => {
+          .catch(error => {
+            console.log(error);
             this.$buefy.toast.open({
               message: "Udalosť sa nepodarilo aktualizovať!",
               type: "is-danger"
@@ -469,7 +532,9 @@ export default {
               : null,
             id_user: parseInt(this.$store.getters.loggedInId),
             // file: this.file,
-            attendance_limit: this.attendanceLimit || -1
+            attendance_limit: this.attendanceLimit || -1,
+            pdfPath: this.filePath,
+            titleImgPath: this.titleImagePath
           })
           .then(() => {
             if (!this.createNext) {
@@ -482,7 +547,8 @@ export default {
               type: "is-success"
             });
           })
-          .catch(() => {
+          .catch(error => {
+            console.log(error);
             this.$buefy.toast.open({
               message: "Udalosť sa nepodarilo vytvoriť!",
               type: "is-danger"
@@ -513,31 +579,40 @@ export default {
       var path = pathName.path.split("/")[2];
       httpClient
         .delete(`/files/image/${this.id}/${path}`)
-        .then(response => {
-          console.log(response);
+        .then(() => {
           this.uploadingPicturesState = this.uploadingPicturesState.filter(
             picture => picture.name !== name
           );
         })
         .catch(error => console.log(error));
     },
+    deleteGallery() {
+      for (const image of Object.values(this.loadedImages)) {
+        var path = image.split("/")[2];
+        httpClient
+          .delete(`/files/image/${this.id}/${path}`)
+          .then(() => {
+            this.loadedImages = null;
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
+    },
     uploadPictures() {
-      console.log(this.pictures);
       for (const picture of this.pictures) {
         if (
           !this.uploadingPicturesState.find(state => state === picture.name)
         ) {
-          var reader = new window.FileReader();
+          let reader = new window.FileReader();
           reader.readAsDataURL(picture);
-          reader.onloadend = () => {
+          reader.onload = () => {
             var result = reader.result.split(",").pop();
             httpClient
               .post(`/files/image/${this.id}`, {
                 image: result
               })
               .then(response => {
-                console.log(picture);
-                console.log(response);
                 this.uploadingPicturesState.push({
                   name: picture.name,
                   path: response.data.path
@@ -569,6 +644,9 @@ export default {
       this.placeName = "";
       this.selectedDepartmentName = "";
       this.selectedFacultyName = "";
+      this.titleImage = null;
+      this.titleImagePath = null;
+      this.filePath = null;
     },
     editFormInputs() {
       this.name = this.getEvent.name;
@@ -597,6 +675,7 @@ export default {
         ? this.selectedDepartment.name
         : "";
       this.selectedFacultyName = this.selectedFaculty.name;
+      // this.titleImage = this.getEvent.titleImage
     }
   },
   watch: {
@@ -619,6 +698,17 @@ export default {
           })
           .catch(() => {
             this.$store.commit("finishLoading", "EventPDF");
+          });
+
+        this.$store.commit("pushToLoading", "ManageEventLoadImages");
+        httpClient
+          .get(`/files/image/${this.id}`)
+          .then(response => {
+            this.loadedImages = response.data.images_path;
+            this.$store.commit("finishLoading", "ManageEventLoadImages");
+          })
+          .catch(() => {
+            this.$store.commit("finishLoading", "ManageEventLoadImages");
           });
       }
     }
