@@ -7,6 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Lang;
 
 /**
  * Class PasswordResetRequest
@@ -50,9 +51,10 @@ class PasswordResetRequest extends Notification implements ShouldQueue
     {
         $url = url(RouteServiceProvider::PASSWORD_RESET . '/' . $this->token);
         return (new MailMessage)
-            ->line('We received a password reset request for your account.')
-            ->action('Reset Password', url($url))
-            ->line('If you did not request a password reset, contact administrator immediately.');
+            ->subject(Lang::get('Zmena hesla'))
+            ->line('Prišla nám požiadavka na zmenu hesla na vašom účte.')
+            ->action('Zmena hesla', url($url))
+            ->line('Ak ste nepožadovali zmenu hesla prosím okamžite kontaktujte administrátora.');
     }
 
     /**

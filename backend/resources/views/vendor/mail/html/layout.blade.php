@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html>
 <style>
@@ -59,29 +61,11 @@
                             </tr>
                             <tr>
                                 <td style="color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 24px; padding: 20px 0 30px 0;">
+                                    {{ Illuminate\Mail\Markdown::parse($slot) }}
 
-
-                                    @if ($subjectName == 'place')
-                                        <p>Miesto konania udalosti <b>{{ $event->name }}</b> sa zmenilo!<br>
-                                            Nové miesto konania udalosti je: <b>{{ $subjectValue }}.</b>
-                                        </p>
-                                    @elseif ($subjectName == 'delete')
-                                        <p>Udalosť s názvom <b>{{ $event->name }}</b> ktorá sa mala konať {{ $subjectValue }}<br>
-                                            bola <b>zrušená</b>.
-                                        </p>
-                                    @elseif ($subjectName == 'beginning')
-                                        <p>Čas konania udalosti <b>{{ $event->name  }}</b> sa zmenil!<br>
-                                            Nový čas konania udalosti je: <b>{{ $subjectValue }}.</b>
-                                        </p>
-                                    @else
-                                        <p>Miesto a čas konania udalosti <b>{{ $event->name  }}</b> sa zmenili!<br>
-                                            Nové miesto konania udalosti je: <b>{{ $subjectValue }}.</b><br>
-                                            Nový čas konania udalosti je: <b>{{ $event->beginning }}.</b>
-                                    @endif
-                                </td>
+                                    {{ $subcopy ?? '' }} </td>
                             </tr>
 
-                            </tr>
                         </table>
                     </td>
                 </tr>
@@ -90,7 +74,7 @@
                         <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;">
                             <tr>
                                 <td style="color: #ffffff; font-family: Arial, sans-serif; font-size: 14px;">
-                                    <p style="margin: 0;">V prípade problémov kontaktujte administrátora.<br/>
+                                    <p style="margin: 0;color: #ffffff;">V prípade problémov kontaktujte administrátora.<br/>
 
                                 </td>
 
@@ -107,22 +91,3 @@
 
 
 </html>
-
-
-@if ($subjectName == 'place')
-    <p>Miesto konania udalosti <b>{{ $event->name }}</b> sa zmenilo!<br>
-        Nové miesto konania udalosti je: <b>{{ $subjectValue }}</b>
-    </p>
-@elseif ($subjectName == 'delete')
-    <p>Udalosť s názvom <b>{{ $event->name }}</b> ktorá sa mala konať {{ $subjectValue }}<br>
-        bola <b>zrušená</b>.
-    </p>
-@elseif ($subjectName == 'beginning')
-    <p>Čas konania udalosti <b>{{ $event->name  }}</b> sa zmenil!<br>
-        Nový čas konania udalosti je: <b>{{ $subjectValue }}</b>
-    </p>
-@else
-    <p>Miesto a čas konania udalosti <b>{{ $event->name  }}</b> sa zmenili!<br>
-        Nové miesto konania udalosti je: <b>{{ $subjectValue }}</b>
-        Nový čas konania udalosti je: <b>{{ $event->beginning }}</b>
-@endif

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Notifications\EmailVerifyRequest;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\VerifiesEmails;
 use Illuminate\Http\JsonResponse;
@@ -58,7 +59,7 @@ class VerificationApiController extends Controller
             return response()->json('User already have verified email!', 422);
             // return redirect($this->redirectPath());
         }
-        $request->user()->sendEmailVerificationNotification();
+        $request->user()->notify(new EmailVerifyRequest());
         return response()->json('The notification has been resubmitted');
         // return back()->with(‘resent’, true);
     }
