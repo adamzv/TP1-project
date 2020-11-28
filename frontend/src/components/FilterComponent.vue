@@ -447,11 +447,11 @@
         }
       },
 
-      dateFilterRequestPart(insertFilter, date) {
-          if (insertFilter) {
+      dateFilterRequestPart(insertFilter, date, doFilterName, dofilterFaculty, doFilterDepartment) {
+          if ((insertFilter && !doFilterName) || (insertFilter && !dofilterFaculty) || (insertFilter && !doFilterDepartment)) {
               return `,beginning=${date}`;
           } else {
-              return ``;
+              return `,beginning=2000-01-01 00:00:00`;
           }
       },
 
@@ -493,7 +493,14 @@
         var doFilterFaculty = arrayOfData[2];
         var doFilterDepartment = arrayOfData[3];
 
-        var request = `/events?filter=${this.nameFilterRequestPart(doFilterName)}${this.dateFilterRequestPart(doFilterDate, apiDate)}${this.facultyFilterRequestPart(doFilterFaculty)}${this.departmentFilterRequestPart(doFilterDepartment, apiDept)}`;
+        var request = "";
+
+        if (!isName && !isFaculty && !isDepartment && !isDate) {
+            request = `/events`;
+        } else {
+            request = `/events?filter=${this.nameFilterRequestPart(doFilterName)}${this.dateFilterRequestPart(doFilterDate, apiDate, doFilterName)}${this.facultyFilterRequestPart(doFilterFaculty)}${this.departmentFilterRequestPart(doFilterDepartment, apiDept)}`;
+        }
+
         this.getRequestFilteredEvents(request);
         console.log(request);
       },
