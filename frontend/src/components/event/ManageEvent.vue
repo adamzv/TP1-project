@@ -81,18 +81,33 @@
               <div class="columns">
                 <div class="column">
                   <!-- TODO toto je odkaz na modal okno nie b-upload -->
-                  <b-upload v-model="file" class="file-label has-text-link">
+                  <b-upload
+                    v-model="titleImage"
+                    type="image"
+                    class="file-label has-text-link"
+                    @input="postTitleImage(titleImage)"
+                  >
                     <span>
                       <i class="mdi mdi-upload"></i>
                       Nahrať (zvoliť) titulnú fotku
                     </span>
                   </b-upload>
+                  <span v-if="titleImage">
+                    &nbsp;| {{ titleImage.name }}
+                    <b-button
+                      @click="removeTitleImage"
+                      type="is-danger"
+                      size="is-small"
+                      icon-right="delete"
+                    ></b-button>
+                  </span>
                   <br />
                   <b-upload
                     v-model="file"
                     type="file"
                     accept=".pdf"
                     class="file-label has-text-link"
+                    @input="postPDF(file)"
                   >
                     <span>
                       <i class="mdi mdi-file-upload"></i>
@@ -100,10 +115,19 @@
                     </span>
                   </b-upload>
                   <span v-if="file">
-                    &nbsp;| {{ file.name }}
-                    <a @click="file = null">
-                      <i class="mdi mdi-close-thick has-text-danger"></i>
-                    </a>
+                    &nbsp;| {{ file.name.split("/")[2] }}.pdf
+                    <b-button
+                      v-if="fileUploadLoading"
+                      :loading="fileUploadLoading"
+                      size="is-small"
+                    ></b-button>
+                    <b-button
+                      v-else
+                      @click="removePDF"
+                      type="is-danger"
+                      size="is-small"
+                      icon-right="delete"
+                    ></b-button>
                   </span>
                 </div>
               </div>
@@ -196,6 +220,7 @@
                       field="name"
                       :disabled="selectedFaculty == null"
                       :clearable="true"
+                      @select="option => (selectedDepartment = option)"
                     ></b-autocomplete>
                   </b-field>
                 </div>
@@ -243,6 +268,9 @@
             <div class="content">
               <div class="columns">
                 <div class="column">
+                  <div class="is-warning notification" v-if="!id">
+                    Obrázky sa dajú vkladať až po skončení udalosti
+                  </div>
                   <b-field>
                     <b-upload
                       v-model="pictures"
@@ -250,6 +278,8 @@
                       multiple
                       drag-drop
                       type="file"
+                      :disabled="!id || loadedImages != null"
+                      @input="uploadPictures()"
                     >
                       <section class="section">
                         <div class="content has-text-centered">
@@ -263,16 +293,44 @@
                   </b-field>
 
                   <div class="tags">
+                    <template v-if="loadedImages">
+                      <span
+                        v-for="(image, index) in loadedImages"
+                        :key="index"
+                        class="tag is-info"
+                      >
+                        {{ image.split("/")[2] }}
+                      </span>
+                      <b-button
+                        @click="deleteGallery()"
+                        type="is-danger"
+                        size="is-small"
+                        icon-left="delete"
+                      >
+                        Odstrániť galériu
+                      </b-button>
+                    </template>
                     <span
                       v-for="(file, index) in pictures"
                       :key="index"
                       class="tag is-info"
                     >
                       {{ file.name }}
+                      <Spinner
+                        v-if="
+                          !uploadingPicturesState.find(
+                            state => state.name === file.name
+                          )
+                        "
+                        size="tiny"
+                        line-fg-color="#000"
+                        style="margin-left: 4px; margin-right: -4px"
+                      />
                       <button
+                        v-else
                         class="delete is-small"
                         type="button"
-                        @click="deletePicture(index)"
+                        @click="deletePicture(index, file.name)"
                       ></button>
                     </span>
                   </div>
@@ -306,9 +364,13 @@
 <script>
 import httpClient from "../../httpClient.js";
 import moment from "moment";
+import Spinner from "vue-simple-spinner";
 
 export default {
   name: "manageEvent",
+  components: {
+    Spinner
+  },
   props: {
     event: Object
   },
@@ -332,15 +394,21 @@ export default {
       room: null,
       lecturer: null,
       file: null,
+      filePath: null,
       isAttendanceLimit: false,
       attendanceLimit: null,
       pictures: [],
+      uploadingPicturesState: [],
       response: null,
       // collapse settings
       isOpen: 0,
       placeName: "",
       selectedDepartmentName: "",
-      selectedFacultyName: ""
+      selectedFacultyName: "",
+      fileLoading: false,
+      loadedImages: null,
+      titleImage: null,
+      titleImagePath: null
     };
   },
   methods: {
@@ -362,6 +430,56 @@ export default {
     checkForm() {
       this.generateRequest();
     },
+    postTitleImage(file) {
+      var reader = new window.FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        var result = reader.result.split(",").pop();
+        httpClient
+          .post(`/files/titleImg/${this.id}`, {
+            title_image: result
+          })
+          .then(response => {
+            console.log(response);
+            this.titleImagePath = response.data.path;
+          })
+          .catch(error => console.log(error));
+      };
+      reader.onerror = function(error) {
+        console.log("Error: ", error);
+      };
+    },
+    removeTitleImage() {
+      httpClient.delete(`/files/titleImg/${this.id}`).then(() => {
+        this.titleImage = null;
+      });
+    },
+    postPDF(file) {
+      this.$store.dispatch("updateLoading");
+      var reader = new window.FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        var result = reader.result.split(",").pop();
+        httpClient
+          .post(`/files/pdf/${this.id}`, {
+            pdf: result
+          })
+          .then(response => {
+            console.log(response);
+            this.$store.dispatch("updateLoading");
+            this.filePath = response.data.path;
+          })
+          .catch(error => console.log(error));
+      };
+      reader.onerror = function(error) {
+        console.log("Error: ", error);
+      };
+    },
+    removePDF() {
+      httpClient.delete(`/files/pdf/${this.id}`).then(() => {
+        this.file = null;
+      });
+    },
     generateRequest() {
       if (this.id) {
         httpClient
@@ -380,7 +498,9 @@ export default {
               : null,
             id_user: parseInt(this.$store.getters.loggedInId),
             // file: this.file,
-            attendance_limit: this.attendanceLimit || -1
+            attendance_limit: this.attendanceLimit || -1,
+            pdfPath: this.filePath,
+            titleImgPath: this.titleImagePath
           })
           .then(() => {
             this.$store.commit("submitNewEvent", true);
@@ -389,7 +509,8 @@ export default {
               type: "is-success"
             });
           })
-          .catch(() => {
+          .catch(error => {
+            console.log(error);
             this.$buefy.toast.open({
               message: "Udalosť sa nepodarilo aktualizovať!",
               type: "is-danger"
@@ -412,7 +533,9 @@ export default {
               : null,
             id_user: parseInt(this.$store.getters.loggedInId),
             // file: this.file,
-            attendance_limit: this.attendanceLimit || -1
+            attendance_limit: this.attendanceLimit || -1,
+            pdfPath: this.filePath,
+            titleImgPath: this.titleImagePath
           })
           .then(() => {
             if (!this.createNext) {
@@ -425,7 +548,8 @@ export default {
               type: "is-success"
             });
           })
-          .catch(() => {
+          .catch(error => {
+            console.log(error);
             this.$buefy.toast.open({
               message: "Udalosť sa nepodarilo vytvoriť!",
               type: "is-danger"
@@ -448,8 +572,59 @@ export default {
         this.selectedDepartment = null;
       }
     },
-    deletePicture(index) {
+    deletePicture(index, name) {
       this.pictures.splice(index, 1);
+      const pathName = this.uploadingPicturesState.find(
+        picture => picture.name === name
+      );
+      var path = pathName.path.split("/")[2];
+      httpClient
+        .delete(`/files/image/${this.id}/${path}`)
+        .then(() => {
+          this.uploadingPicturesState = this.uploadingPicturesState.filter(
+            picture => picture.name !== name
+          );
+        })
+        .catch(error => console.log(error));
+    },
+    deleteGallery() {
+      for (const image of Object.values(this.loadedImages)) {
+        var path = image.split("/")[2];
+        httpClient
+          .delete(`/files/image/${this.id}/${path}`)
+          .then(() => {
+            this.loadedImages = null;
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
+    },
+    uploadPictures() {
+      for (const picture of this.pictures) {
+        if (
+          !this.uploadingPicturesState.find(state => state === picture.name)
+        ) {
+          let reader = new window.FileReader();
+          reader.readAsDataURL(picture);
+          reader.onload = () => {
+            var result = reader.result.split(",").pop();
+            httpClient
+              .post(`/files/image/${this.id}`, {
+                image: result
+              })
+              .then(response => {
+                this.uploadingPicturesState.push({
+                  name: picture.name,
+                  path: response.data.path
+                });
+              })
+              .catch(error => {
+                console.log(error);
+              });
+          };
+        }
+      }
     },
     clearFormInputs() {
       this.name = "";
@@ -470,6 +645,9 @@ export default {
       this.placeName = "";
       this.selectedDepartmentName = "";
       this.selectedFacultyName = "";
+      this.titleImage = null;
+      this.titleImagePath = null;
+      this.filePath = null;
     },
     editFormInputs() {
       this.name = this.getEvent.name;
@@ -498,6 +676,7 @@ export default {
         ? this.selectedDepartment.name
         : "";
       this.selectedFacultyName = this.selectedFaculty.name;
+      // this.titleImage = this.getEvent.titleImage
     }
   },
   watch: {
@@ -506,6 +685,32 @@ export default {
         this.editFormInputs();
       } else {
         this.clearFormInputs();
+      }
+    },
+    id(val) {
+      if (val) {
+        this.$store.commit("pushToLoading", "EventPDF");
+        httpClient
+          .get(`/files/pdf/${this.id}`)
+          .then(response => {
+            this.file = {};
+            this.file.name = response.data.pdfs_path.pdf1_path;
+            this.$store.commit("finishLoading", "EventPDF");
+          })
+          .catch(() => {
+            this.$store.commit("finishLoading", "EventPDF");
+          });
+
+        this.$store.commit("pushToLoading", "ManageEventLoadImages");
+        httpClient
+          .get(`/files/image/${this.id}`)
+          .then(response => {
+            this.loadedImages = response.data.images_path;
+            this.$store.commit("finishLoading", "ManageEventLoadImages");
+          })
+          .catch(() => {
+            this.$store.commit("finishLoading", "ManageEventLoadImages");
+          });
       }
     }
   },
@@ -520,6 +725,9 @@ export default {
     },
     getEvent() {
       return this.event;
+    },
+    fileUploadLoading() {
+      return this.$store.getters.fileUploadLoading;
     }
   },
   created() {
