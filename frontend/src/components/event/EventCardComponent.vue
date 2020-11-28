@@ -100,13 +100,29 @@ component takes in all the event data coming from EventListComponent and renders
       </div>
 
       <!-- Details of the event -->
-      <div style="overflow-y: scroll;" class="eventDetails" v-if="eventDesc">
+      <div style="overflow-y: scroll;" class="eventDetails" v-if="eventDesc" v-bind:class="{
+              eventBorderColorFPV:  eventIdFaculty == 1,
+              eventBorderColorFF:   eventIdFaculty == 4,
+              eventBorderColorFSS:  eventIdFaculty == 3,
+              eventBorderColorFP:   eventIdFaculty == 5,
+              eventBorderColorFSVZ: eventIdFaculty == 2,
+              eventBorderColorUKF:  eventIdFaculty == 6,
+              eventBorderColorLIB:  eventIdFaculty == 7
+            }">
         <p>
           {{ eventDesc }}
         </p>
       </div>
 
-      <div style="overflow-y: scroll;" class="eventDetails" v-else>
+      <div style="overflow-y: scroll;" class="eventDetails" v-else v-bind:class="{
+              eventBorderColorFPV:  eventIdFaculty == 1,
+              eventBorderColorFF:   eventIdFaculty == 4,
+              eventBorderColorFSS:  eventIdFaculty == 3,
+              eventBorderColorFP:   eventIdFaculty == 5,
+              eventBorderColorFSVZ: eventIdFaculty == 2,
+              eventBorderColorUKF:  eventIdFaculty == 6,
+              eventBorderColorLIB:  eventIdFaculty == 7
+            }">
         <p style="color: #adadad;">
           Bez popisu.
         </p>
@@ -292,7 +308,7 @@ export default {
 }
 
 .eventDetails {
-  padding: 20px;
+  padding: 12px;
   text-align: justify;
   height: 200px;
   max-height: 200px;
@@ -332,6 +348,34 @@ export default {
 
 .eventBackColorFSVZ {
   background: #f31a33;
+}
+
+.eventBorderColorUKF {
+  border-left: 4px solid #c9f8ff;
+}
+
+.eventBorderColorLIB {
+  border-left: 4px solid #b5a6a5;
+}
+
+.eventBorderColorFPV {
+  border-left: 4px solid #b4dbcb;
+}
+
+.eventBorderColorFF {
+  border-left: 4px solid #e3b3ce;
+}
+
+.eventBorderColorFSS {
+  border-left: 4px solid #e3cba8;
+}
+
+.eventBorderColorFP {
+  border-left: 4px solid #9ec1d9;
+}
+
+.eventBorderColorFSVZ {
+  border-left: 4px solid #e6b3b9;
 }
 
 .panel {

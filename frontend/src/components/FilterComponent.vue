@@ -112,7 +112,6 @@
                               :open-on-focus="true"
                               :data="getFilteredDepartments"
                               field="name"
-                              :disabled="selectedFaculty == null"
                               placeholder="Katedra"
                               :clearable="true">
               </b-autocomplete>
@@ -250,7 +249,6 @@
                               :open-on-focus="true"
                               :data="getFilteredDepartments"
                               field="name"
-                              :disabled="selectedFaculty == null"
                               placeholder="Katedra"
                               :clearable="true">
               </b-autocomplete>
@@ -623,12 +621,16 @@
 
     computed: {
       getFilteredDepartments() {
-        return this.availableDepartments.filter(department => {
-          return (
-                  this.selectedFaculty !== null &&
-                  department.id_faculty === this.selectedFaculty.id
-          );
-        });
+          if (this.selectedFaculty != null) {
+              return this.availableDepartments.filter(department => {
+                  return (
+                      this.selectedFaculty !== null &&
+                      department.id_faculty === this.selectedFaculty.id
+                  );
+              });
+          } else {
+              return this.availableDepartments;
+          }
       },
 
       eventDateSplit: function() {
