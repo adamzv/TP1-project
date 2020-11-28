@@ -6,6 +6,7 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Laravel\Passport\Passport;
 use Tests\TestCase;
 
 /**
@@ -24,7 +25,12 @@ class UsersTest extends TestCase
     {
         parent::setUP();
         $this->seed();
-
+        $user = factory(User::class)->create(
+            [
+                'id_role' => '1',
+            ]
+        );
+        Passport::actingAs($user, ['admin-user','moderator-user']);
 
     }
 
