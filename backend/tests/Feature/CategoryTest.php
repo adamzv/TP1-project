@@ -3,7 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\Category;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Passport\Passport;
 use Tests\TestCase;
 
 /**
@@ -15,6 +17,18 @@ class CategoryTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function setUp(): void
+    {
+        parent::setUP();
+        $this->seed();
+        $user = factory(User::class)->create(
+            [
+                'id_role' => '1',
+            ]
+        );
+        Passport::actingAs($user, ['admin-user','moderator-user']);
+
+    }
     /**
      * Test: Creating Category
      */
