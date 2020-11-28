@@ -11,6 +11,7 @@ import i18n from "./i18n";
 // imports Moment.js plugin moment-countdown that integrates Moment with Countdown.js
 const momentCountdown = require("moment-countdown");
 
+Vue.config.silent = true;
 Vue.config.productionTip = false;
 Vue.use(Buefy);
 Vue.use(momentCountdown);
