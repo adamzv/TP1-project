@@ -220,6 +220,7 @@
                       field="name"
                       :disabled="selectedFaculty == null"
                       :clearable="true"
+                      @select="option => (selectedDepartment = option)"
                     ></b-autocomplete>
                   </b-field>
                 </div>
