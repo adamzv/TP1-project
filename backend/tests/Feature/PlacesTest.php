@@ -5,7 +5,9 @@ namespace Tests\Feature;
 use App\Models\City;
 use App\Models\Place;
 use App\Models\State;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Passport\Passport;
 use Tests\TestCase;
 
 /**
@@ -17,10 +19,22 @@ class PlacesTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function setUp(): void
+    {
+        parent::setUP();
+        $this->seed();
+        $user = factory(User::class)->create(
+            [
+                'id_role' => '1',
+            ]
+        );
+        Passport::actingAs($user, ['admin-user','moderator-user']);
+
+    }
     /**
      * Test: Creating cities
      */
-    public function test_can_create_city()
+    public function test_can_create_place()
     {
 
         factory(State::class)->create();
@@ -39,7 +53,7 @@ class PlacesTest extends TestCase
     /**
      * Test: Updating cities
      */
-    public function test_can_update_city()
+    public function test_can_update_place()
     {
         factory(State::class)->create();
         $city = factory(City::class)->create()->id;

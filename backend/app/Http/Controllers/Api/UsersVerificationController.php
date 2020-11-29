@@ -39,8 +39,22 @@ class UsersVerificationController extends Controller
             $user = Auth::user();
             if ($user->email_verified_at !== NULL) {
 
-                // create token to user and return it
-                $accessToken = Auth::user()->createToken('authToken')->accessToken;
+                // get user role
+                $userRole = $user->role->type;
+                if ($userRole == 'admin') {
+
+                    // create token to user with admin scope and return it
+                    $accessToken = Auth::user()->createToken('authToken', ['admin-user'])->accessToken;
+                } else if ($userRole == 'moderator') {
+
+                    // create token to user with moderator scope and return it
+                    $accessToken = Auth::user()->createToken('authToken', ['moderator-user'])->accessToken;
+                } else {
+
+                    // create token to user and return it
+                    $accessToken = Auth::user()->createToken('authToken', ['logged-user'])->accessToken;
+                }
+
                 $success['message'] = 'Login successfull';
 
                 return response()->json([

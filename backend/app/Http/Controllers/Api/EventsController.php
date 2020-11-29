@@ -21,6 +21,11 @@ use Mail;
  */
 class EventsController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware(['auth:api', 'scope:admin-user,moderator-user'])->except(['index', 'show']);
+    }
+
     /**
      * Display a listing of the resource.
      *
