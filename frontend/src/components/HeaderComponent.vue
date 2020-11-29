@@ -60,8 +60,8 @@
             :has-drag="true"
             :pause-info="false"
             :interval="4000"
-            :repeat="true"
-    >
+            :repeat="true">
+
       <b-carousel-item v-for="(event, i) in events" :key="i">
         <!-- <section :class="`hero is-medium is-${carousel.color} is-bold`"> -->
         <section class="hero is-medium is-bold is-dark">
