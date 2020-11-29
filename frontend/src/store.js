@@ -18,6 +18,9 @@ export default new Vuex.Store({
     fileUploadLoading(state) {
       return state.fileUploadLoading;
     },
+    token(state) {
+      return state.token;
+    },
     loading(state) {
       return state.loading;
     },

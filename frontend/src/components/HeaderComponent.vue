@@ -38,14 +38,6 @@
           :collapsible="true"
           :label="loggedInName"
         >
-          <b-navbar-item
-            v-if="addEventPermission"
-            tag="router-link"
-            to="/pridat"
-            class="has-text-link"
-          >
-            {{ $t("addEvent") }}
-          </b-navbar-item>
           <b-navbar-item tag="router-link" to="/profile">
             {{ $t("profile") }}
           </b-navbar-item>
