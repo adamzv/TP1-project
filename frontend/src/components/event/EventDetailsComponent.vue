@@ -84,10 +84,6 @@ format. * */
               <i>{{ eventAttendanceLimit }}</i>
             </p>
 
-            <span v-else>
-              <i>Neobmedzene</i>
-            </span>
-
             <p v-else class="panel-info" style="font-size: small;">
               <i> Neobmedzene</i>
             </p>
@@ -157,8 +153,8 @@ format. * */
                 :src="getImgUrl(image)"
                 class="imageLink"
                 @click="
-                  isImageModalActive = true;
-                  imageModal = image;
+                  isImageModalActive = true,
+                  imageModal = image
                 "
               />
               <b-modal v-model="isImageModalActive">

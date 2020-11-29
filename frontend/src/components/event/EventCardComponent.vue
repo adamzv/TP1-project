@@ -45,7 +45,7 @@ component takes in all the event data coming from EventListComponent and renders
       </div>
 
       <!-- Test image -->
-      <div class="panel-block" style="padding: 0;">
+      <div class="panel-block" style="padding: 0; max-height: 230px; overflow-y: hidden;">
         <img
           v-if="titleImage"
           style="width: 100%;"

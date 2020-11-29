@@ -46,6 +46,7 @@ details accordingly. * */
 
 <script>
 import EventCardComponent from "./EventCardComponent";
+import httpClient from "../../httpClient";
 
 export default {
   name: "EventListComponent",

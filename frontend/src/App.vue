@@ -22,6 +22,7 @@
     <back-to-top bottom="50px" right="50px">
       <button type="button" class="btn-to-top"><b-icon icon="chevron-up" /></button>
     </back-to-top>
+
   </div>
 </template>
 
@@ -45,8 +46,7 @@ export default {
     };
   },
   created() {
-
-    window.addEventListener("resize", this.listenToCarouselHeight);
+    window.addEventListener('resize', this.listenToCarouselHeight);
     this.$store.commit("retrieveUserIdFromStorage");
     if (this.$store.getters.loggedInId) {
       this.$store.commit("pushToLoading", "App");
@@ -75,11 +75,10 @@ export default {
       console.log(this.$store.state.carouselHeight);
     }
   },
-
   computed: {
-    isLoading() {
-      return this.$store.getters.loading.length > 0;
-    }
+      isLoading() {
+          return this.$store.getters.loading.length > 0;
+      }
   },
 
   mounted() {
@@ -88,7 +87,6 @@ export default {
       .then(response => {
         this.$store.commit('setCurrentlyInFilter', response.data);
       });
-
   }
 };
 </script>
@@ -116,16 +114,17 @@ export default {
 .loading-z-pos {
   z-index: 2000;
 }
-  .btn-to-top {
-    width: 60px;
-    height: 60px;
-    padding: 10px 16px;
-    font-size: 22px;
-    line-height: 22px;
-    opacity: 0.7;
-  }
 
-  .btn-to-top:hover {
-    opacity: 1.0;
-  }
+.btn-to-top {
+  width: 60px;
+  height: 60px;
+  padding: 10px 16px;
+  font-size: 22px;
+  line-height: 22px;
+  opacity: 0.7;
+}
+
+.btn-to-top:hover {
+  opacity: 1.0;
+}
 </style>

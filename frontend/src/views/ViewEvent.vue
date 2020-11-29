@@ -1,5 +1,11 @@
-/* * * Created by: Martin Gajdos * Date: 15. 11. 2020 * * Description: View
-event details on a single page * */
+/*
+*
+* Created by: Martin Gajdos
+* Date: 15. 11. 2020
+*
+* Description: View event details on a single page
+*
+*/
 
 <template>
   <div class="page-margin">
@@ -27,28 +33,30 @@ event details on a single page * */
 </template>
 
 <script>
+
 import EventDetailsComponent from "../components/event/EventDetailsComponent";
 import httpClient from "../httpClient";
 
-export default {
-  name: "ViewEvent",
-  components: { EventDetailsComponent },
+  export default {
+    name: "ViewEvent",
+    components: {EventDetailsComponent},
 
-  data() {
-    return {
-      event_id: Number,
-      event: []
-    };
-  },
+    data() {
+      return {
+        event_id: Number,
+        events: []
+      }
+    },
 
-  created() {
-    this.event_id = this.$route.params.eventId;
+    created() {
+      this.event_id = this.$route.params.eventId;
 
-    httpClient.get(`/events/${this.event_id}`).then(response => {
-      this.event = response.data;
-    });
+      httpClient.get(`/events/${this.event_id}`)
+        .then(response => {
+          this.events = response.data;
+        });
+    }
   }
-};
 </script>
 
 <style scoped>
