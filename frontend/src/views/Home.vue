@@ -24,7 +24,6 @@
         // TODO: Second value is not correct nor exact, needs to be somehow modified for carouselHeight from VUEX
         if (window.pageYOffset * 4 > sticky) { filter.classList.add("sticky"); }
         if (window.pageYOffset < 350) { filter.classList.remove("sticky"); }
-        console.log(window.pageYOffset +", offsetTop: "+ sticky);
       },
 
       onClickChild(value) {
