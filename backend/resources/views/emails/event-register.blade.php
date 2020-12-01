@@ -1,5 +1,33 @@
 <!DOCTYPE html>
 <html>
+<style>
+
+
+    .middiv{
+        position: center;
+        text-align: center;
+    }
+    .button {
+        margin-top: 20px;
+        margin-right: 20px;
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+    }
+    .nadpis{
+        float: left;
+        text-align: center;
+        color: #ffffff;
+        font-family: "Arial", sans-serif;
+        vertical-align: middle;
+    }
+
+
+</style>
 
 
 <body style="margin: 0; padding: 0;">

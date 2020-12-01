@@ -10,6 +10,7 @@ use App\Models\Event;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Mail;
 
 /**
@@ -21,8 +22,8 @@ class UsersController extends Controller
 {
     function __construct()
     {
-        $this->middleware(['auth:api', 'scope:admin-user'])->except(['eventRegister', 'eventUnregister', 'eventEmail', 'show']);
-        $this->middleware(['auth:api', 'scope:moderator-user,logged-user,admin-user'])->only(['show']);
+        $this->middleware(['auth:api', 'scope:admin-user'])->except(['eventRegister', 'eventUnregister', 'eventEmail', 'show', 'checkEvent']);
+        $this->middleware(['auth:api', 'scope:moderator-user,logged-user,admin-user'])->only(['show','checkEvent']);
     }
 
     /**
@@ -99,26 +100,69 @@ class UsersController extends Controller
     {
 
         if ($request->input('email') == null) {
-            $event = Event::findOrFail($request->input('event_id'));
-            $event->attendance()->attach($request->input('user_id'));
+            $query = DB::table('event_user')
+                ->where('user_id','=',$request->input('user_id'))
+                ->where('event_id','=',$request->input('event_id'))
+                ->get();
+            if($query->isEmpty() && ($this->checkLimit($request->input('event_id')) == true)) {
+                $event = Event::findOrFail($request->input('event_id'));
+                $event->attendance()->attach($request->input('user_id'));
 
             return response()->json([
                 'success' => true,
                 'message' => 'User was successfully registered on event'],
-                201);
+                201);}
+            elseif ($this->checkLimit($request->input('event_id')) == false){
+                return response()->json([
+                    'message' => 'Event Full'],
+                    200);
+            }
+            else{
+                return response()->json([
+                    'message' => 'User is already registered on event'],
+                    200);
+            }
         } elseif ($request->input('user_id') == null) {
-
-            $eventid = $request->input('event_id');
-            $mail = $request->input('email');
-            Mail::to($mail)
-                ->send(new EventRegister(
-                    $eventid, $mail
-                ));
-            return response()->json([
-                'success' => true,
-                'message' => 'Email send'],
-                201);
+            $query = DB::table('event_user')
+                ->leftJoin('emails','emails.id','=','event_user.email_id')
+                ->where('emails.email','=',$request->input('email'))
+                ->where('event_id','=',$request->input('event_id'))
+                ->get();
+            $test = DB::table('users')
+                ->select('email')
+                ->where('email','=',$request->input('email'))
+                ->get();
+            if($test->isEmpty() && $query->isEmpty() && ($this->checkLimit($request->input('event_id')) == true)) {
+                $eventid = $request->input('event_id');
+                $mail = $request->input('email');
+                Mail::to($mail)
+                    ->send(new EventRegister(
+                        $eventid, $mail
+                    ));
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Email sent'],
+                    201);
+            }
+            elseif ($this->checkLimit($request->input('event_id')) == false){
+                return response()->json([
+                    'message' => 'Event Full'],
+                    200);
+            }
+            elseif ($test->isNotEmpty()){
+                return response()->json([
+                    'message' => 'Please log in!'],
+                    200);
+            }
+            else{
+                return response()->json([
+                    'message' => 'This email is already registered on this event'],
+                    200);
+            }
         }
+        return response()->json([
+            'message' => 'Something went wrong'],
+            200);
 
 
     }
@@ -139,6 +183,18 @@ class UsersController extends Controller
                 200);
 
         } elseif ($request->input('user_id') == null) {
+            $query = DB::table('event_user')
+                ->leftJoin('emails','emails.id','=','event_user.email_id')
+                ->where('emails.email','=',$request->input('email'))
+                ->where('event_id','=',$request->input('event_id'))
+                ->get();
+            if($query->isEmpty()){
+                return response()->json([
+                    'message' => 'You are not registered!'],
+                    200);
+
+            }
+            else{
             $event = Event::findOrFail($request->input('event_id'));
             $mail = Email::where('email', '=', $request->input('email'))->firstOrFail();
             $event->emails()->detach($mail->id);
@@ -148,6 +204,10 @@ class UsersController extends Controller
                 'message' => 'Email was successfully removed from event'],
                 200);
         }
+        }
+        return response()->json([
+        'message' => 'Something went wrong'],
+        200);
 
     }
 
@@ -157,16 +217,70 @@ class UsersController extends Controller
      */
     public function eventEmail(Request $request)
     {
+        if ($this->checkLimit($request->input('event_id')) == true) {
 
-        $event = Event::findOrFail($request->input('event_id'));
-        $mail = Email::firstOrCreate(["email" => $request->input('email')]);
-        //$event->emails()->attach($mail->id);
-        if (!$event->emails->contains($mail->id)) {
-            $event->emails()->save($mail);
+
+            $event = Event::findOrFail($request->input('event_id'));
+            $mail = Email::firstOrCreate(["email" => $request->input('email')]);
+            //$event->emails()->attach($mail->id);
+            if (!$event->emails->contains($mail->id)) {
+                $event->emails()->save($mail);
+            }
+            return response()->json([
+                'success' => true,
+                'message' => 'Email was successfully registered on event'],
+                201);
         }
+
+            return response()->json([
+                'message' => 'Event Full'],
+                200);
+    }
+
+
+    /**
+     * @param $eventid
+     * @return bool
+     */
+    public function checkLimit($eventid){
+
+        $count = DB::table('events')
+            ->join('event_user','events.id','=','event_user.event_id')
+            ->where('events.id','=',$eventid)
+            ->pluck(DB::raw('COUNT(event_user.event_id) as participants'));
+
+        $event = DB::table('events')
+            ->select('events.id')
+            ->where('events.id','=',$eventid)
+            ->where('events.attendance_limit','>', $count)
+            ->get();
+
+        if($event->isEmpty()){
+            return false;
+        }
+        return true;
+
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function checkEvent(Request $request){
+        $query = DB::table('event_user')
+            ->select('id')
+            ->where('event_id','=',$request->input('event_id'))
+            ->where('user_id','=',$request->input('user_id'))
+            ->get();
+        if($query->isEmpty()){
+
+            return response()->json([
+                'message' => false],
+                200);
+        }
+
         return response()->json([
-            'success' => true,
-            'message' => 'Email was successfully registered on event'],
-            201);
+            'message' => true],
+            200);
     }
 }
