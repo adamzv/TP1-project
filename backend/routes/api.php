@@ -43,6 +43,7 @@ Route::prefix('users')->group(function () {
     Route::post('eventRegister', 'Api\UsersController@eventRegister');
     Route::post('eventUnregister', 'Api\UsersController@eventUnregister');
     Route::post('eventEmail', 'Api\UsersController@eventEmail')->name('users.email');
+    Route::post('checkEvent','Api\UsersController@checkEvent');
 });
 
 Route::namespace('Api')->group(function () {
@@ -51,7 +52,6 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('departments', 'DepartmentsController');
     Route::apiResource('events', 'EventsController');
     Route::apiResource('faculties', 'FacultiesController');
-    Route::apiResource('pictures', 'PicturesController');
     Route::apiResource('places', 'PlacesController');
     Route::apiResource('roles', 'RolesController');
     Route::apiResource('states', 'StatesController');
