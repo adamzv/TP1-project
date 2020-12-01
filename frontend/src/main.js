@@ -8,12 +8,16 @@ import router from "./router";
 import store from "./store";
 import i18n from "./i18n";
 
+import interceptors from "./interceptors";
+
 // imports Moment.js plugin moment-countdown that integrates Moment with Countdown.js
 const momentCountdown = require("moment-countdown");
 
 Vue.config.productionTip = false;
 Vue.use(Buefy);
 Vue.use(momentCountdown);
+
+interceptors();
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAdmin)) {

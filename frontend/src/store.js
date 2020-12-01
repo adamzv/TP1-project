@@ -11,9 +11,16 @@ export default new Vuex.Store({
     user: null,
     newEventSubmitted: false,
     carouselHeight: 500,
-    loading: []
+    loading: [],
+    fileUploadLoading: false
   },
   getters: {
+    fileUploadLoading(state) {
+      return state.fileUploadLoading;
+    },
+    token(state) {
+      return state.token;
+    },
     loading(state) {
       return state.loading;
     },
@@ -42,6 +49,9 @@ export default new Vuex.Store({
     }
   },
   mutations: {
+    updateLoading(state) {
+      state.fileUploadLoading = !state.fileUploadLoading;
+    },
     pushToLoading(state, component) {
       state.loading.push(component);
     },
@@ -75,6 +85,9 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    updateLoading(context) {
+      context.commit("updateLoading");
+    },
     retrieveToken(context, credentials) {
       // and userId
       return new Promise((resolve, reject) => {

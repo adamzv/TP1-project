@@ -41,6 +41,13 @@ component takes in all the event data coming from EventListComponent and renders
       <!-- Test image -->
       <div class="panel-block" style="padding: 0;">
         <img
+          v-if="titleImage"
+          style="width: 100%;"
+          :src="getImgUrl(titleImage)"
+          alt="alternatetext"
+        />
+        <img
+          v-else
           style="width: 100%;"
           src="https://www.nitralive.sk/images/stories/vystavba/ukf/laboratoria/laboratoria-ukf-nitra-vizualizacia-titulka.jpg"
           alt="alternatetext"
@@ -136,12 +143,15 @@ component takes in all the event data coming from EventListComponent and renders
 </template>
 
 <script>
+import httpClient from "../../httpClient.js";
+
 export default {
   name: "EventCardComponent",
 
   data() {
     return {
-      clicked: false
+      clicked: false,
+      titleImage: null
     };
   },
 
@@ -237,7 +247,22 @@ export default {
         name: "Event",
         params: { data: this.props }
       });
+    },
+    getImgUrl(value) {
+      return process.env.VUE_APP_IMAGES_STORAGE_URL + value;
     }
+  },
+  created() {
+    this.$store.commit("pushToLoading", "EventCardLoadImages");
+    httpClient
+      .get(`/files/titleImg/${this.eventId}`)
+      .then(response => {
+        this.titleImage = response.data.title_images_path.title_image1_path;
+        this.$store.commit("finishLoading", "EventCardLoadImages");
+      })
+      .catch(() => {
+        this.$store.commit("finishLoading", "EventCardLoadImages");
+      });
   }
 };
 </script>

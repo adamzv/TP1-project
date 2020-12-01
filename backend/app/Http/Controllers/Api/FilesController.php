@@ -15,6 +15,10 @@ use Illuminate\Support\Facades\Storage;
  */
 class FilesController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware(['auth:api', 'scope:admin-user,moderator-user'])->except(['downloadPdf', 'downloadTitleImg', 'downloadImage']);
+    }
 
     /**
      * Uploads pdf file and returns path
@@ -143,8 +147,8 @@ class FilesController extends Controller
      */
     public function downloadTitleImg($id)
     {
-        // create empty array for title images and title image paths
-        $titleImgArr = [];
+        // create empty array for title image paths
+        // $titleImgArr = [];
         $titleImgPathArr = [];
 
         // get file names in event directory to array
@@ -157,10 +161,10 @@ class FilesController extends Controller
             $i++;
 
             // get image
-            $file = Storage::disk('azure')->get($fileName);
+            // $file = Storage::disk('azure')->get($fileName);
 
             // encode it and push it to array
-            $titleImgArr['title_image' . $i] = base64_encode($file);
+            // $titleImgArr['title_image' . $i] = base64_encode($file);
 
             // write title image path to array
             $titleImgPathArr['title_image' . $i . '_path'] = $fileName;
@@ -179,8 +183,7 @@ class FilesController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Title image returned successfully',
-                'title_images_path' => $titleImgPathArr,
-                'title_images' => $titleImgArr], 200);
+                'title_images_path' => $titleImgPathArr], 200);
         }
     }
 
@@ -236,8 +239,8 @@ class FilesController extends Controller
      */
     public function downloadImage($id)
     {
-        // create empty array for images and images paths
-        $imageArr = [];
+        // create empty array for images paths
+        // $imageArr = [];
         $imagePathArr = [];
 
         // get file names in event directory to array
@@ -250,10 +253,10 @@ class FilesController extends Controller
             $i++;
 
             // get image
-            $file = Storage::disk('azure')->get($fileName);
+            // $file = Storage::disk('azure')->get($fileName);
 
             // encode it and push it to array
-            $imageArr['image' . $i] = base64_encode($file);
+            // $imageArr['image' . $i] = base64_encode($file);
 
             // write image path to array
             $imagePathArr['image' . $i . '_path'] = $fileName;
@@ -272,23 +275,19 @@ class FilesController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Images successfully returned',
-                'images_path' => $imagePathArr,
-                'images' => $imageArr], 200);
+                'images_path' => $imagePathArr], 200);
         }
     }
 
     /**
      * Removes image from event according file name
      *
-     * @param Request $request
      * @param $id
+     * @param $imageName
      * @return JsonResponse
      */
-    public function deleteImage(Request $request, $id)
+    public function deleteImage($id, $imageName)
     {
-
-        // get image name from request
-        $imageName = $request->input('image_name');
 
         // delete title image directory of the event
         Storage::disk('azure')->delete('images/' . $id . '/' . $imageName);

@@ -85,22 +85,27 @@ format. * */
             </span>
 
             <span v-else>
-              <i> Neobmedzene</i>
+              <i>Neobmedzene</i>
             </span>
+          </div>
+
+          <!-- TODO -->
+          <div>
+            <a @click.prevent="downloadItem(item)">Stiahnuť pdf</a>
           </div>
 
           <!-- Sign up button -->
           <div>
             <b-button
-                v-bind:class="{
-                  eventBackColorFPV: eventIdFaculty == 1,
-                  eventBackColorFF: eventIdFaculty == 4,
-                  eventBackColorFSS: eventIdFaculty == 3,
-                  eventBackColorFP: eventIdFaculty == 5,
-                  eventBackColorFSVZ: eventIdFaculty == 2,
-                  eventBackColorUKF: eventIdFaculty == 6,
-                  eventBackColorLIB: eventIdFaculty == 7
-                }"
+              v-bind:class="{
+                eventBackColorFPV: eventIdFaculty == 1,
+                eventBackColorFF: eventIdFaculty == 4,
+                eventBackColorFSS: eventIdFaculty == 3,
+                eventBackColorFP: eventIdFaculty == 5,
+                eventBackColorFSVZ: eventIdFaculty == 2,
+                eventBackColorUKF: eventIdFaculty == 6,
+                eventBackColorLIB: eventIdFaculty == 7
+              }"
               style="margin-top: 10px; margin-bottom: 10px; color: white;"
             >
               Prihlasit sa
@@ -164,52 +169,23 @@ format. * */
 
           <!-- Event gallery -->
           <div class="event-image-gallery">
-            <img
-              @click="isImageModalActive = true"
-              :src="imageGalleryLink"
-              class="imageLink"
-            />
-            <img
-              @click="isImageModalActive = true"
-              :src="imageGalleryLink"
-              class="imageLink"
-            />
-            <img
-              @click="isImageModalActive = true"
-              :src="imageGalleryLink"
-              class="imageLink"
-            />
-            <img
-              @click="isImageModalActive = true"
-              :src="imageGalleryLink"
-              class="imageLink"
-            />
-            <img
-              @click="isImageModalActive = true"
-              :src="imageGalleryLink"
-              class="imageLink"
-            />
-            <img
-              @click="isImageModalActive = true"
-              :src="imageGalleryLink"
-              class="imageLink"
-            />
-            <img
-              @click="isImageModalActive = true"
-              :src="imageGalleryLink"
-              class="imageLink"
-            />
-            <img
-              @click="isImageModalActive = true"
-              :src="imageGalleryLink"
-              class="imageLink"
-            />
-
-            <b-modal v-model="isImageModalActive">
-              <p class="image">
-                <img :src="imageGalleryLink" />
-              </p>
-            </b-modal>
+            <div v-if="images">
+              <img
+                v-for="image in images"
+                :key="image"
+                :src="getImgUrl(image)"
+                class="imageLink"
+                @click="
+                  isImageModalActive = true;
+                  imageModal = image;
+                "
+              />
+              <b-modal v-model="isImageModalActive">
+                <p class="image">
+                  <img :src="getImgUrl(imageModal)" />
+                </p>
+              </b-modal>
+            </div>
           </div>
         </div>
 
@@ -249,8 +225,6 @@ format. * */
               <b-icon icon="account"></b-icon>
             </div>
 
-
-
             <div class="by">{{ eventUser.name }} {{ eventUser.surname }}</div>
 
             <br />
@@ -289,7 +263,6 @@ format. * */
 </template>
 
 <script>
-
 let months = [
   "január",
   "február",
@@ -304,6 +277,7 @@ let months = [
   "november",
   "december"
 ];
+import httpClient from "../../httpClient.js";
 
 export default {
   name: "EventDetailsComponent",
@@ -329,9 +303,23 @@ export default {
 
     goBack() {
       this.$router.go(-1);
+    },
+    downloadItem() {
+      httpClient
+        .get(`/files/pdf/${this.eventId}`)
+        .then(response => {
+          const pdf = response.data.pdfs.pdf1;
+          const link = document.createElement("a");
+          link.href = `data:application/pdf;base64,${pdf}`;
+          link.download = response.data.pdfs_path.pdf1_path;
+          link.click();
+        })
+        .catch(console.error);
+    },
+    getImgUrl(value) {
+      return process.env.VUE_APP_IMAGES_STORAGE_URL + value;
     }
   },
-
   data() {
     return {
       // Default map location
@@ -339,7 +327,8 @@ export default {
         lat: 40.73061,
         lng: -73.935242
       },
-
+      images: [],
+      imageModal: null,
       isImageModalActive: false,
       isCardModalActive: false,
       imageGalleryLink:
@@ -422,7 +411,6 @@ export default {
       required: false
     }
   },
-
   computed: {
     eventDateSplit: function() {
       return this.eventBeginning.substr(0, this.eventBeginning.indexOf(" "));
@@ -432,11 +420,17 @@ export default {
       return this.eventBeginning.substr(this.eventBeginning.indexOf(" ") + 1);
     }
   },
-
   created() {
-    console.log(this.getYear());
-    console.log(this.getMonth());
-    console.log(this.getDay());
+    this.$store.commit("pushToLoading", "EventDetailsLoadImages");
+    httpClient
+      .get(`/files/image/${this.eventId}`)
+      .then(response => {
+        this.images = response.data.images_path;
+        this.$store.commit("finishLoading", "EventDetailsLoadImages");
+      })
+      .catch(() => {
+        this.$store.commit("finishLoading", "EventDetailsLoadImages");
+      });
   }
 };
 </script>

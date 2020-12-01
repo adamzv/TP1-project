@@ -3,7 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\Faculty;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Passport\Passport;
 use Tests\TestCase;
 
 /**
@@ -22,6 +24,12 @@ class FacultiesTest extends TestCase
     {
         parent::setUP();
         $this->seed();
+        $user = factory(User::class)->create(
+            [
+                'id_role' => '1',
+            ]
+        );
+        Passport::actingAs($user, ['admin-user','moderator-user']);
     }
 
 

@@ -39,7 +39,7 @@ Route::prefix('users')->group(function () {
         Route::get('logout', 'Api\UsersVerificationController@logout')->middleware('verified');
     }); // will work only when user has verified the email
 
-    //User registration on events
+    // User registration on events
     Route::post('eventRegister', 'Api\UsersController@eventRegister');
     Route::post('eventUnregister', 'Api\UsersController@eventUnregister');
     Route::post('eventEmail', 'Api\UsersController@eventEmail')->name('users.email');
@@ -72,7 +72,7 @@ Route::namespace('Api')->group(function () {
         // images
         Route::post('image/{id}', 'FilesController@uploadImage');
         Route::get('image/{id}', 'FilesController@downloadImage');
-        Route::delete('image/{id}', 'FilesController@deleteImage');
+        Route::delete('image/{id}/{imageName}', 'FilesController@deleteImage');
         Route::delete('imageAll/{id}', 'FilesController@deleteAllImages');
     });
 });
@@ -87,7 +87,9 @@ Route::get('events', function () {
     // get 'events' with pivot table 'event_user'
     $query = Event::with('user', 'place', 'department', 'faculty', 'categories')
         ->select('events.*', DB::raw('COUNT(event_user.event_id) as participants'))
-        ->leftJoin('event_user', 'events.id', '=', 'event_user.event_id');
+        ->leftJoin('event_user', 'events.id', '=', 'event_user.event_id')
+        ->leftjoin('category_event', 'category_event.event_id', '=', 'events.id');
+
 
     // Find out if request contains 'filter' value
     if (\request()->filled('filter')) {
@@ -117,6 +119,12 @@ Route::get('events', function () {
             } elseif ($criteria == 'event_user_id') {
                 $query->where('event_user.user_id', '=', $value);
                 $datetimeFilter = false;
+            } elseif ($criteria == 'categories_id') {
+                $id_categories = preg_split('@!@', $value, NULL, PREG_SPLIT_NO_EMPTY);
+
+                $query->whereHas('categories', function ($qq) use ($id_categories) {
+                    $qq->whereIn('categories.id', $id_categories);
+                });
             } else {
                 if ($criteria == 'name') $query->where('events.name', 'like', '%' . $value . '%');
                 else $query->where($criteria, 'like', '%' . $value . '%');

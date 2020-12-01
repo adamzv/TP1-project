@@ -7,6 +7,7 @@ use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegisterRequest;
 use App\Models\Role;
 use App\Models\User;
+use App\Notifications\EmailVerifyRequest;
 use Auth;
 use Illuminate\Foundation\Auth\VerifiesEmails;
 use Illuminate\Http\JsonResponse;
@@ -38,8 +39,22 @@ class UsersVerificationController extends Controller
             $user = Auth::user();
             if ($user->email_verified_at !== NULL) {
 
-                // create token to user and return it
-                $accessToken = Auth::user()->createToken('authToken')->accessToken;
+                // get user role
+                $userRole = $user->role->type;
+                if ($userRole == 'admin') {
+
+                    // create token to user with admin scope and return it
+                    $accessToken = Auth::user()->createToken('authToken', ['admin-user'])->accessToken;
+                } else if ($userRole == 'moderator') {
+
+                    // create token to user with moderator scope and return it
+                    $accessToken = Auth::user()->createToken('authToken', ['moderator-user'])->accessToken;
+                } else {
+
+                    // create token to user and return it
+                    $accessToken = Auth::user()->createToken('authToken', ['logged-user'])->accessToken;
+                }
+
                 $success['message'] = 'Login successfull';
 
                 return response()->json([
@@ -80,7 +95,7 @@ class UsersVerificationController extends Controller
         // create token to the user and return it with user
         $accessToken = $user->createToken('authToken')->accessToken;
 
-        $user->sendApiEmailVerificationNotification();
+        $user->notify(new EmailVerifyRequest());
 
         $success['message'] = 'Please confirm yourself by clicking on verify user button sent to you on your email';
 

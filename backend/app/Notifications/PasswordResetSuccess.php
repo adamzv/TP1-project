@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Lang;
 
 /**
  * Class PasswordResetSuccess
@@ -46,9 +47,10 @@ class PasswordResetSuccess extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->line('Password was changed successfully.')
-            ->line('If you did change password, no further action is required.')
-            ->line('If you did not change your password, contact administrator immediately.');
+            ->subject(Lang::get('Heslo bolo zmenené'))
+            ->line('Heslo bolo úspešne zmenené')
+            ->line('Ak ste heslo zmenili nie je potrebná žiadna ďalšia akcia')
+            ->line('Ak ste nepožadovali zmenu hesla okamžite kontaktujte administrátora');
     }
 
     /**

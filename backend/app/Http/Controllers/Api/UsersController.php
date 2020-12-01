@@ -8,6 +8,7 @@ use App\Mail\EventRegister;
 use App\Models\Email;
 use App\Models\Event;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Mail;
 
@@ -18,6 +19,12 @@ use Mail;
  */
 class UsersController extends Controller
 {
+    function __construct()
+    {
+        $this->middleware(['auth:api', 'scope:admin-user'])->except(['eventRegister', 'eventUnregister', 'eventEmail', 'show']);
+        $this->middleware(['auth:api', 'scope:moderator-user,logged-user,admin-user'])->only(['show']);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -86,7 +93,7 @@ class UsersController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function eventRegister(Request $request)
     {
@@ -118,7 +125,7 @@ class UsersController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function eventUnregister(Request $request)
     {
@@ -146,7 +153,7 @@ class UsersController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function eventEmail(Request $request)
     {
