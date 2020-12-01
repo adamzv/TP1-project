@@ -183,9 +183,6 @@ export default new Vuex.Store({
       });
     },
     destroyToken(context) {
-      httpClient.defaults.headers.common["Authorization"] =
-        "Bearer " + context.state.token;
-
       if (context.getters.loggedIn) {
         return new Promise((resolve, reject) => {
           httpClient
@@ -227,19 +224,18 @@ export default new Vuex.Store({
       });
     },
     retrieveUserData(context) {
-      httpClient.defaults.headers.common["Authorization"] =
-        "Bearer " + context.state.token;
       if (context.getters.loggedInId) {
         return new Promise((resolve, reject) => {
           httpClient
             .get(`/users/${context.state.userId}`)
             .then(response => {
               const user = response.data;
-
+              console.log(response);
               context.commit("retrieveUser", user);
               resolve(response);
             })
             .catch(error => {
+              console.log(error);
               reject(error);
             });
         });

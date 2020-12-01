@@ -8,15 +8,14 @@ We are using Azure DevOps for CI/CD and after successful build, services are aut
 
 ## IP addresses
 
-- frontend - http://40.127.143.10:8080
-- backend - http://40.127.143.10:3000
-
-In the future ports will be changed to ensure proper communication between frontend and backend
+- frontend - http://40.127.143.10:80
+- backend - http://40.127.143.10:8000
+- http://tp1project.northeurope.cloudapp.azure.com
 
 ## Authors
 
 - [Adam Zverka](https://github.com/adamzv) - team leader, continuous integration and deployment, frontend
-- [Dušan Angelovič](https://github.com/AngelovicD) - backend, testing
+- ~~[Dušan Angelovič](https://github.com/AngelovicD) - backend, testing~~
 - [Kristián Kluka](https://github.com/kristiankluka) - backend, SW architect related tasks
 - [Ľudovít Laca](https://github.com/Ludovit-Laca) - backend, DB design
 - [Martin Gajdoš](https://github.com/martingajdos) - design, frontend
@@ -40,7 +39,7 @@ php artisan key:generate
 
 5) Run `php artisan migrate:fresh --seed` to generate DB tables with data or `php artisan migrate` or `php artisan migrate --seed` to migrate tables and again run seeders
 
-6) Run `php artisan passport:keys` to generate files and keys required for Laravel Passport
+6) Run `php artisan passport:keys` (or `php artisan passport:install`) to generate files and keys required for Laravel Passport
 
 Notes:
 

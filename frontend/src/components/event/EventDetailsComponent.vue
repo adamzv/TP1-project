@@ -101,6 +101,8 @@ format. * */
           <!-- Sign up button -->
           <div>
             <b-button
+              v-if="!userAttendingEvent"
+              @click="userAttendEvent()"
               v-bind:class="{
                 eventBackColorFPV: eventIdFaculty == 1,
                 eventBackColorFF: eventIdFaculty == 4,
@@ -112,7 +114,16 @@ format. * */
               }"
               style="margin-top: 10px; margin-bottom: 10px; color: white;"
             >
-              Prihlasit sa
+              Prihlásiť sa
+            </b-button>
+            <b-button
+              v-if="userAttendingEvent"
+              @click="userCancelAttendance()"
+              type="is-danger"
+              icon-right="close-thick"
+              style="margin-top: 10px; margin-bottom: 10px; color: white;"
+            >
+              Odhlásiť sa
             </b-button>
           </div>
         </div>
@@ -232,6 +243,32 @@ format. * */
                 Action
               </b-dropdown-item>
             </b-dropdown>
+
+            <br />
+            <br />
+
+            <div class="block">
+              <ShareNetwork
+                network="facebook"
+                :url="eventURL"
+                :title="eventName"
+                :description="eventDesc"
+                hashtags="ukf"
+              >
+                <b-icon class="facebook" icon="facebook"></b-icon>
+              </ShareNetwork>
+              <ShareNetwork
+                network="twitter"
+                :url="eventURL"
+                :title="eventName"
+                hashtags="ukf"
+              >
+                <b-icon class="twitter" icon="twitter"></b-icon>
+              </ShareNetwork>
+              <ShareNetwork network="reddit" :url="eventURL" :title="eventName">
+                <b-icon class="reddit" icon="reddit"></b-icon>
+              </ShareNetwork>
+            </div>
           </div>
         </div>
       </div>
@@ -263,6 +300,66 @@ export default {
   components: {},
 
   methods: {
+    // TODO if user is logged in and is routed to details page,
+    // then load information whether the user is attending the event
+    userAttendEvent() {
+      if (this.loggedInId) {
+        httpClient
+          .post(`/users/eventRegister`, {
+            user_id: this.loggedInId,
+            event_id: this.eventId
+          })
+          .then(response => {
+            if (
+              response.data.message ===
+              "User was successfully registered on event"
+            ) {
+              // TODO if this is successful then send request
+              // to retrieve event details number of registered users
+              this.userAttendingEvent = true;
+              this.$buefy.toast.open({
+                message: `Boli ste prihlásený na ${this.eventName}.`,
+                type: "is-success"
+              });
+            }
+          })
+          .catch(error => {
+            this.$buefy.toast.open({
+              message: "Prihlásenie na udalosť bolo neúspešné.",
+              type: "is-danger"
+            });
+            console.log(error);
+          });
+      }
+    },
+    userCancelAttendance() {
+      if (this.loggedInId && this.userAttendingEvent) {
+        httpClient
+          .post(`/users/eventUnregister`, {
+            user_id: this.loggedInId,
+            event_id: this.eventId
+          })
+          .then(response => {
+            if (
+              response.data.message ===
+              "User was successfully removed from event"
+            ) {
+              this.$buefy.toast.open({
+                message: `Boli ste odhlásený z  ${this.eventName}.`,
+                type: "is-success"
+              });
+              this.userAttendingEvent = false;
+            }
+          })
+          .catch(error => {
+            this.$buefy.toast.open({
+              message: "Pokus o odhlásenie z udalosti bolo neúspešné.",
+              type: "is-danger"
+            });
+            console.log(error);
+          });
+      }
+    },
     getYear() {
       return this.eventBeginning.substr(0, this.eventBeginning.indexOf("-"));
     },
@@ -315,7 +412,8 @@ export default {
       isImageModalActive: false,
       isCardModalActive: false,
       imageGalleryLink:
-        "https://journavel.com/wp-content/uploads/2014/10/img-placeholder-dark.jpg"
+        "https://journavel.com/wp-content/uploads/2014/10/img-placeholder-dark.jpg",
+      userAttendingEvent: false
     };
   },
 
@@ -401,6 +499,12 @@ export default {
 
     eventTimeSplit: function() {
       return this.eventBeginning.substr(this.eventBeginning.indexOf(" ") + 1);
+    },
+    loggedInId() {
+      return this.$store.getters.loggedInId;
+    },
+    eventURL() {
+      return window.location.href;
     }
   },
   created() {
@@ -426,6 +530,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.twitter:hover {
+  color: #1da1f2 !important;
+}
+.facebook:hover {
+  color: #4267b2;
+}
+.reddit:hover {
+  color: #ff4500;
+}
 .alignLeft {
   float: left !important;
 }
