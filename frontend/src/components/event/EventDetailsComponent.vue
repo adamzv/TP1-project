@@ -80,14 +80,17 @@ format. * */
             <b-icon icon="account"></b-icon>
             <strong style="padding-left: 5px;">LIMIT MIEST</strong>
 
-            <p v-if="eventAttendanceLimit >= 1" class="panel-info" style="font-size: small;">
+            <p
+              v-if="eventAttendanceLimit >= 1"
+              class="panel-info"
+              style="font-size: small;"
+            >
               <i>{{ eventAttendanceLimit }}</i>
             </p>
 
             <p v-else class="panel-info" style="font-size: small;">
-              <i> Neobmedzene</i>
+              <i>Neobmedzene</i>
             </p>
-
           </div>
 
           <!-- TODO -->
@@ -152,10 +155,7 @@ format. * */
                 :key="image"
                 :src="getImgUrl(image)"
                 class="imageLink"
-                @click="
-                  isImageModalActive = true,
-                  imageModal = image
-                "
+                @click="(isImageModalActive = true), (imageModal = image)"
               />
               <b-modal v-model="isImageModalActive">
                 <p class="image">
@@ -299,7 +299,7 @@ export default {
     },
 
     eventTimeSplit2: function() {
-        return this.eventBeginning.substr(this.eventBeginning.indexOf(" ") + 1);
+      return this.eventBeginning.substr(this.eventBeginning.indexOf(" ") + 1);
     }
   },
 
@@ -505,11 +505,12 @@ export default {
       border-radius: 10px 5px 10px 5px;
       -moz-border-radius: 10px 5px 10px 5px;
       -webkit-border-radius: 10px 5px 10px 5px;
-      border: 0px solid #000000; -webkit-box-shadow: 0px 3px 3px 1px rgba(0,0,0,0.11);
+      border: 0px solid #000000;
+      -webkit-box-shadow: 0px 3px 3px 1px rgba(0, 0, 0, 0.11);
 
-      -webkit-box-shadow: 0px 1px 4px 1px rgba(0,0,0,0.18);
-      -moz-box-shadow: 0px 1px 4px 1px rgba(0,0,0,0.18);
-      box-shadow: 0px 1px 4px 1px rgba(0,0,0,0.18);
+      -webkit-box-shadow: 0px 1px 4px 1px rgba(0, 0, 0, 0.18);
+      -moz-box-shadow: 0px 1px 4px 1px rgba(0, 0, 0, 0.18);
+      box-shadow: 0px 1px 4px 1px rgba(0, 0, 0, 0.18);
     }
 
     .panel-info-time {
@@ -523,7 +524,8 @@ export default {
       border-radius: 10px 5px 10px 5px;
       -moz-border-radius: 10px 5px 10px 5px;
       -webkit-border-radius: 10px 5px 10px 5px;
-      border: 0px solid #000000; font-weight: normal;
+      border: 0px solid #000000;
+      font-weight: normal;
     }
   }
 

@@ -20,9 +20,10 @@
     <FooterComponent />
 
     <back-to-top bottom="50px" right="50px">
-      <button type="button" class="btn-to-top"><b-icon icon="chevron-up" /></button>
+      <button type="button" class="btn-to-top">
+        <b-icon icon="chevron-up" />
+      </button>
     </back-to-top>
-
   </div>
 </template>
 
@@ -30,7 +31,7 @@
 import HeaderComponent from "@/components/HeaderComponent.vue";
 import FooterComponent from "@/components/FooterComponent.vue";
 import httpClient from "./httpClient";
-import BackToTop from 'vue-backtotop';
+import BackToTop from "vue-backtotop";
 
 export default {
   components: {
@@ -46,7 +47,7 @@ export default {
     };
   },
   created() {
-    window.addEventListener('resize', this.listenToCarouselHeight);
+    window.addEventListener("resize", this.listenToCarouselHeight);
     this.$store.commit("retrieveUserIdFromStorage");
     if (this.$store.getters.loggedInId) {
       this.$store.commit("pushToLoading", "App");
@@ -76,17 +77,16 @@ export default {
     }
   },
   computed: {
-      isLoading() {
-          return this.$store.getters.loading.length > 0;
-      }
+    isLoading() {
+      return this.$store.getters.loading.length > 0;
+    }
   },
 
   mounted() {
     // App hned po starte
-    httpClient.get(`/events`)
-      .then(response => {
-        this.$store.commit('setCurrentlyInFilter', response.data);
-      });
+    httpClient.get(`/events`).then(response => {
+      this.$store.commit("setCurrentlyInFilter", response.data);
+    });
   }
 };
 </script>
@@ -125,6 +125,6 @@ export default {
 }
 
 .btn-to-top:hover {
-  opacity: 1.0;
+  opacity: 1;
 }
 </style>
