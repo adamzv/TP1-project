@@ -314,18 +314,7 @@ export default {
             event_id: this.eventId
           })
           .then(response => {
-            if (
-              response.data.message ===
-              "User was successfully registered on event"
-            ) {
-              // TODO if this is successful then send request
-              // to retrieve event details number of registered users
-              this.userAttendingEvent = true;
-              this.$buefy.toast.open({
-                message: `Boli ste prihlásený na ${this.eventName}.`,
-                type: "is-success"
-              });
-            }
+            this.toastGenerator(response.data.message);
           })
           .catch(error => {
             this.$buefy.toast.open({
@@ -353,14 +342,7 @@ export default {
               })
               .then(response => {
                 console.log(response);
-                if (response.data.message === "Email sent") {
-                  // TODO if this is successful then send request
-                  // to retrieve event details number of registered users
-                  this.$buefy.toast.open({
-                    message: `Boli ste prihlásený na ${this.eventName}.`,
-                    type: "is-success"
-                  });
-                }
+                this.toastGenerator(response.data.message);
               })
               .catch(error => {
                 this.$buefy.toast.open({
@@ -380,16 +362,7 @@ export default {
             event_id: this.eventId
           })
           .then(response => {
-            if (
-              response.data.message ===
-              "User was successfully removed from event"
-            ) {
-              this.$buefy.toast.open({
-                message: `Boli ste odhlásený z  ${this.eventName}.`,
-                type: "is-success"
-              });
-              this.userAttendingEvent = false;
-            }
+            this.toastGenerator(response.data.message);
           })
           .catch(error => {
             this.$buefy.toast.open({
@@ -398,6 +371,44 @@ export default {
             });
             console.log(error);
           });
+      }
+    },
+    toastGenerator(message) {
+      if (message === "User was successfully removed from event") {
+        this.$buefy.toast.open({
+          message: `Boli ste odhlásený z  ${this.eventName}.`,
+          type: "is-success"
+        });
+        this.userAttendingEvent = false;
+      } else if (message === "Email sent") {
+        this.$buefy.toast.open({
+          duration: 3500,
+          message: `Boli ste prihlásený na ${this.eventName}.<br />Do emailovej schránky Vám príde potvrdzovací email.`,
+          type: "is-success"
+        });
+      } else if (message === "Please log in!") {
+        this.$buefy.toast.open({
+          message: `Na udalosť sa musíte prihlásiť svojim používateľským kontom.`,
+          type: "is-warning"
+        });
+      } else if (message === "User was successfully registered on event") {
+        // TODO if this is successful then send request
+        // to retrieve event details number of registered users
+        this.userAttendingEvent = true;
+        this.$buefy.toast.open({
+          message: `Boli ste prihlásený na ${this.eventName}.`,
+          type: "is-success"
+        });
+      } else if (message === "Event Full") {
+        this.$buefy.toast.open({
+          message: "Všetky miesta sú už obsadené!",
+          type: "is-danger"
+        });
+      } else if (message === "User is already registered on event") {
+        this.$buefy.toast.open({
+          message: `Už ste zaregistrovaná/ý na udalosť ${this.eventName}!`,
+          type: "is-danger"
+        });
       }
     },
     getYear() {
@@ -558,6 +569,22 @@ export default {
       .catch(() => {
         this.$store.commit("finishLoading", "EventDetailsLoadImages");
       });
+
+    if (this.loggedInId) {
+      this.$store.commit("pushToLoading", "EventDetailsUserState");
+      httpClient
+        .post("/users/checkEvent", {
+          event_id: this.eventId,
+          user_id: this.loggedInId
+        })
+        .then(response => {
+          this.userAttendingEvent = response.data.message;
+          this.$store.commit("finishLoading", "EventDetailsUserState");
+        })
+        .catch(() => {
+          this.$store.commit("finishLoading", "EventDetailsUserState");
+        });
+    }
   }
 };
 </script>
