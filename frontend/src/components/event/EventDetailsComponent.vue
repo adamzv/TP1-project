@@ -93,14 +93,11 @@ format. * */
             </p>
           </div>
 
-          <!-- TODO -->
-          <div>
-            <a @click.prevent="downloadItem(item)">Stiahnuť pdf</a>
-          </div>
-
           <!-- Sign up button -->
-          <div>
+          <div v-if="eventAttendanceLimit >= 1">
             <b-button
+              v-if="!userAttendingEvent"
+              @click="userAttendEvent()"
               v-bind:class="{
                 eventBackColorFPV: eventIdFaculty == 1,
                 eventBackColorFF: eventIdFaculty == 4,
@@ -112,7 +109,16 @@ format. * */
               }"
               style="margin-top: 10px; margin-bottom: 10px; color: white;"
             >
-              Prihlasit sa
+              Prihlásiť sa
+            </b-button>
+            <b-button
+              v-if="userAttendingEvent"
+              @click="userCancelAttendance()"
+              type="is-danger"
+              icon-right="close-thick"
+              style="margin-top: 10px; margin-bottom: 10px; color: white;"
+            >
+              Odhlásiť sa
             </b-button>
           </div>
         </div>
@@ -206,6 +212,15 @@ format. * */
 
             <br />
 
+            <!-- TODO probably don't show this when there is no pdf-->
+            <div>
+              <a @click.prevent="downloadItem()">
+                Stiahnuť pdf
+              </a>
+            </div>
+
+            <br />
+
             <!-- Bulma dropdown for adding to the calendar -->
             <!-- TODO: have to fix the not overflowing thing -->
             <b-dropdown aria-role="list" style=" overflow: visible;">
@@ -232,6 +247,32 @@ format. * */
                 Action
               </b-dropdown-item>
             </b-dropdown>
+
+            <br />
+            <br />
+
+            <div class="block">
+              <ShareNetwork
+                network="facebook"
+                :url="eventURL"
+                :title="eventName"
+                :description="eventDesc"
+                hashtags="ukf"
+              >
+                <b-icon class="facebook" icon="facebook"></b-icon>
+              </ShareNetwork>
+              <ShareNetwork
+                network="twitter"
+                :url="eventURL"
+                :title="eventName"
+                hashtags="ukf"
+              >
+                <b-icon class="twitter" icon="twitter"></b-icon>
+              </ShareNetwork>
+              <ShareNetwork network="reddit" :url="eventURL" :title="eventName">
+                <b-icon class="reddit" icon="reddit"></b-icon>
+              </ShareNetwork>
+            </div>
           </div>
         </div>
       </div>
@@ -263,6 +304,113 @@ export default {
   components: {},
 
   methods: {
+    // TODO if user is logged in and is routed to details page,
+    // then load information whether the user is attending the event
+    userAttendEvent() {
+      if (this.loggedInId) {
+        httpClient
+          .post(`/users/eventRegister`, {
+            user_id: this.loggedInId,
+            event_id: this.eventId
+          })
+          .then(response => {
+            this.toastGenerator(response.data.message);
+          })
+          .catch(error => {
+            this.$buefy.toast.open({
+              message: "Prihlásenie na udalosť bolo neúspešné.",
+              type: "is-danger"
+            });
+            console.log(error);
+          });
+      } else {
+        // if the user is not registered and wants to attend the event
+        // then the user can register to the event using email address
+        this.$buefy.dialog.prompt({
+          message: "Napíšte email na prihlásenie",
+          inputAttrs: {
+            type: "email"
+          },
+          confirmText: "Prihlásiť sa",
+          cancelText: "Zrušiť",
+          trapFocus: true,
+          onConfirm: email =>
+            httpClient
+              .post(`/users/eventRegister`, {
+                email: email,
+                event_id: this.eventId
+              })
+              .then(response => {
+                console.log(response);
+                this.toastGenerator(response.data.message);
+              })
+              .catch(error => {
+                this.$buefy.toast.open({
+                  message: "Prihlásenie na udalosť bolo neúspešné.",
+                  type: "is-danger"
+                });
+                console.log(error);
+              })
+        });
+      }
+    },
+    userCancelAttendance() {
+      if (this.loggedInId && this.userAttendingEvent) {
+        httpClient
+          .post(`/users/eventUnregister`, {
+            user_id: this.loggedInId,
+            event_id: this.eventId
+          })
+          .then(response => {
+            this.toastGenerator(response.data.message);
+          })
+          .catch(error => {
+            this.$buefy.toast.open({
+              message: "Pokus o odhlásenie z udalosti bolo neúspešné.",
+              type: "is-danger"
+            });
+            console.log(error);
+          });
+      }
+    },
+    toastGenerator(message) {
+      if (message === "User was successfully removed from event") {
+        this.$buefy.toast.open({
+          message: `Boli ste odhlásený z  ${this.eventName}.`,
+          type: "is-success"
+        });
+        this.userAttendingEvent = false;
+      } else if (message === "Email sent") {
+        this.$buefy.toast.open({
+          duration: 3500,
+          message: `Boli ste prihlásený na ${this.eventName}.<br />Do emailovej schránky Vám príde potvrdzovací email.`,
+          type: "is-success"
+        });
+      } else if (message === "Please log in!") {
+        this.$buefy.toast.open({
+          message: `Na udalosť sa musíte prihlásiť svojim používateľským kontom.`,
+          type: "is-warning"
+        });
+      } else if (message === "User was successfully registered on event") {
+        // TODO if this is successful then send request
+        // to retrieve event details number of registered users
+        this.userAttendingEvent = true;
+        this.$buefy.toast.open({
+          message: `Boli ste prihlásený na ${this.eventName}.`,
+          type: "is-success"
+        });
+      } else if (message === "Event Full") {
+        this.$buefy.toast.open({
+          message: "Všetky miesta sú už obsadené!",
+          type: "is-danger"
+        });
+      } else if (message === "User is already registered on event") {
+        this.$buefy.toast.open({
+          message: `Už ste zaregistrovaná/ý na udalosť ${this.eventName}!`,
+          type: "is-danger"
+        });
+      }
+    },
     getYear() {
       return this.eventBeginning.substr(0, this.eventBeginning.indexOf("-"));
     },
@@ -315,7 +463,8 @@ export default {
       isImageModalActive: false,
       isCardModalActive: false,
       imageGalleryLink:
-        "https://journavel.com/wp-content/uploads/2014/10/img-placeholder-dark.jpg"
+        "https://journavel.com/wp-content/uploads/2014/10/img-placeholder-dark.jpg",
+      userAttendingEvent: false
     };
   },
 
@@ -401,6 +550,12 @@ export default {
 
     eventTimeSplit: function() {
       return this.eventBeginning.substr(this.eventBeginning.indexOf(" ") + 1);
+    },
+    loggedInId() {
+      return this.$store.getters.loggedInId;
+    },
+    eventURL() {
+      return window.location.href;
     }
   },
   created() {
@@ -415,17 +570,35 @@ export default {
         this.$store.commit("finishLoading", "EventDetailsLoadImages");
       });
 
-    /*
-    console.log(this.getYear());
-    console.log(this.getMonth());
-    console.log(this.getDay());
-    console.log(this.eventTimeSplit2());
-     */
+    if (this.loggedInId) {
+      this.$store.commit("pushToLoading", "EventDetailsUserState");
+      httpClient
+        .post("/users/checkEvent", {
+          event_id: this.eventId,
+          user_id: this.loggedInId
+        })
+        .then(response => {
+          this.userAttendingEvent = response.data.message;
+          this.$store.commit("finishLoading", "EventDetailsUserState");
+        })
+        .catch(() => {
+          this.$store.commit("finishLoading", "EventDetailsUserState");
+        });
+    }
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.twitter:hover {
+  color: #1da1f2 !important;
+}
+.facebook:hover {
+  color: #4267b2;
+}
+.reddit:hover {
+  color: #ff4500;
+}
 .alignLeft {
   float: left !important;
 }

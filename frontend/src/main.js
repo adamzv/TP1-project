@@ -7,6 +7,7 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import i18n from "./i18n";
+import VueSocialSharing from "vue-social-sharing";
 
 import interceptors from "./interceptors";
 
@@ -17,6 +18,7 @@ Vue.config.silent = true;
 Vue.config.productionTip = false;
 Vue.use(Buefy);
 Vue.use(momentCountdown);
+Vue.use(VueSocialSharing);
 
 interceptors();
 

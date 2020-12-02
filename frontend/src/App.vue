@@ -81,7 +81,20 @@ export default {
       return this.$store.getters.loading.length > 0;
     }
   },
-
+  watch: {
+    isLoading(val) {
+      if (!val) {
+        // TODO toast is shown multiple times
+        if (this.$router.history.current.query.message) {
+          this.$buefy.toast.open({
+            message: `Boli ste prihlásená/ý na udalosť.`,
+            duration: 3500,
+            type: "is-success"
+          });
+        }
+      }
+    }
+  },
   mounted() {
     // App hned po starte
     httpClient.get(`/events`).then(response => {
