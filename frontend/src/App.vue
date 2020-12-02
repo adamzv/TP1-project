@@ -72,7 +72,7 @@ export default {
       this.$store.commit("changeCarouselHeight", style.height);
 
       // Print the carouselHeight (this variable is accessible from any component
-      console.log(this.$store.state.carouselHeight);
+      //console.log(this.$store.state.carouselHeight);
     }
   },
   computed: {

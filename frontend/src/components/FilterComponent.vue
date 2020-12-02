@@ -440,25 +440,69 @@
       },
 
       placeFilterRequestPart(insertFilter, place_id) {
-         if (insertFilter) { return `,id_place=${place_id}`; } else return ``;
+        if (insertFilter) { return `,id_place=${place_id}`; } else return ``;
+      },
+
+      categoriesFilterRequestPart(insertFilter, cat_array) {
+        if (insertFilter) {
+          let api_string = "";
+
+          for (let i = 0; i < cat_array.length; i++) {
+            if (i == 0) {
+              api_string += String(cat_array[i]);
+            } else {
+              api_string += "!" + String(cat_array[i]);
+            }
+          }
+
+          return `,categories_id=${api_string}`;
+        } else {
+          return ``;
+        }
       },
 
       getIdOfFilteredPlace(filteredPlaceName) {
-          let allPlaces = this.availablePlaces;
-          let filteredPlaceNameSearchReady = String(filteredPlaceName).toLowerCase();
+        let allPlaces = this.availablePlaces;
+        let filteredPlaceNameSearchReady = String(filteredPlaceName).toLowerCase();
 
-          if (filteredPlaceNameSearchReady != "") {
-              for (let i = 0; i < allPlaces.length; i++) {
-                  let actualPlace = allPlaces[i];
-                  let actualPlaceName = String(actualPlace.name).toLowerCase();
+        if (filteredPlaceNameSearchReady != "") {
+          for (let i = 0; i < allPlaces.length; i++) {
+            let actualPlace = allPlaces[i];
+            let actualPlaceName = String(actualPlace.name).toLowerCase();
 
-                  if (actualPlaceName.includes(filteredPlaceNameSearchReady)) {
-                      return actualPlace.id;
-                  } else {
-                      continue;
-                  }
-              }
+            if (actualPlaceName.includes(filteredPlaceNameSearchReady)) {
+              return actualPlace.id;
+            } else {
+              continue;
+            }
           }
+        }
+      },
+
+      getIdOfFilteredCategory(filteredCategoriesArray) {
+        let allCategories = this.availableCategories;
+        let filteredCategoriesNames = [];
+
+        for (let x = 0; x < filteredCategoriesArray.length; x++) {
+          if (filteredCategoriesArray[x] != null) {
+            filteredCategoriesNames.push(String(filteredCategoriesArray[x].name).toLowerCase());
+          }
+        }
+
+        let filteredCategoriesIds = [];
+
+        for (let y = 0; y < allCategories.length; y++) {
+          let actualCategory = allCategories[y];
+          let actualCategoryName = String(actualCategory.name).toLowerCase();
+
+          for (let z = 0; z < filteredCategoriesNames.length; z++) {
+            if (actualCategoryName.includes(filteredCategoriesNames[z])) {
+              filteredCategoriesIds.push(actualCategory.id);
+            }
+          }
+        }
+
+        return filteredCategoriesIds;
       },
 
       buildRequest() {
@@ -470,7 +514,9 @@
         let isFaculty    =  this.selectedFaculty != null;
         let isDepartment =  apiDept != "";
         let isPlace      =  this.placeName != "";
-        let arrayOfData  =  [false, false, false, false, false];
+        let isCategories =  this.categories.length > 0;
+
+        let arrayOfData  =  [false, false, false, false, false, false];
 
         // todo: add filtering based on categories and place
         if (isName)       { arrayOfData[0] = true; } else { arrayOfData[0] = false; }
@@ -478,22 +524,28 @@
         if (isFaculty)    { arrayOfData[2] = true; } else { arrayOfData[2] = false; }
         if (isDepartment) { arrayOfData[3] = true; } else { arrayOfData[3] = false; }
         if (isPlace)      { arrayOfData[4] = true; } else { arrayOfData[4] = false; }
+        if (isCategories) { arrayOfData[5] = true; } else { arrayOfData[5] = false; }
 
         let doFilterName       =  arrayOfData[0];
         let doFilterDate       =  arrayOfData[1];
         let doFilterFaculty    =  arrayOfData[2];
         let doFilterDepartment =  arrayOfData[3];
         let doFilterPlace      =  arrayOfData[4];
+        let doFilterCategories =  arrayOfData[5];
 
         let request = "";
 
-        if (!isName && !isFaculty && !isDepartment && !isDate && !isPlace)
+        if (!isName && !isFaculty && !isDepartment && !isDate && !isPlace && !isCategories)
             request = `/events`;
         else
-            request = `/events?filter=${this.nameFilterRequestPart(doFilterName)}${this.dateFilterRequestPart(doFilterDate, apiDate, doFilterName)}${this.facultyFilterRequestPart(doFilterFaculty)}${this.departmentFilterRequestPart(doFilterDepartment, apiDept)}${this.placeFilterRequestPart(doFilterPlace, this.getIdOfFilteredPlace(this.placeName))}`;
+            request = `/events?filter=${this.nameFilterRequestPart(doFilterName)}${this.dateFilterRequestPart(doFilterDate, apiDate, doFilterName)}${this.facultyFilterRequestPart(doFilterFaculty)}${this.departmentFilterRequestPart(doFilterDepartment, apiDept)}${this.placeFilterRequestPart(doFilterPlace, this.getIdOfFilteredPlace(this.placeName))}${this.categoriesFilterRequestPart(doFilterCategories, this.getIdOfFilteredCategory(this.categories))}`;
 
+        //execute filtering
         this.getRequestFilteredEvents(request);
-        console.log("API REQUEST: " + request);
+
+        //console.log("API REQUEST: " + request);
+        //console.log(this.getIdOfFilteredCategory(this.categories));
+        //console.log(isCategories);
       },
 
       createFilterRequest() {
@@ -583,7 +635,7 @@
       retrieveFilterOptions() {
         this.eventName = this.$store.getters.getFilterEventName;
         this.beginning = this.$store.getters.getFilterBeginning;
-        //this.eventCategories = this.$store.getters.getFilterCategories;
+        this.categories = this.$store.getters.getFilterCategories;
         this.selectedFacultyName = this.$store.getters.getFilterFaculty;
         this.selectedDepartmentName = this.$store.getters.getFilterDepartment;
         this.placeName = this.$store.getters.getFilterPlace;
@@ -595,12 +647,13 @@
         this.$store.commit('setFilterFaculty', this.selectedFacultyName);
         this.$store.commit('setFilterDepartment', this.selectedDepartmentName);
         this.$store.commit('setFilterPlace', this.placeName);
+        this.$store.commit('setFilterCategories', this.categories);
       },
 
       setFilterOptionsClear() {
         this.eventName = "";
         this.beginning = "";
-        //this.eventCategories = this.$store.getters.getFilterCategories;
+        this.categories = "";
         this.selectedFacultyName = "";
         this.selectedDepartmentName = "";
         this.placeName = "";

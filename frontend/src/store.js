@@ -17,7 +17,7 @@ export default new Vuex.Store({
     currentlyInFilter: Object,
     filterEventName: "",
     filterBeginning: Date,
-    filterCategories: "",
+    filterCategories: [],
     filterFaculty: "",
     filterDepartment: "",
     filterPlace: "",

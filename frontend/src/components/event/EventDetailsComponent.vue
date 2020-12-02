@@ -415,10 +415,12 @@ export default {
         this.$store.commit("finishLoading", "EventDetailsLoadImages");
       });
 
+    /*
     console.log(this.getYear());
     console.log(this.getMonth());
     console.log(this.getDay());
     console.log(this.eventTimeSplit2());
+     */
   }
 };
 </script>
