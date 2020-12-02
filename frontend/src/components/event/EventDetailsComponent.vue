@@ -93,13 +93,8 @@ format. * */
             </p>
           </div>
 
-          <!-- TODO -->
-          <div>
-            <a @click.prevent="downloadItem(item)">Stiahnuť pdf</a>
-          </div>
-
           <!-- Sign up button -->
-          <div>
+          <div v-if="eventAttendanceLimit >= 1">
             <b-button
               v-if="!userAttendingEvent"
               @click="userAttendEvent()"
@@ -217,6 +212,15 @@ format. * */
 
             <br />
 
+            <!-- TODO probably don't show this when there is no pdf-->
+            <div>
+              <a @click.prevent="downloadItem()">
+                Stiahnuť pdf
+              </a>
+            </div>
+
+            <br />
+
             <!-- Bulma dropdown for adding to the calendar -->
             <!-- TODO: have to fix the not overflowing thing -->
             <b-dropdown aria-role="list" style=" overflow: visible;">
@@ -330,6 +334,42 @@ export default {
             });
             console.log(error);
           });
+      } else {
+        // if the user is not registered and wants to attend the event
+        // then the user can register to the event using email address
+        this.$buefy.dialog.prompt({
+          message: "Napíšte email na prihlásenie",
+          inputAttrs: {
+            type: "email"
+          },
+          confirmText: "Prihlásiť sa",
+          cancelText: "Zrušiť",
+          trapFocus: true,
+          onConfirm: email =>
+            httpClient
+              .post(`/users/eventRegister`, {
+                email: email,
+                event_id: this.eventId
+              })
+              .then(response => {
+                console.log(response);
+                if (response.data.message === "Email sent") {
+                  // TODO if this is successful then send request
+                  // to retrieve event details number of registered users
+                  this.$buefy.toast.open({
+                    message: `Boli ste prihlásený na ${this.eventName}.`,
+                    type: "is-success"
+                  });
+                }
+              })
+              .catch(error => {
+                this.$buefy.toast.open({
+                  message: "Prihlásenie na udalosť bolo neúspešné.",
+                  type: "is-danger"
+                });
+                console.log(error);
+              })
+        });
       }
     },
     userCancelAttendance() {
@@ -518,13 +558,6 @@ export default {
       .catch(() => {
         this.$store.commit("finishLoading", "EventDetailsLoadImages");
       });
-
-    /*
-    console.log(this.getYear());
-    console.log(this.getMonth());
-    console.log(this.getDay());
-    console.log(this.eventTimeSplit2());
-     */
   }
 };
 </script>
