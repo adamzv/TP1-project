@@ -50,13 +50,17 @@ format. * */
             </b-taglist>
           </div>
 
-          <div style="padding-top: 20px;">
+          <div style="padding-top: 10px;">
             <b-icon icon="clock-time-four-outline"></b-icon>
             <strong style="padding-left: 5px;">KEDY</strong>
           </div>
 
-          <p style="font-size: medium; padding-top: 10px;">
+          <p class="panel-info" style="font-size: small;">
             {{ getDay() }}. {{ getMonth() }} {{ getYear() }}
+
+            <span class="panel-info-time" style="font-size: small;">
+              {{ eventTimeSplit2() }}
+            </span>
           </p>
 
           <div style="padding-top: 20px;">
@@ -64,7 +68,7 @@ format. * */
             <strong style="padding-left: 5px;">KDE</strong>
           </div>
 
-          <p style="font-size: medium; padding-top: 10px;">
+          <p class="panel-info" style="font-size: small;">
             Miestnost {{ eventRoom }}
             <br />
             {{ eventFaculty.name }}
@@ -72,21 +76,21 @@ format. * */
             {{ eventPlace.name }}
           </p>
 
-          <!-- Available tickets -->
-          <div
-            class="number-of-tickets"
-            style="margin-top: 10px; background-color: #e6e6e6; color: #454545;"
-          >
+          <div style="margin-top: 20px; margin-bottom: 10px;">
             <b-icon icon="account"></b-icon>
-            <strong style="padding-left: 5px;">LIMIT MIEST:</strong>
+            <strong style="padding-left: 5px;">LIMIT MIEST</strong>
 
-            <span v-if="eventAttendanceLimit >= 1">
+            <p
+              v-if="eventAttendanceLimit >= 1"
+              class="panel-info"
+              style="font-size: small;"
+            >
               <i>{{ eventAttendanceLimit }}</i>
-            </span>
+            </p>
 
-            <span v-else>
+            <p v-else class="panel-info" style="font-size: small;">
               <i>Neobmedzene</i>
-            </span>
+            </p>
           </div>
 
           <!-- TODO -->
@@ -121,30 +125,6 @@ format. * */
             <strong style="padding-left: 5px;">POPIS UDALOSTI</strong>
           </div>
 
-          <!-- Category info -->
-          <div
-            class="alignRight categoryInfo"
-            v-bind:class="{
-              eventBackColorFPV: eventIdFaculty == 1,
-              eventBackColorFF: eventIdFaculty == 4,
-              eventBackColorFSS: eventIdFaculty == 3,
-              eventBackColorFP: eventIdFaculty == 5,
-              eventBackColorFSVZ: eventIdFaculty == 2,
-              eventBackColorUKF: eventIdFaculty == 6,
-              eventBackColorLIB: eventIdFaculty == 7
-            }"
-          >
-            <div class="alignLeft">
-              Kategoria |
-            </div>
-
-            <div class="alignRight">
-              <b-icon icon="apps"></b-icon>
-            </div>
-
-            <div style="clear: both;"></div>
-          </div>
-
           <div style="clear: both;"></div>
 
           <!-- Separator line -->
@@ -175,10 +155,7 @@ format. * */
                 :key="image"
                 :src="getImgUrl(image)"
                 class="imageLink"
-                @click="
-                  isImageModalActive = true;
-                  imageModal = image;
-                "
+                @click="(isImageModalActive = true), (imageModal = image)"
               />
               <b-modal v-model="isImageModalActive">
                 <p class="image">
@@ -304,6 +281,7 @@ export default {
     goBack() {
       this.$router.go(-1);
     },
+
     downloadItem() {
       httpClient
         .get(`/files/pdf/${this.eventId}`)
@@ -318,8 +296,13 @@ export default {
     },
     getImgUrl(value) {
       return process.env.VUE_APP_IMAGES_STORAGE_URL + value;
+    },
+
+    eventTimeSplit2: function() {
+      return this.eventBeginning.substr(this.eventBeginning.indexOf(" ") + 1);
     }
   },
+
   data() {
     return {
       // Default map location
@@ -431,6 +414,13 @@ export default {
       .catch(() => {
         this.$store.commit("finishLoading", "EventDetailsLoadImages");
       });
+
+    /*
+    console.log(this.getYear());
+    console.log(this.getMonth());
+    console.log(this.getDay());
+    console.log(this.eventTimeSplit2());
+     */
   }
 };
 </script>
@@ -500,6 +490,42 @@ export default {
       width: max-content;
       padding: 5px 10px 5px 10px;
       border-radius: 8px;
+    }
+
+    .panel-info {
+      font-size: medium;
+      padding-top: 2px;
+      padding-bottom: 2px;
+      font-size: medium;
+      padding-left: 6px;
+      padding-right: 6px;
+      margin-top: 10px;
+      background: #e0e0e0;
+      width: fit-content;
+      border-radius: 10px 5px 10px 5px;
+      -moz-border-radius: 10px 5px 10px 5px;
+      -webkit-border-radius: 10px 5px 10px 5px;
+      border: 0px solid #000000;
+      -webkit-box-shadow: 0px 3px 3px 1px rgba(0, 0, 0, 0.11);
+
+      -webkit-box-shadow: 0px 1px 4px 1px rgba(0, 0, 0, 0.18);
+      -moz-box-shadow: 0px 1px 4px 1px rgba(0, 0, 0, 0.18);
+      box-shadow: 0px 1px 4px 1px rgba(0, 0, 0, 0.18);
+    }
+
+    .panel-info-time {
+      font-size: medium;
+      color: white;
+      font-size: small;
+      padding-left: 4px;
+      padding-right: 4px;
+      background: #707070;
+      width: fit-content;
+      border-radius: 10px 5px 10px 5px;
+      -moz-border-radius: 10px 5px 10px 5px;
+      -webkit-border-radius: 10px 5px 10px 5px;
+      border: 0px solid #000000;
+      font-weight: normal;
     }
   }
 

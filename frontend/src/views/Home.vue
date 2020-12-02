@@ -1,7 +1,7 @@
 <template>
   <div class="home">
-    <FilterComponent id="myFilter" class="filter" />
-    <EventListComponent/>
+    <FilterComponent id="myFilter" class="filter" @clicked="onClickChild" />
+    <EventListComponent />
   </div>
 </template>
 
@@ -18,15 +18,29 @@
 
     methods: {
       myFunction () {
-
         var filter = document.getElementById("myFilter");
         var sticky = filter.offsetTop;
 
         // TODO: Second value is not correct nor exact, needs to be somehow modified for carouselHeight from VUEX
-        if (window.pageYOffset > sticky) { filter.classList.add("sticky"); }
+        if (window.pageYOffset * 4 > sticky) { filter.classList.add("sticky"); }
         if (window.pageYOffset < 350) { filter.classList.remove("sticky"); }
+      },
+
+      onClickChild(value) {
+        this.events = value.filteredEvents;
       }
-    }
+    },
+
+    data() {
+      return {
+        events: [],
+        isOpen: true,
+        windowWidth: window.innerWidth,
+        showDesktop: true,
+        showMobile: false,
+        openIndex: 0,
+      };
+    },
   };
 </script>
 
@@ -45,7 +59,7 @@
 
   .sticky {
     position: fixed;
-    top: 0;
+    top: 0px;
     left: 50%;
     transform: translateX(-50%);
   }

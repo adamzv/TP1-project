@@ -38,6 +38,14 @@
           :collapsible="true"
           :label="loggedInName"
         >
+          <b-navbar-item
+            v-if="addEventPermission"
+            tag="router-link"
+            to="/pridat"
+            class="has-text-link"
+          >
+            {{ $t("addEvent") }}
+          </b-navbar-item>
           <b-navbar-item tag="router-link" to="/profile">
             {{ $t("profile") }}
           </b-navbar-item>
@@ -142,16 +150,13 @@ export default {
       }
     },
     loadEvents(route) {
-      this.$store.commit("pushToLoading", "HeaderComponent");
       httpClient
         .get(route)
         .then(response => {
           this.events = response.data.data.slice(0, 6);
-          this.$store.commit("finishLoading", "HeaderComponent");
         })
         .catch(error => {
           console.log(error);
-          this.$store.commit("finishLoading", "HeaderComponent");
         });
     },
     logout() {
@@ -160,6 +165,7 @@ export default {
       });
     }
   },
+
   computed: {
     loggedIn() {
       return this.$store.getters.loggedIn;
@@ -171,13 +177,53 @@ export default {
       return this.$store.getters.permissionToAddEvents;
     }
   },
+
   data() {
     return {
       events: [],
       counter: 0,
       langs: this.$i18n.availableLocales,
       locale: this.$i18n.locale,
-      carousel: 0
+      carousel: 0,
+      // hardcoded 'events' to test carousel features
+      carousels: [
+        {
+          title: "Univerzitná knižnica",
+          time: 1603806300000,
+          color: "dark",
+          overlay: "brown-overlay"
+        },
+        {
+          title: "Fakulta sociálnych vied a zdravotníctva",
+          time: 1603806300000,
+          color: "dark",
+          overlay: "gray-overlay"
+        },
+        {
+          title: "Pedagogická fakulta",
+          time: 1603806300000,
+          color: "dark",
+          overlay: "blue-overlay"
+        },
+        {
+          title: "Fakulta prírodných vied",
+          time: 1603806300000,
+          color: "dark",
+          overlay: "green-overlay"
+        },
+        {
+          title: "Fakulta stredoeurópskych štúdií",
+          time: 1603806300000,
+          color: "dark",
+          overlay: "orange-overlay"
+        },
+        {
+          title: "Filozofická fakulta",
+          time: 1603806300000,
+          color: "dark",
+          overlay: "pink-overlay"
+        }
+      ]
     };
   }
 };

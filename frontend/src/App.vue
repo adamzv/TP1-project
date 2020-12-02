@@ -18,22 +18,32 @@
 
     <router-view />
     <FooterComponent />
+
+    <back-to-top bottom="50px" right="50px">
+      <button type="button" class="btn-to-top">
+        <b-icon icon="chevron-up" />
+      </button>
+    </back-to-top>
   </div>
 </template>
 
 <script>
 import HeaderComponent from "@/components/HeaderComponent.vue";
 import FooterComponent from "@/components/FooterComponent.vue";
+import httpClient from "./httpClient";
+import BackToTop from "vue-backtotop";
 
 export default {
   components: {
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    BackToTop
   },
   data() {
     return {
       loading: true,
-      carouselHeight: Number
+      carouselHeight: Number,
+      filteredEvents: Object
     };
   },
   created() {
@@ -63,13 +73,20 @@ export default {
       this.$store.commit("changeCarouselHeight", style.height);
 
       // Print the carouselHeight (this variable is accessible from any component
-      console.log(this.$store.state.carouselHeight);
+      //console.log(this.$store.state.carouselHeight);
     }
   },
   computed: {
     isLoading() {
       return this.$store.getters.loading.length > 0;
     }
+  },
+
+  mounted() {
+    // App hned po starte
+    httpClient.get(`/events`).then(response => {
+      this.$store.commit("setCurrentlyInFilter", response.data);
+    });
   }
 };
 </script>
@@ -96,5 +113,18 @@ export default {
 }
 .loading-z-pos {
   z-index: 2000;
+}
+
+.btn-to-top {
+  width: 60px;
+  height: 60px;
+  padding: 10px 16px;
+  font-size: 22px;
+  line-height: 22px;
+  opacity: 0.7;
+}
+
+.btn-to-top:hover {
+  opacity: 1;
 }
 </style>
