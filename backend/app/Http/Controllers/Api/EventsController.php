@@ -43,7 +43,6 @@ class EventsController extends Controller
             ->select('events.*', DB::raw('COUNT(event_user.event_id) as participants'))
             ->leftJoin('event_user', 'events.id', '=', 'event_user.event_id')
             ->leftjoin('category_event', 'category_event.event_id', '=', 'events.id')
-            ->where('beginning', '>=', date('Y-m-d H:i:s'))
             ->groupBy('events.id')
             ->orderBy('beginning', 'asc')
             ->get();
@@ -140,7 +139,7 @@ class EventsController extends Controller
         $event->end = $request->input('end');
         $event->attendance_limit = $request->input('attendance_limit');
         $event->lecturer = $request->input('lecturer');
-        $event->id_user = $request->input('id_user');
+        //$event->id_user = $request->input('id_user');
         $event->id_place = $request->input('id_place');
         $event->id_faculty = $request->input('id_faculty');
         $event->id_department = $request->input('id_department');
