@@ -29,21 +29,33 @@ class FilesController extends Controller
      */
     public function uploadPdf(Request $request, $id)
     {
+        if ($request->has('pdf')) {
 
-        // decode file from json request
-        $file = base64_decode($request->input('pdf'));
+            // encoded pdf file
+            $encodedPdfFile = $request->input('pdf');
+            if (!empty($encodedPdfFile) && $encodedPdfFile != 'null') {
 
-        // create path
-        $path = 'pdf/' . $id . '/' . Carbon::now()->format('YmdHisu');
+                // decode file from json request
+                $file = base64_decode($encodedPdfFile);
 
-        // upload file
-        Storage::disk('azure')->put($path, $file);
+                // create path
+                $path = 'pdf/' . $id . '/' . Carbon::now()->format('YmdHisu');
 
-        // return json with path
+                // upload file
+                Storage::disk('azure')->put($path, $file);
+
+                // return json with path
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Pdf successfully stored',
+                    'path' => $path], 201);
+            }
+        }
+
+        // return unsuccessful json response
         return response()->json([
-            'success' => true,
-            'message' => 'Pdf successfully stored',
-            'path' => $path], 201);
+            'success' => false,
+            'message' => 'Pdf not found'], 404);
     }
 
     /**
@@ -104,13 +116,25 @@ class FilesController extends Controller
     public function deletePdf($id)
     {
 
-        // delete pdf directory of the event
-        Storage::disk('azure')->deleteDirectory('pdf/' . $id);
+        // get array of directories in pdf
+        $array = Storage::disk('azure')->allDirectories('pdf');
+
+        // check if directory exists
+        if (in_array('pdf/' . $id, $array)) {
+
+            // delete pdf directory of the event
+            Storage::disk('azure')->deleteDirectory('pdf/' . $id);
+
+            // return successful json response
+            return response()->json([
+                'success' => true,
+                'message' => 'Pdf successfully removed'], 200);
+        }
 
         // return successful json response
         return response()->json([
-            'success' => true,
-            'message' => 'Pdf successfully removed'], 200);
+            'success' => false,
+            'message' => 'Pdf directory doesnt exists: pdf/' . $id], 404);
     }
 
     /**
@@ -122,21 +146,33 @@ class FilesController extends Controller
      */
     public function uploadTitleImg(Request $request, $id)
     {
+        if ($request->has('title_image')) {
 
-        // decode file from json request
-        $file = base64_decode($request->input('title_image'));
+            // encoded title image file
+            $encodedTitleImageFile = $request->input('title_image');
+            if (!empty($encodedTitleImageFile) && $encodedTitleImageFile != 'null') {
 
-        // create path
-        $path = 'titleImg/' . $id . '/' . Carbon::now()->format('YmdHisu');
+                // decode file from json request
+                $file = base64_decode($encodedTitleImageFile);
 
-        // upload title image
-        Storage::disk('azure')->put($path, $file);
+                // create path
+                $path = 'titleImg/' . $id . '/' . Carbon::now()->format('YmdHisu');
 
-        // return json with path
+                // upload title image
+                Storage::disk('azure')->put($path, $file);
+
+                // return json with path
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Title image successfully stored',
+                    'path' => $path], 201);
+            }
+        }
+
+        // return unsuccessful json response
         return response()->json([
-            'success' => true,
-            'message' => 'Title image successfully stored',
-            'path' => $path], 201);
+            'success' => false,
+            'message' => 'Title image not found'], 404);
     }
 
     /**
@@ -196,13 +232,25 @@ class FilesController extends Controller
     public function deleteTitleImg($id)
     {
 
-        // delete title image directory of the event
-        Storage::disk('azure')->deleteDirectory('titleImg/' . $id);
+        // get array of directories in pdf
+        $array = Storage::disk('azure')->allDirectories('titleImg');
+
+        // check if directory exists
+        if (in_array('titleImg/' . $id, $array)) {
+
+            // delete title image directory of the event
+            Storage::disk('azure')->deleteDirectory('titleImg/' . $id);
+
+            // return successful json response
+            return response()->json([
+                'success' => true,
+                'message' => 'Title image successfully removed'], 200);
+        }
 
         // return successful json response
         return response()->json([
-            'success' => true,
-            'message' => 'Title image successfully removed'], 200);
+            'success' => false,
+            'message' => 'Title image directory doesnt exists: titleImg/' . $id], 404);
     }
 
     /**
@@ -214,21 +262,33 @@ class FilesController extends Controller
      */
     public function uploadImage(Request $request, $id)
     {
+        if ($request->has('image')) {
 
-        // decode file from json request
-        $file = base64_decode($request->input('image'));
+            // encoded image file
+            $encodedImageFile = $request->input('image');
+            if (!empty($encodedImageFile) && $encodedImageFile != 'null') {
 
-        // create path
-        $path = 'images/' . $id . '/' . Carbon::now()->format('YmdHisu');
+                // decode file from json request
+                $file = base64_decode($encodedImageFile);
 
-        // upload file
-        Storage::disk('azure')->put($path, $file);
+                // create path
+                $path = 'images/' . $id . '/' . Carbon::now()->format('YmdHisu') . '.jpg';
 
-        // return json with path
+                // upload file
+                Storage::disk('azure')->put($path, $file);
+
+                // return json with path
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Image successfully stored',
+                    'path' => $path], 201);
+            }
+        }
+
+        // return unsuccessful json response
         return response()->json([
-            'success' => true,
-            'message' => 'Image successfully stored',
-            'path' => $path], 201);
+            'success' => false,
+            'message' => 'Image not found'], 404);
     }
 
     /**
@@ -288,14 +348,22 @@ class FilesController extends Controller
      */
     public function deleteImage($id, $imageName)
     {
+        if (Storage::disk('azure')->exists('images/' . $id . '/' . $imageName . '.jpg')) {
 
-        // delete title image directory of the event
-        Storage::disk('azure')->delete('images/' . $id . '/' . $imageName);
+            // delete title image file of the event with thumbnail
+            Storage::disk('azure')->delete('images/' . $id . '/' . $imageName . '.jpg');
+            Storage::disk('azure')->delete('thumb-images/' . $id . '/' . $imageName . '.jpg');
+
+            // return successful json response
+            return response()->json([
+                'success' => true,
+                'message' => 'Image successfully removed'], 200);
+        }
 
         // return successful json response
         return response()->json([
-            'success' => true,
-            'message' => 'Image successfully removed'], 200);
+            'success' => false,
+            'message' => 'Image file doesnt exists: images/' . $id . '/' . $imageName . '.jpg'], 404);
     }
 
     /**
@@ -307,12 +375,25 @@ class FilesController extends Controller
     public function deleteAllImages($id)
     {
 
-        // delete title image directory of the event
-        Storage::disk('azure')->deleteDirectory('images/' . $id);
+        // get array of directories in pdf
+        $array = Storage::disk('azure')->allDirectories('images');
+
+        // check if directory exists
+        if (in_array('images/' . $id, $array)) {
+
+            // delete title image directory of the event with thumbnails
+            Storage::disk('azure')->deleteDirectory('images/' . $id);
+            Storage::disk('azure')->deleteDirectory('thumb-images/' . $id);
+
+            // return successful json response
+            return response()->json([
+                'success' => true,
+                'message' => 'Images successfully removed'], 200);
+        }
 
         // return successful json response
         return response()->json([
-            'success' => true,
-            'message' => 'Images successfully removed'], 200);
+            'success' => false,
+            'message' => 'Images directory doesnt exists: images/' . $id], 404);
     }
 }
