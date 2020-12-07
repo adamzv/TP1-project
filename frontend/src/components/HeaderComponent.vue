@@ -38,14 +38,6 @@
           :collapsible="true"
           :label="loggedInName"
         >
-          <b-navbar-item
-            v-if="addEventPermission"
-            tag="router-link"
-            to="/pridat"
-            class="has-text-link"
-          >
-            {{ $t("addEvent") }}
-          </b-navbar-item>
           <b-navbar-item tag="router-link" to="/profile">
             {{ $t("profile") }}
           </b-navbar-item>
@@ -63,7 +55,6 @@
       :repeat="true"
     >
       <b-carousel-item v-for="(event, i) in events" :key="i">
-        <!-- <section :class="`hero is-medium is-${carousel.color} is-bold`"> -->
         <section class="hero is-medium is-bold is-dark">
           <!-- TODO: find images for background and specify correct size -->
           <!-- TODO: set color overlay for UKF -->
