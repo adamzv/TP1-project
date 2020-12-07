@@ -104,8 +104,9 @@ export default {
   },
   methods: {
     getEvents() {
+
       if (this.isAdmin) {
-        this.loadEvents("/events");
+        this.loadEvents("/admin");
       } else if (this.isModerator) {
         this.loadEvents(`/events?filter=id_user=${this.loggedInId}`);
       } else if (this.isUser) {
@@ -120,7 +121,7 @@ export default {
       httpClient
         .get(route)
         .then(response => {
-          this.events = response.data.data;
+          this.events = response.data;
           this.$store.commit("finishLoading", "Profile");
         })
         .catch(error => {

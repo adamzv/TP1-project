@@ -37,6 +37,20 @@ class EventsController extends Controller
         return Event::orderBy('beginning', 'asc')->paginate(12);
     }
 
+
+    public function admin(){
+        $query = Event::with('user', 'place', 'department', 'faculty', 'categories')
+            ->select('events.*', DB::raw('COUNT(event_user.event_id) as participants'))
+            ->leftJoin('event_user', 'events.id', '=', 'event_user.event_id')
+            ->leftjoin('category_event', 'category_event.event_id', '=', 'events.id')
+            ->where('beginning', '>=', date('Y-m-d H:i:s'))
+            ->groupBy('events.id')
+            ->orderBy('beginning', 'asc')
+            ->get();
+        return $query;
+
+
+    }
     /**
      * Store a newly created resource in storage.
      *
