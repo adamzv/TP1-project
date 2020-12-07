@@ -70,11 +70,11 @@ class EventsController extends Controller
             $pdfFile = $request->input('pdfPath');
 
             // if path is not null
-            if ($pdfFile != 'null') $this->movePdfPath($event->id, $pdfFile);
+            if (!empty($pdfFile) && $pdfFile != 'null') $this->movePdfPath($event->id, $pdfFile);
         }
         if ($request->has('titleImgPath')) {
             $titleImageFile = $request->input('titleImgPath');
-            if ($titleImageFile != 'null') $this->moveTitleImagePath($event->id, $titleImageFile);
+            if (!empty($titleImageFile) && $titleImageFile != 'null') $this->moveTitleImagePath($event->id, $titleImageFile);
         }
 
         return response()->json([
@@ -131,6 +131,19 @@ class EventsController extends Controller
         $event->id_faculty = $request->input('id_faculty');
         $event->id_department = $request->input('id_department');
         $event->save();
+
+        // find if files paths exists in request
+        if ($request->has('pdfPath')) {
+            $pdfFile = $request->input('pdfPath');
+
+            // if path is not null
+            if (!empty($pdfFile) && $pdfFile != 'null') $this->movePdfPath($event->id, $pdfFile);
+
+        }
+        if ($request->has('titleImgPath')) {
+            $titleImageFile = $request->input('titleImgPath');
+            if (!empty($titleImageFile) && $titleImageFile != 'null') $this->moveTitleImagePath($event->id, $titleImageFile);
+        }
 
         $arr = [];
         foreach ($request->input("categories") as $category) {
