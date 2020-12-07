@@ -8,8 +8,10 @@ import router from "./router";
 import store from "./store";
 import i18n from "./i18n";
 import VueSocialSharing from "vue-social-sharing";
+import axiosRetry from "axios-retry";
 
 import interceptors from "./interceptors";
+import httpClient from "./httpClient";
 
 // imports Moment.js plugin moment-countdown that integrates Moment with Countdown.js
 const momentCountdown = require("moment-countdown");
@@ -21,6 +23,8 @@ Vue.use(momentCountdown);
 Vue.use(VueSocialSharing);
 
 interceptors();
+
+axiosRetry(httpClient, { retries: 2 });
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAdmin)) {

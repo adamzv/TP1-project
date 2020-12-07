@@ -76,6 +76,34 @@ format. * */
             {{ eventPlace.name }}
           </p>
 
+          <div style="padding-top: 20px;">
+            <b-icon icon="calendar"></b-icon>
+            <strong style="padding-left: 5px;">KALENDÁR</strong>
+          </div>
+
+          <p class="panel-info">
+            <b-tooltip position="is-bottom" label="Google">
+              <a :href="google">
+                <b-icon size="is-small" icon="google"></b-icon>
+              </a>
+            </b-tooltip>
+            <b-tooltip position="is-bottom" label="Outlook">
+              <a :href="outlook">
+                <b-icon size="is-small" icon="microsoft-outlook"></b-icon>
+              </a>
+            </b-tooltip>
+            <b-tooltip position="is-bottom" label="Office365">
+              <a :href="office365">
+                <b-icon size="is-small" icon="microsoft-office"></b-icon>
+              </a>
+            </b-tooltip>
+            <b-tooltip position="is-bottom" label="iCalendar (.ics)">
+              <a :href="ics">
+                <b-icon size="is-small" icon="calendar"></b-icon>
+              </a>
+            </b-tooltip>
+          </p>
+
           <div style="margin-top: 20px; margin-bottom: 10px;">
             <b-icon icon="account"></b-icon>
             <strong style="padding-left: 5px;">LIMIT MIEST</strong>
@@ -85,7 +113,10 @@ format. * */
               class="panel-info"
               style="font-size: small;"
             >
-              <i>{{ eventAttendanceLimit }}</i>
+              <i>
+                <span v-if="eventParticipants">{{ eventParticipants }} /</span>
+                {{ eventAttendanceLimit }}
+              </i>
             </p>
 
             <p v-else class="panel-info" style="font-size: small;">
@@ -214,9 +245,24 @@ format. * */
 
             <!-- TODO probably don't show this when there is no pdf-->
             <div>
-              <a @click.prevent="downloadItem()">
-                Stiahnuť pdf
-              </a>
+              <!-- <a @click.prevent="downloadItem()"> -->
+              <b-button
+                size="is-small"
+                v-bind:class="{
+                  eventBackColorFPV: eventIdFaculty == 1,
+                  eventBackColorFF: eventIdFaculty == 4,
+                  eventBackColorFSS: eventIdFaculty == 3,
+                  eventBackColorFP: eventIdFaculty == 5,
+                  eventBackColorFSVZ: eventIdFaculty == 2,
+                  eventBackColorUKF: eventIdFaculty == 6,
+                  eventBackColorLIB: eventIdFaculty == 7
+                }"
+                style="color: white;"
+                icon-right="download"
+              >
+                Stiahnuť informačný list
+              </b-button>
+              <!-- </a> -->
             </div>
 
             <br />
@@ -239,12 +285,41 @@ format. * */
                 style="color: white;"
                 slot-scope="{ active }"
               >
-                <span>Pridat do kalendara</span>
+                <span>Pridať do kalendára</span>
                 <b-icon :icon="active ? 'menu-up' : 'menu-down'"></b-icon>
               </button>
 
               <b-dropdown-item aria-role="listitem" style="overflow-y: auto;">
-                Action
+                <div class="media">
+                  <b-icon class="media-left" icon="google"></b-icon>
+                  <div class="media-content">
+                    <h3>Google</h3>
+                  </div>
+                </div>
+              </b-dropdown-item>
+              <b-dropdown-item aria-role="listitem" style="overflow-y: auto;">
+                <div class="media">
+                  <b-icon class="media-left" icon="microsoft-outlook"></b-icon>
+                  <div class="media-content">
+                    <h3>Outlook</h3>
+                  </div>
+                </div>
+              </b-dropdown-item>
+              <b-dropdown-item aria-role="listitem" style="overflow-y: auto;">
+                <div class="media">
+                  <b-icon class="media-left" icon="microsoft-office"></b-icon>
+                  <div class="media-content">
+                    <h3>Office365</h3>
+                  </div>
+                </div>
+              </b-dropdown-item>
+              <b-dropdown-item aria-role="listitem" style="overflow-y: auto;">
+                <div class="media">
+                  <b-icon class="media-left" icon="calendar"></b-icon>
+                  <div class="media-content">
+                    <h3>iCalendar (.ics)</h3>
+                  </div>
+                </div>
               </b-dropdown-item>
             </b-dropdown>
 
@@ -296,6 +371,7 @@ let months = [
   "december"
 ];
 import httpClient from "../../httpClient.js";
+import { google, outlook, office365, ics } from "calendar-link";
 
 export default {
   name: "EventDetailsComponent",
@@ -315,6 +391,7 @@ export default {
           })
           .then(response => {
             this.toastGenerator(response.data.message);
+            this.eventParticipants = this.eventParticipants + 1;
           })
           .catch(error => {
             this.$buefy.toast.open({
@@ -341,7 +418,6 @@ export default {
                 event_id: this.eventId
               })
               .then(response => {
-                console.log(response);
                 this.toastGenerator(response.data.message);
               })
               .catch(error => {
@@ -363,6 +439,7 @@ export default {
           })
           .then(response => {
             this.toastGenerator(response.data.message);
+            this.eventParticipants = this.eventParticipants - 1;
           })
           .catch(error => {
             this.$buefy.toast.open({
@@ -464,7 +541,12 @@ export default {
       isCardModalActive: false,
       imageGalleryLink:
         "https://journavel.com/wp-content/uploads/2014/10/img-placeholder-dark.jpg",
-      userAttendingEvent: false
+      userAttendingEvent: false,
+      // calendar links
+      google: "",
+      outlook: "",
+      office365: "",
+      ics: ""
     };
   },
 
@@ -585,6 +667,16 @@ export default {
           this.$store.commit("finishLoading", "EventDetailsUserState");
         });
     }
+    var event = {
+      title: this.eventName,
+      description: this.eventDesc ? this.eventDesc : "",
+      start: this.eventBeginning,
+      location: this.eventPlace.name
+    };
+    this.google = google(event);
+    this.outlook = outlook(event).replace("&rru=addevent", "");
+    this.office365 = office365(event);
+    this.ics = ics(event);
   }
 };
 </script>
