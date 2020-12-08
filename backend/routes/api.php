@@ -27,6 +27,8 @@ Route::prefix('users')->group(function () {
     Route::get('email/resend', 'Auth\VerificationApiController@resend')->name('verificationapi.resend');
     Route::get('email/verify/{id}', 'Auth\VerificationApiController@verify')->name('verificationapi.verify')->middleware('signed');
 
+    Route::put('updateUsersRole/{id}', 'Api\UsersController@updateUsersRole');
+
     // password reset routes
     Route::group(['namespace' => 'Auth', 'middleware' => 'api', 'prefix' => 'password'], function () {
         Route::post('create', 'PasswordResetController@create');

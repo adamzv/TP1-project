@@ -13,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Mail;
+use Validator;
 
 /**
  * Class UsersController
@@ -91,6 +92,35 @@ class UsersController extends Controller
     public function destroy($id)
     {
         // TODO: discuss with team
+    }
+
+    /**
+     * Method that updates users role (For admin environment)
+     *
+     * @param Request $request
+     * @param $id
+     * @return JsonResponse
+     */
+    public function updateUsersRole(Request $request, $id)
+    {
+        $validator = Validator::make($request->only(['id_role']), [
+            'id_role' => 'required|numeric|min:1|max:4',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid user role'],
+                404);
+        }
+
+        $user = User::with('role')->findOrFail($id);
+        $user->update($request->only(['id_role']));
+
+        return response()->json([
+            'success' => true,
+            'user' => $user],
+            200);
     }
 
     /**
