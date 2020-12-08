@@ -52,12 +52,44 @@
                   </b-field>
                 </div>
                 <div class="column">
-                  <b-field label="Dátum konania">
+                  <b-field label="Začiatok udalosti">
                     <b-datetimepicker
                       v-model="beginning"
                       placeholder="Vybrať dátum a čas"
                       icon="calendar-today"
                       :locale="'sk-SK'"
+                      :max-datetime="end"
+                      ref="datepicker"
+                      horizontal-time-picker
+                    >
+                      <!-- A simple hack to display timepicker in the middle :) -->
+                      <template slot="left">
+                        <b-button disabled style="visibility:hidden"></b-button>
+                      </template>
+                      <template slot="right">
+                        <b-button
+                          outlined
+                          class="button is-success"
+                          type="button"
+                          icon-left="check"
+                          @click="$refs.datepicker.toggle()"
+                        ></b-button>
+                      </template>
+                    </b-datetimepicker>
+                  </b-field>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column is-two-fifths"></div>
+                <div class="column"></div>
+                <div class="column">
+                  <b-field label="Koniec udalosti">
+                    <b-datetimepicker
+                      v-model="end"
+                      placeholder="Vybrať dátum a čas"
+                      icon="calendar-today"
+                      :locale="'sk-SK'"
+                      :min-datetime="beginning"
                       ref="datepicker"
                       horizontal-time-picker
                     >
@@ -115,7 +147,7 @@
                     </span>
                   </b-upload>
                   <span v-if="file">
-                    &nbsp;| {{ file.name.split("/")[2] }}.pdf
+                    &nbsp;| {{ file.name }}
                     <b-button
                       v-if="fileUploadLoading"
                       :loading="fileUploadLoading"
@@ -384,6 +416,7 @@ export default {
       desc: null,
       categories: [],
       beginning: null,
+      end: null,
       place: null,
       availablePlaces: [],
       createNext: false,
@@ -490,14 +523,13 @@ export default {
             categories: this.categories,
             id_place: this.place ? this.place.id : null,
             beginning: moment(this.beginning).format("YYYY-MM-DD HH:mm:ss"),
-            end: null,
-            // lecturer: this.lecturer,
+            end: moment(this.end).format("YYYY-MM-DD HH:mm:ss"),
+            lecturer: this.lecturer,
             id_faculty: this.selectedFaculty ? this.selectedFaculty.id : null,
             id_department: this.selectedDepartment
               ? this.selectedDepartment.id
               : null,
             id_user: parseInt(this.$store.getters.loggedInId),
-            // file: this.file,
             attendance_limit: this.attendanceLimit || -1,
             pdfPath: this.filePath,
             titleImgPath: this.titleImagePath
@@ -525,14 +557,13 @@ export default {
             categories: this.categories,
             id_place: this.place ? this.place.id : null,
             beginning: moment(this.beginning).format("YYYY-MM-DD HH:mm:ss"),
-            end: null,
-            // lecturer: this.lecturer,
+            end: moment(this.end).format("YYYY-MM-DD HH:mm:ss"),
+            lecturer: this.lecturer,
             id_faculty: this.selectedFaculty ? this.selectedFaculty.id : null,
             id_department: this.selectedDepartment
               ? this.selectedDepartment.id
               : null,
             id_user: parseInt(this.$store.getters.loggedInId),
-            // file: this.file,
             attendance_limit: this.attendanceLimit || -1,
             pdfPath: this.filePath,
             titleImgPath: this.titleImagePath
@@ -632,6 +663,7 @@ export default {
       this.id = null;
       this.categories = [];
       this.beginning = null;
+      this.end = null;
       this.place = null;
       this.selectedDepartment = "";
       this.selectedFaculty = "";
@@ -658,6 +690,7 @@ export default {
         this.getEvent.beginning,
         "YYYY-MM-DD HH:mm:ss"
       ).toDate();
+      this.end = moment(this.getEvent.end, "YYYY-MM-DD HH:mm:ss").toDate();
       this.place = this.getEvent.place;
       this.selectedDepartment = this.getEvent.department;
       this.selectedFaculty = this.getEvent.faculty;

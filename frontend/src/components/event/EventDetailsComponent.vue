@@ -50,13 +50,17 @@ format. * */
             </b-taglist>
           </div>
 
-          <div style="padding-top: 20px;">
+          <div style="padding-top: 10px;">
             <b-icon icon="clock-time-four-outline"></b-icon>
             <strong style="padding-left: 5px;">KEDY</strong>
           </div>
 
-          <p style="font-size: medium; padding-top: 10px;">
+          <p class="panel-info" style="font-size: small;">
             {{ getDay() }}. {{ getMonth() }} {{ getYear() }}
+
+            <span class="panel-info-time" style="font-size: small;">
+              {{ eventTimeSplit2() }}
+            </span>
           </p>
 
           <div style="padding-top: 20px;">
@@ -64,7 +68,7 @@ format. * */
             <strong style="padding-left: 5px;">KDE</strong>
           </div>
 
-          <p style="font-size: medium; padding-top: 10px;">
+          <p class="panel-info" style="font-size: small;">
             Miestnost {{ eventRoom }}
             <br />
             {{ eventFaculty.name }}
@@ -72,31 +76,59 @@ format. * */
             {{ eventPlace.name }}
           </p>
 
-          <!-- Available tickets -->
-          <div
-            class="number-of-tickets"
-            style="margin-top: 10px; background-color: #e6e6e6; color: #454545;"
-          >
-            <b-icon icon="account"></b-icon>
-            <strong style="padding-left: 5px;">LIMIT MIEST:</strong>
-
-            <span v-if="eventAttendanceLimit >= 1">
-              <i>{{ eventAttendanceLimit }}</i>
-            </span>
-
-            <span v-else>
-              <i>Neobmedzene</i>
-            </span>
+          <div style="padding-top: 20px;">
+            <b-icon icon="calendar"></b-icon>
+            <strong style="padding-left: 5px;">KALENDÁR</strong>
           </div>
 
-          <!-- TODO -->
-          <div>
-            <a @click.prevent="downloadItem(item)">Stiahnuť pdf</a>
+          <p class="panel-info">
+            <b-tooltip position="is-bottom" label="Google">
+              <a :href="google">
+                <b-icon size="is-small" icon="google"></b-icon>
+              </a>
+            </b-tooltip>
+            <b-tooltip position="is-bottom" label="Outlook">
+              <a :href="outlook">
+                <b-icon size="is-small" icon="microsoft-outlook"></b-icon>
+              </a>
+            </b-tooltip>
+            <b-tooltip position="is-bottom" label="Office365">
+              <a :href="office365">
+                <b-icon size="is-small" icon="microsoft-office"></b-icon>
+              </a>
+            </b-tooltip>
+            <b-tooltip position="is-bottom" label="iCalendar (.ics)">
+              <a :href="ics">
+                <b-icon size="is-small" icon="calendar"></b-icon>
+              </a>
+            </b-tooltip>
+          </p>
+
+          <div style="margin-top: 20px; margin-bottom: 10px;">
+            <b-icon icon="account"></b-icon>
+            <strong style="padding-left: 5px;">LIMIT MIEST</strong>
+
+            <p
+              v-if="eventAttendanceLimit >= 1"
+              class="panel-info"
+              style="font-size: small;"
+            >
+              <i>
+                <span v-if="eventParticipants">{{ eventParticipants }} /</span>
+                {{ eventAttendanceLimit }}
+              </i>
+            </p>
+
+            <p v-else class="panel-info" style="font-size: small;">
+              <i>Neobmedzene</i>
+            </p>
           </div>
 
           <!-- Sign up button -->
-          <div>
+          <div v-if="eventAttendanceLimit >= 1">
             <b-button
+              v-if="!userAttendingEvent"
+              @click="userAttendEvent()"
               v-bind:class="{
                 eventBackColorFPV: eventIdFaculty == 1,
                 eventBackColorFF: eventIdFaculty == 4,
@@ -108,7 +140,16 @@ format. * */
               }"
               style="margin-top: 10px; margin-bottom: 10px; color: white;"
             >
-              Prihlasit sa
+              Prihlásiť sa
+            </b-button>
+            <b-button
+              v-if="userAttendingEvent"
+              @click="userCancelAttendance()"
+              type="is-danger"
+              icon-right="close-thick"
+              style="margin-top: 10px; margin-bottom: 10px; color: white;"
+            >
+              Odhlásiť sa
             </b-button>
           </div>
         </div>
@@ -119,30 +160,6 @@ format. * */
           <div class="section2-heading alignLeft">
             <b-icon icon="file-document-multiple-outline"></b-icon>
             <strong style="padding-left: 5px;">POPIS UDALOSTI</strong>
-          </div>
-
-          <!-- Category info -->
-          <div
-            class="alignRight categoryInfo"
-            v-bind:class="{
-              eventBackColorFPV: eventIdFaculty == 1,
-              eventBackColorFF: eventIdFaculty == 4,
-              eventBackColorFSS: eventIdFaculty == 3,
-              eventBackColorFP: eventIdFaculty == 5,
-              eventBackColorFSVZ: eventIdFaculty == 2,
-              eventBackColorUKF: eventIdFaculty == 6,
-              eventBackColorLIB: eventIdFaculty == 7
-            }"
-          >
-            <div class="alignLeft">
-              Kategoria |
-            </div>
-
-            <div class="alignRight">
-              <b-icon icon="apps"></b-icon>
-            </div>
-
-            <div style="clear: both;"></div>
           </div>
 
           <div style="clear: both;"></div>
@@ -175,10 +192,7 @@ format. * */
                 :key="image"
                 :src="getImgUrl(image)"
                 class="imageLink"
-                @click="
-                  isImageModalActive = true;
-                  imageModal = image;
-                "
+                @click="(isImageModalActive = true), (imageModal = image)"
               />
               <b-modal v-model="isImageModalActive">
                 <p class="image">
@@ -229,6 +243,30 @@ format. * */
 
             <br />
 
+            <!-- TODO probably don't show this when there is no pdf-->
+            <div>
+              <!-- <a @click.prevent="downloadItem()"> -->
+              <b-button
+                size="is-small"
+                v-bind:class="{
+                  eventBackColorFPV: eventIdFaculty == 1,
+                  eventBackColorFF: eventIdFaculty == 4,
+                  eventBackColorFSS: eventIdFaculty == 3,
+                  eventBackColorFP: eventIdFaculty == 5,
+                  eventBackColorFSVZ: eventIdFaculty == 2,
+                  eventBackColorUKF: eventIdFaculty == 6,
+                  eventBackColorLIB: eventIdFaculty == 7
+                }"
+                style="color: white;"
+                icon-right="download"
+              >
+                Stiahnuť informačný list
+              </b-button>
+              <!-- </a> -->
+            </div>
+
+            <br />
+
             <!-- Bulma dropdown for adding to the calendar -->
             <!-- TODO: have to fix the not overflowing thing -->
             <b-dropdown aria-role="list" style=" overflow: visible;">
@@ -247,14 +285,69 @@ format. * */
                 style="color: white;"
                 slot-scope="{ active }"
               >
-                <span>Pridat do kalendara</span>
+                <span>Pridať do kalendára</span>
                 <b-icon :icon="active ? 'menu-up' : 'menu-down'"></b-icon>
               </button>
 
               <b-dropdown-item aria-role="listitem" style="overflow-y: auto;">
-                Action
+                <div class="media">
+                  <b-icon class="media-left" icon="google"></b-icon>
+                  <div class="media-content">
+                    <h3>Google</h3>
+                  </div>
+                </div>
+              </b-dropdown-item>
+              <b-dropdown-item aria-role="listitem" style="overflow-y: auto;">
+                <div class="media">
+                  <b-icon class="media-left" icon="microsoft-outlook"></b-icon>
+                  <div class="media-content">
+                    <h3>Outlook</h3>
+                  </div>
+                </div>
+              </b-dropdown-item>
+              <b-dropdown-item aria-role="listitem" style="overflow-y: auto;">
+                <div class="media">
+                  <b-icon class="media-left" icon="microsoft-office"></b-icon>
+                  <div class="media-content">
+                    <h3>Office365</h3>
+                  </div>
+                </div>
+              </b-dropdown-item>
+              <b-dropdown-item aria-role="listitem" style="overflow-y: auto;">
+                <div class="media">
+                  <b-icon class="media-left" icon="calendar"></b-icon>
+                  <div class="media-content">
+                    <h3>iCalendar (.ics)</h3>
+                  </div>
+                </div>
               </b-dropdown-item>
             </b-dropdown>
+
+            <br />
+            <br />
+
+            <div class="block">
+              <ShareNetwork
+                network="facebook"
+                :url="eventURL"
+                :title="eventName"
+                :description="eventDesc"
+                hashtags="ukf"
+              >
+                <b-icon class="facebook" icon="facebook"></b-icon>
+              </ShareNetwork>
+              <ShareNetwork
+                network="twitter"
+                :url="eventURL"
+                :title="eventName"
+                hashtags="ukf"
+              >
+                <b-icon class="twitter" icon="twitter"></b-icon>
+              </ShareNetwork>
+              <ShareNetwork network="reddit" :url="eventURL" :title="eventName">
+                <b-icon class="reddit" icon="reddit"></b-icon>
+              </ShareNetwork>
+            </div>
           </div>
         </div>
       </div>
@@ -278,6 +371,7 @@ let months = [
   "december"
 ];
 import httpClient from "../../httpClient.js";
+import { google, outlook, office365, ics } from "calendar-link";
 
 export default {
   name: "EventDetailsComponent",
@@ -286,6 +380,114 @@ export default {
   components: {},
 
   methods: {
+    // TODO if user is logged in and is routed to details page,
+    // then load information whether the user is attending the event
+    userAttendEvent() {
+      if (this.loggedInId) {
+        httpClient
+          .post(`/users/eventRegister`, {
+            user_id: this.loggedInId,
+            event_id: this.eventId
+          })
+          .then(response => {
+            this.toastGenerator(response.data.message);
+            this.eventParticipants = this.eventParticipants + 1;
+          })
+          .catch(error => {
+            this.$buefy.toast.open({
+              message: "Prihlásenie na udalosť bolo neúspešné.",
+              type: "is-danger"
+            });
+            console.log(error);
+          });
+      } else {
+        // if the user is not registered and wants to attend the event
+        // then the user can register to the event using email address
+        this.$buefy.dialog.prompt({
+          message: "Napíšte email na prihlásenie",
+          inputAttrs: {
+            type: "email"
+          },
+          confirmText: "Prihlásiť sa",
+          cancelText: "Zrušiť",
+          trapFocus: true,
+          onConfirm: email =>
+            httpClient
+              .post(`/users/eventRegister`, {
+                email: email,
+                event_id: this.eventId
+              })
+              .then(response => {
+                this.toastGenerator(response.data.message);
+              })
+              .catch(error => {
+                this.$buefy.toast.open({
+                  message: "Prihlásenie na udalosť bolo neúspešné.",
+                  type: "is-danger"
+                });
+                console.log(error);
+              })
+        });
+      }
+    },
+    userCancelAttendance() {
+      if (this.loggedInId && this.userAttendingEvent) {
+        httpClient
+          .post(`/users/eventUnregister`, {
+            user_id: this.loggedInId,
+            event_id: this.eventId
+          })
+          .then(response => {
+            this.toastGenerator(response.data.message);
+            this.eventParticipants = this.eventParticipants - 1;
+          })
+          .catch(error => {
+            this.$buefy.toast.open({
+              message: "Pokus o odhlásenie z udalosti bolo neúspešné.",
+              type: "is-danger"
+            });
+            console.log(error);
+          });
+      }
+    },
+    toastGenerator(message) {
+      if (message === "User was successfully removed from event") {
+        this.$buefy.toast.open({
+          message: `Boli ste odhlásený z  ${this.eventName}.`,
+          type: "is-success"
+        });
+        this.userAttendingEvent = false;
+      } else if (message === "Email sent") {
+        this.$buefy.toast.open({
+          duration: 3500,
+          message: `Boli ste prihlásený na ${this.eventName}.<br />Do emailovej schránky Vám príde potvrdzovací email.`,
+          type: "is-success"
+        });
+      } else if (message === "Please log in!") {
+        this.$buefy.toast.open({
+          message: `Na udalosť sa musíte prihlásiť svojim používateľským kontom.`,
+          type: "is-warning"
+        });
+      } else if (message === "User was successfully registered on event") {
+        // TODO if this is successful then send request
+        // to retrieve event details number of registered users
+        this.userAttendingEvent = true;
+        this.$buefy.toast.open({
+          message: `Boli ste prihlásený na ${this.eventName}.`,
+          type: "is-success"
+        });
+      } else if (message === "Event Full") {
+        this.$buefy.toast.open({
+          message: "Všetky miesta sú už obsadené!",
+          type: "is-danger"
+        });
+      } else if (message === "User is already registered on event") {
+        this.$buefy.toast.open({
+          message: `Už ste zaregistrovaná/ý na udalosť ${this.eventName}!`,
+          type: "is-danger"
+        });
+      }
+    },
     getYear() {
       return this.eventBeginning.substr(0, this.eventBeginning.indexOf("-"));
     },
@@ -304,6 +506,7 @@ export default {
     goBack() {
       this.$router.go(-1);
     },
+
     downloadItem() {
       httpClient
         .get(`/files/pdf/${this.eventId}`)
@@ -318,8 +521,13 @@ export default {
     },
     getImgUrl(value) {
       return process.env.VUE_APP_IMAGES_STORAGE_URL + value;
+    },
+
+    eventTimeSplit2: function() {
+      return this.eventBeginning.substr(this.eventBeginning.indexOf(" ") + 1);
     }
   },
+
   data() {
     return {
       // Default map location
@@ -332,7 +540,13 @@ export default {
       isImageModalActive: false,
       isCardModalActive: false,
       imageGalleryLink:
-        "https://journavel.com/wp-content/uploads/2014/10/img-placeholder-dark.jpg"
+        "https://journavel.com/wp-content/uploads/2014/10/img-placeholder-dark.jpg",
+      userAttendingEvent: false,
+      // calendar links
+      google: "",
+      outlook: "",
+      office365: "",
+      ics: ""
     };
   },
 
@@ -418,6 +632,12 @@ export default {
 
     eventTimeSplit: function() {
       return this.eventBeginning.substr(this.eventBeginning.indexOf(" ") + 1);
+    },
+    loggedInId() {
+      return this.$store.getters.loggedInId;
+    },
+    eventURL() {
+      return window.location.href;
     }
   },
   created() {
@@ -431,11 +651,46 @@ export default {
       .catch(() => {
         this.$store.commit("finishLoading", "EventDetailsLoadImages");
       });
+
+    if (this.loggedInId) {
+      this.$store.commit("pushToLoading", "EventDetailsUserState");
+      httpClient
+        .post("/users/checkEvent", {
+          event_id: this.eventId,
+          user_id: this.loggedInId
+        })
+        .then(response => {
+          this.userAttendingEvent = response.data.message;
+          this.$store.commit("finishLoading", "EventDetailsUserState");
+        })
+        .catch(() => {
+          this.$store.commit("finishLoading", "EventDetailsUserState");
+        });
+    }
+    var event = {
+      title: this.eventName,
+      description: this.eventDesc ? this.eventDesc : "",
+      start: this.eventBeginning,
+      location: this.eventPlace.name
+    };
+    this.google = google(event);
+    this.outlook = outlook(event).replace("&rru=addevent", "");
+    this.office365 = office365(event);
+    this.ics = ics(event);
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.twitter:hover {
+  color: #1da1f2 !important;
+}
+.facebook:hover {
+  color: #4267b2;
+}
+.reddit:hover {
+  color: #ff4500;
+}
 .alignLeft {
   float: left !important;
 }
@@ -500,6 +755,42 @@ export default {
       width: max-content;
       padding: 5px 10px 5px 10px;
       border-radius: 8px;
+    }
+
+    .panel-info {
+      font-size: medium;
+      padding-top: 2px;
+      padding-bottom: 2px;
+      font-size: medium;
+      padding-left: 6px;
+      padding-right: 6px;
+      margin-top: 10px;
+      background: #e0e0e0;
+      width: fit-content;
+      border-radius: 10px 5px 10px 5px;
+      -moz-border-radius: 10px 5px 10px 5px;
+      -webkit-border-radius: 10px 5px 10px 5px;
+      border: 0px solid #000000;
+      -webkit-box-shadow: 0px 3px 3px 1px rgba(0, 0, 0, 0.11);
+
+      -webkit-box-shadow: 0px 1px 4px 1px rgba(0, 0, 0, 0.18);
+      -moz-box-shadow: 0px 1px 4px 1px rgba(0, 0, 0, 0.18);
+      box-shadow: 0px 1px 4px 1px rgba(0, 0, 0, 0.18);
+    }
+
+    .panel-info-time {
+      font-size: medium;
+      color: white;
+      font-size: small;
+      padding-left: 4px;
+      padding-right: 4px;
+      background: #707070;
+      width: fit-content;
+      border-radius: 10px 5px 10px 5px;
+      -moz-border-radius: 10px 5px 10px 5px;
+      -webkit-border-radius: 10px 5px 10px 5px;
+      border: 0px solid #000000;
+      font-weight: normal;
     }
   }
 

@@ -13,18 +13,24 @@ component takes in all the event data coming from EventListComponent and renders
       <div
         class="panel-heading"
         v-bind:class="{
-          eventBackColorFPV: eventIdFaculty == 1,
-          eventBackColorFF: eventIdFaculty == 4,
-          eventBackColorFSS: eventIdFaculty == 3,
-          eventBackColorFP: eventIdFaculty == 5,
+          eventBackColorFPV:  eventIdFaculty == 1,
+          eventBackColorFF:   eventIdFaculty == 4,
+          eventBackColorFSS:  eventIdFaculty == 3,
+          eventBackColorFP:   eventIdFaculty == 5,
           eventBackColorFSVZ: eventIdFaculty == 2,
-          eventBackColorUKF: eventIdFaculty == 6,
-          eventBackColorLIB: eventIdFaculty == 7
-        }"
-      >
+          eventBackColorUKF:  eventIdFaculty == 6,
+          eventBackColorLIB:  eventIdFaculty == 7
+        }">
+
         <!-- Event name -->
         <p class="alignLeft" v-if="eventName">
-          {{ eventName }}
+          <span v-if="eventName.length <= 11">
+            {{ eventName }}
+          </span>
+
+          <span v-else>
+            {{ shortenName }}
+          </span>
         </p>
 
         <!-- Faculty name -->
@@ -39,7 +45,7 @@ component takes in all the event data coming from EventListComponent and renders
       </div>
 
       <!-- Test image -->
-      <div class="panel-block" style="padding: 0;">
+      <div class="panel-block" style="padding: 0; max-height: 230px; overflow-y: hidden;">
         <img
           v-if="titleImage"
           style="width: 100%;"
@@ -58,13 +64,13 @@ component takes in all the event data coming from EventListComponent and renders
       <div
         class="quickDetailsHeader"
         v-bind:class="{
-          eventBackColorFPV: eventIdFaculty == 1,
-          eventBackColorFF: eventIdFaculty == 4,
-          eventBackColorFSS: eventIdFaculty == 3,
-          eventBackColorFP: eventIdFaculty == 5,
+          eventBackColorFPV:  eventIdFaculty == 1,
+          eventBackColorFF:   eventIdFaculty == 4,
+          eventBackColorFSS:  eventIdFaculty == 3,
+          eventBackColorFP:   eventIdFaculty == 5,
           eventBackColorFSVZ: eventIdFaculty == 2,
-          eventBackColorUKF: eventIdFaculty == 6,
-          eventBackColorLIB: eventIdFaculty == 7
+          eventBackColorUKF:  eventIdFaculty == 6,
+          eventBackColorLIB:  eventIdFaculty == 7
         }"
       >
         <!-- Event date -->
@@ -101,13 +107,29 @@ component takes in all the event data coming from EventListComponent and renders
       </div>
 
       <!-- Details of the event -->
-      <div style="overflow-y: scroll;" class="eventDetails" v-if="eventDesc">
+      <div style="overflow-y: scroll;" class="eventDetails" v-if="eventDesc" v-bind:class="{
+              eventBorderColorFPV:  eventIdFaculty == 1,
+              eventBorderColorFF:   eventIdFaculty == 4,
+              eventBorderColorFSS:  eventIdFaculty == 3,
+              eventBorderColorFP:   eventIdFaculty == 5,
+              eventBorderColorFSVZ: eventIdFaculty == 2,
+              eventBorderColorUKF:  eventIdFaculty == 6,
+              eventBorderColorLIB:  eventIdFaculty == 7
+            }">
         <p>
           {{ eventDesc }}
         </p>
       </div>
 
-      <div style="overflow-y: scroll;" class="eventDetails" v-else>
+      <div style="overflow-y: scroll;" class="eventDetails" v-else v-bind:class="{
+              eventBorderColorFPV:  eventIdFaculty == 1,
+              eventBorderColorFF:   eventIdFaculty == 4,
+              eventBorderColorFSS:  eventIdFaculty == 3,
+              eventBorderColorFP:   eventIdFaculty == 5,
+              eventBorderColorFSVZ: eventIdFaculty == 2,
+              eventBorderColorUKF:  eventIdFaculty == 6,
+              eventBorderColorLIB:  eventIdFaculty == 7
+            }">
         <p style="color: #adadad;">
           Bez popisu.
         </p>
@@ -125,13 +147,13 @@ component takes in all the event data coming from EventListComponent and renders
             size="is-medium"
             class="has-text-white"
             v-bind:class="{
-              eventBackColorFPV: eventIdFaculty == 1,
-              eventBackColorFF: eventIdFaculty == 4,
-              eventBackColorFSS: eventIdFaculty == 3,
-              eventBackColorFP: eventIdFaculty == 5,
+              eventBackColorFPV:  eventIdFaculty == 1,
+              eventBackColorFF:   eventIdFaculty == 4,
+              eventBackColorFSS:  eventIdFaculty == 3,
+              eventBackColorFP:   eventIdFaculty == 5,
               eventBackColorFSVZ: eventIdFaculty == 2,
-              eventBackColorUKF: eventIdFaculty == 6,
-              eventBackColorLIB: eventIdFaculty == 7
+              eventBackColorUKF:  eventIdFaculty == 6,
+              eventBackColorLIB:  eventIdFaculty == 7
             }"
           >
             #{{ tag.name }}
@@ -162,6 +184,14 @@ export default {
 
     eventTimeSplit: function() {
       return this.eventBeginning.substr(this.eventBeginning.indexOf(" ") + 1);
+    },
+
+    shortenName: function () {
+      return this.eventName.substr(0, 12) + "...";
+    },
+
+    shortenDepartment: function () {
+      return this.eventDepartment.substr(0, 12) + "...";
     }
   },
 
@@ -303,7 +333,7 @@ export default {
 }
 
 .eventDetails {
-  padding: 20px;
+  padding: 12px;
   text-align: justify;
   height: 200px;
   max-height: 200px;
@@ -345,12 +375,40 @@ export default {
   background: #f31a33;
 }
 
+.eventBorderColorUKF {
+  border-left: 4px solid #c9f8ff;
+}
+
+.eventBorderColorLIB {
+  border-left: 4px solid #b5a6a5;
+}
+
+.eventBorderColorFPV {
+  border-left: 4px solid #b4dbcb;
+}
+
+.eventBorderColorFF {
+  border-left: 4px solid #e3b3ce;
+}
+
+.eventBorderColorFSS {
+  border-left: 4px solid #e3cba8;
+}
+
+.eventBorderColorFP {
+  border-left: 4px solid #9ec1d9;
+}
+
+.eventBorderColorFSVZ {
+  border-left: 4px solid #e6b3b9;
+}
+
 .panel {
   transition: all 0.14s ease-in-out;
 }
 
 .panel:hover {
-  transform: scale(1.05);
+  transform: scale(1.02);
   cursor: pointer;
 }
 

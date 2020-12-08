@@ -17,5 +17,6 @@ export default {};
 <style scoped>
 .footer {
   padding: 24px 0;
+  background-color: white;
 }
 </style>

@@ -12,7 +12,17 @@ export default new Vuex.Store({
     newEventSubmitted: false,
     carouselHeight: 500,
     loading: [],
-    fileUploadLoading: false
+    fileUploadLoading: false,
+    allowFiltering: false,
+    currentlyInFilter: Object,
+    filterEventName: "",
+    filterBeginning: Date,
+    filterCategories: [],
+    filterFaculty: "",
+    filterDepartment: "",
+    filterPlace: "",
+
+    URL_API_FILTER: `/events`
   },
   getters: {
     fileUploadLoading(state) {
@@ -46,6 +56,33 @@ export default new Vuex.Store({
     },
     newEventSubmitted(state) {
       return state.newEventSubmitted;
+    },
+    getAllowFiltering(state) {
+      return state.allowFiltering;
+    },
+    getCurrentlyInFilter(state) {
+      return state.currentlyInFilter;
+    },
+    getURL_API_FILTER(state) {
+      return state.URL_API_FILTER;
+    },
+    getFilterEventName(state) {
+      return state.filterEventName;
+    },
+    getFilterBeginning(state) {
+      return state.filterBeginning;
+    },
+    getFilterCategories(state) {
+      return state.filterCategories;
+    },
+    getFilterFaculty(state) {
+      return state.filterFaculty;
+    },
+    getFilterDepartment(state) {
+      return state.filterDepartment;
+    },
+    getFilterPlace(state) {
+      return state.filterPlace;
     }
   },
   mutations: {
@@ -82,6 +119,33 @@ export default new Vuex.Store({
     },
     submitNewEvent(state, change) {
       state.newEventSubmitted = change;
+    },
+    setAllowFiltering(state, change) {
+      state.allowFiltering = change;
+    },
+    setCurrentlyInFilter(state, change) {
+      state.currentlyInFilter = change;
+    },
+    setURL_API_FILTER(state, change) {
+      state.URL_API_FILTER = change;
+    },
+    setFilterEventName(state, change) {
+      state.filterEventName = change;
+    },
+    setFilterBeginning(state, change) {
+      state.filterBeginning = change;
+    },
+    setFilterCategories(state, change) {
+      state.filterCategories = change;
+    },
+    setFilterFaculty(state, change) {
+      state.filterFaculty = change;
+    },
+    setFilterDepartment(state, change) {
+      state.filterDepartment = change;
+    },
+    setFilterPlace(state, change) {
+      state.filterPlace = change;
     }
   },
   actions: {
@@ -119,9 +183,6 @@ export default new Vuex.Store({
       });
     },
     destroyToken(context) {
-      httpClient.defaults.headers.common["Authorization"] =
-        "Bearer " + context.state.token;
-
       if (context.getters.loggedIn) {
         return new Promise((resolve, reject) => {
           httpClient
@@ -163,19 +224,18 @@ export default new Vuex.Store({
       });
     },
     retrieveUserData(context) {
-      httpClient.defaults.headers.common["Authorization"] =
-        "Bearer " + context.state.token;
       if (context.getters.loggedInId) {
         return new Promise((resolve, reject) => {
           httpClient
             .get(`/users/${context.state.userId}`)
             .then(response => {
               const user = response.data;
-
+              console.log(response);
               context.commit("retrieveUser", user);
               resolve(response);
             })
             .catch(error => {
+              console.log(error);
               reject(error);
             });
         });
