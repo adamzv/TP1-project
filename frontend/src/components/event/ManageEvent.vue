@@ -124,8 +124,8 @@
                       Nahrať (zvoliť) titulnú fotku
                     </span>
                   </b-upload>
-                  <span v-if="titleImage">
-                    &nbsp;| {{ titleImage.name }}
+                  <span v-if="titleImagePath">
+                    &nbsp;| {{ titleImagePath }}
                     <b-button
                       @click="removeTitleImage"
                       type="is-danger"
@@ -133,6 +133,18 @@
                       icon-right="delete"
                     ></b-button>
                   </span>
+                  <template v-else>
+                    <span v-if="titleImage">
+                      &nbsp;| {{ titleImage.name }}
+                      <b-button
+                        @click="removeTitleImage"
+                        type="is-danger"
+                        size="is-small"
+                        icon-right="delete"
+                      ></b-button>
+                    </span>
+                  </template>
+
                   <br />
                   <b-upload
                     v-model="file"
@@ -473,7 +485,6 @@ export default {
             title_image: result
           })
           .then(response => {
-            console.log(response);
             this.titleImagePath = response.data.path;
           })
           .catch(error => console.log(error));
@@ -485,6 +496,7 @@ export default {
     removeTitleImage() {
       httpClient.delete(`/files/titleImg/${this.id}`).then(() => {
         this.titleImage = null;
+        this.titleImagePath = null;
       });
     },
     postPDF(file) {
@@ -498,7 +510,6 @@ export default {
             pdf: result
           })
           .then(response => {
-            console.log(response);
             this.$store.dispatch("updateLoading");
             this.filePath = response.data.path;
           })
@@ -531,8 +542,8 @@ export default {
               : null,
             id_user: parseInt(this.$store.getters.loggedInId),
             attendance_limit: this.attendanceLimit || -1,
-            pdfPath: this.filePath,
-            titleImgPath: this.titleImagePath
+            pdfPath: null,
+            titleImgPath: null
           })
           .then(() => {
             this.$store.commit("submitNewEvent", true);
@@ -697,6 +708,7 @@ export default {
       this.room = this.getEvent.room;
       this.lecturer = this.getEvent.lecturer;
       this.file = this.getEvent.file;
+      this.titleImagePath = this.getEvent.titleImg[0];
       this.isAttendanceLimit = this.getEvent.attendanceLimit > -1;
       this.attendanceLimit =
         this.getEvent.attendanceLimit > -1
@@ -722,28 +734,31 @@ export default {
     },
     id(val) {
       if (val) {
-        this.$store.commit("pushToLoading", "EventPDF");
-        httpClient
-          .get(`/files/pdf/${this.id}`)
-          .then(response => {
-            this.file = {};
-            this.file.name = response.data.pdfs_path.pdf1_path;
-            this.$store.commit("finishLoading", "EventPDF");
-          })
-          .catch(() => {
-            this.$store.commit("finishLoading", "EventPDF");
-          });
-
-        this.$store.commit("pushToLoading", "ManageEventLoadImages");
-        httpClient
-          .get(`/files/image/${this.id}`)
-          .then(response => {
-            this.loadedImages = response.data.images_path;
-            this.$store.commit("finishLoading", "ManageEventLoadImages");
-          })
-          .catch(() => {
-            this.$store.commit("finishLoading", "ManageEventLoadImages");
-          });
+        if (this.event.pdf.length > 0) {
+          this.$store.commit("pushToLoading", "EventPDF");
+          httpClient
+            .get(`/files/pdf/${this.id}`)
+            .then(response => {
+              this.file = {};
+              this.file.name = response.data.pdfs_path.pdf1_path;
+              this.$store.commit("finishLoading", "EventPDF");
+            })
+            .catch(() => {
+              this.$store.commit("finishLoading", "EventPDF");
+            });
+        }
+        if (this.event.images.length > 0) {
+          this.$store.commit("pushToLoading", "ManageEventLoadImages");
+          httpClient
+            .get(`/files/image/${this.id}`)
+            .then(response => {
+              this.loadedImages = response.data.images_path;
+              this.$store.commit("finishLoading", "ManageEventLoadImages");
+            })
+            .catch(() => {
+              this.$store.commit("finishLoading", "ManageEventLoadImages");
+            });
+        }
       }
     }
   },

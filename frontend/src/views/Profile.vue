@@ -60,6 +60,7 @@
                 v-bind:event-department="event.department"
                 v-bind:event-faculty="event.faculty"
                 v-bind:event-categories="event.categories"
+                v-bind:event-title-img="event.titleImg"
               />
             </template>
           </b-carousel-list>
