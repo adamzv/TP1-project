@@ -49,6 +49,7 @@ Route::prefix('users')->group(function () {
 });
 
 Route::namespace('Api')->group(function () {
+
     Route::apiResource('categories', 'CategoriesController');
     Route::apiResource('cities', 'CitiesController');
     Route::apiResource('departments', 'DepartmentsController');
@@ -58,6 +59,7 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('roles', 'RolesController');
     Route::apiResource('states', 'StatesController');
     Route::apiResource('users', 'UsersController');
+    Route::get('admin', 'EventsController@admin');
 
     Route::prefix('files')->group(function () {
 
@@ -84,6 +86,8 @@ Route::namespace('Api')->group(function () {
  *
  * @author lacal
  */
+
+
 Route::get('events', function () {
 
     // get 'events' with pivot table 'event_user'
@@ -116,11 +120,22 @@ Route::get('events', function () {
             } elseif ($criteria == 'limit') {
                 $query->havingRaw('participants != attendance_limit');
             } elseif (strpos($criteria, 'id_') !== false) {
-                if ($criteria == 'id_user') $query->where('events.id_user', '=', $value);
+                if ($criteria == 'id_user') {
+                    $query->where('events.id_user', '=', $value);
+                    return $query
+                        ->groupBy('events.id')
+                        ->orderBy('beginning', 'asc')
+                        ->get();
+
+                }
                 else $query->where($criteria, '=', $value);
             } elseif ($criteria == 'event_user_id') {
                 $query->where('event_user.user_id', '=', $value);
                 $datetimeFilter = false;
+                return $query
+                    ->groupBy('events.id')
+                    ->orderBy('beginning', 'asc')
+                    ->get();
             } elseif ($criteria == 'categories_id') {
                 $id_categories = preg_split('@!@', $value, NULL, PREG_SPLIT_NO_EMPTY);
 

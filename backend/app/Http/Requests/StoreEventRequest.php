@@ -36,7 +36,7 @@ class StoreEventRequest extends FormRequest
             'attendance_limit' => 'required|integer',
             'beginning' => 'required',
             'end' => 'nullable',
-            'id_user' => 'required',
+            //'id_user' => 'required',
             'id_place' => 'required',
             'id_faculty' => 'required',
             'id_department' => 'nullable'

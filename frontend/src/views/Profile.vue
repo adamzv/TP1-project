@@ -65,15 +65,40 @@
           </b-carousel-list>
         </template>
         <!-- Sprava udalosti -->
-        <template v-if="isModerator || isAdmin">
-          <h1 class="is-uppercase is-size-4">
-            Správa udalostí
-          </h1>
-          <hr class="hr" />
-          <template v-if="events">
-            <EventManager :events="events" />
-          </template>
+        <template v-if="isAdmin">
+          <div id="app" class="container">
+              <section>
+                <b-tabs size="is-medium" class="block">
+                  <b-tab-item label="Správa udalostí" icon="calendar-check" @click="getEvents">
+                    <template v-if="events">
+                    <EventManager :events="events" />
+                    </template>
+                  </b-tab-item>
+                  <b-tab-item label="Používatelia" icon="account-box" @click="getUsers">
+                    <template v-if="users">
+                      <UserComponent :users="users"/>
+                    </template>
+                  </b-tab-item>
+                  <b-tab-item label="Štatistiky" icon="chart-pie"></b-tab-item>
+                </b-tabs>
+              </section>
+          </div>
         </template>
+        <!-- Sprava udalosti -->
+        <template v-if="isModerator">
+          <div id="app" class="container">
+              <section>
+                <b-tabs size="is-large" class="block">
+                  <b-tab-item label="Správa udalostí" icon="calendar-check" @click="getEvents">
+                    <template v-if="events">
+                    <EventManager :events="events" />
+                    </template>
+                  </b-tab-item>
+                </b-tabs>
+              </section>
+          </div>
+        </template>
+
       </div>
     </div>
   </section>
@@ -82,6 +107,7 @@
 <script>
 import { ADMIN_ROLE, MODERATOR_ROLE, USER_ROLE } from "../const.js";
 import EventManager from "../components/event/EventManager.vue";
+import UserComponent from "../components/UserComponent.vue";
 import EventCardComponent from "../components/event/EventCardComponent.vue";
 import httpClient from "../httpClient.js";
 
@@ -89,23 +115,31 @@ export default {
   name: "profile",
   components: {
     EventManager,
-    EventCardComponent
+    EventCardComponent,
+    UserComponent
   },
   data() {
     return {
       test: 0,
-      events: []
+      events: [],
+      users: []
     };
   },
   created() {
     // this function call is for when the user returns to the profile view
     // without this events list would be empty after router.back()
-    this.getEvents();
+    
+   this.getEvents();
+   this.getUsers();
+   
+    
   },
   methods: {
     getEvents() {
+
       if (this.isAdmin) {
-        this.loadEvents("/events");
+        this.loadEvents("/admin");
+        
       } else if (this.isModerator) {
         this.loadEvents(`/events?filter=id_user=${this.loggedInId}`);
       } else if (this.isUser) {
@@ -120,14 +154,35 @@ export default {
       httpClient
         .get(route)
         .then(response => {
-          this.events = response.data.data;
+          this.events = response.data;
           this.$store.commit("finishLoading", "Profile");
         })
         .catch(error => {
           console.log(error);
           this.$store.commit("finishLoading", "Profile");
         });
-    }
+    },
+
+    getUsers() {
+      if (this.isAdmin) {
+         this.$store.commit("pushToLoading", "Profile2");
+        httpClient
+          .get("/users")
+          .then(response => {
+            this.users = response.data;
+           
+            this.$store.commit("finishLoading", "Profile2");
+          })
+          .catch(error => {
+            console.log(error);
+            this.$store.commit("finishLoading", "Profile2");
+          });
+        
+        
+      }
+    
+    },
+   
   },
   // watching for a change in userRole is required because we have to wait
   // till user information is loaded in vuex store
@@ -135,6 +190,7 @@ export default {
     userRole(newVal) {
       if (newVal) {
         this.getEvents();
+        this.getUsers();
       }
     },
     newEventSubmitted(newVal) {
