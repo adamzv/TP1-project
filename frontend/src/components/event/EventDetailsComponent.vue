@@ -115,6 +115,7 @@ format. * */
             >
               <i>
                 <span v-if="eventParticipants">{{ eventParticipants }} /</span>
+                <span v-else>0 /</span>
                 {{ eventAttendanceLimit }}
               </i>
             </p>
@@ -190,7 +191,7 @@ format. * */
               <img
                 v-for="image in images"
                 :key="image"
-                :src="getImgUrl(image)"
+                :src="getThumbnailImgUrl(image)"
                 class="imageLink"
                 @click="(isImageModalActive = true), (imageModal = image)"
               />
@@ -240,13 +241,11 @@ format. * */
             </div>
 
             <div class="by">{{ eventUser.name }} {{ eventUser.surname }}</div>
-
             <br />
 
-            <!-- TODO probably don't show this when there is no pdf-->
-            <div>
-              <!-- <a @click.prevent="downloadItem()"> -->
+            <div v-if="eventPdf[0]">
               <b-button
+                @click.prevent="downloadItem()"
                 size="is-small"
                 v-bind:class="{
                   eventBackColorFPV: eventIdFaculty == 1,
@@ -262,68 +261,7 @@ format. * */
               >
                 Stiahnuť informačný list
               </b-button>
-              <!-- </a> -->
             </div>
-
-            <br />
-
-            <!-- Bulma dropdown for adding to the calendar -->
-            <!-- TODO: have to fix the not overflowing thing -->
-            <b-dropdown aria-role="list" style=" overflow: visible;">
-              <button
-                class="button"
-                slot="trigger"
-                v-bind:class="{
-                  eventBackColorFPV: eventIdFaculty == 1,
-                  eventBackColorFF: eventIdFaculty == 4,
-                  eventBackColorFSS: eventIdFaculty == 3,
-                  eventBackColorFP: eventIdFaculty == 5,
-                  eventBackColorFSVZ: eventIdFaculty == 2,
-                  eventBackColorUKF: eventIdFaculty == 6,
-                  eventBackColorLIB: eventIdFaculty == 7
-                }"
-                style="color: white;"
-                slot-scope="{ active }"
-              >
-                <span>Pridať do kalendára</span>
-                <b-icon :icon="active ? 'menu-up' : 'menu-down'"></b-icon>
-              </button>
-
-              <b-dropdown-item aria-role="listitem" style="overflow-y: auto;">
-                <div class="media">
-                  <b-icon class="media-left" icon="google"></b-icon>
-                  <div class="media-content">
-                    <h3>Google</h3>
-                  </div>
-                </div>
-              </b-dropdown-item>
-              <b-dropdown-item aria-role="listitem" style="overflow-y: auto;">
-                <div class="media">
-                  <b-icon class="media-left" icon="microsoft-outlook"></b-icon>
-                  <div class="media-content">
-                    <h3>Outlook</h3>
-                  </div>
-                </div>
-              </b-dropdown-item>
-              <b-dropdown-item aria-role="listitem" style="overflow-y: auto;">
-                <div class="media">
-                  <b-icon class="media-left" icon="microsoft-office"></b-icon>
-                  <div class="media-content">
-                    <h3>Office365</h3>
-                  </div>
-                </div>
-              </b-dropdown-item>
-              <b-dropdown-item aria-role="listitem" style="overflow-y: auto;">
-                <div class="media">
-                  <b-icon class="media-left" icon="calendar"></b-icon>
-                  <div class="media-content">
-                    <h3>iCalendar (.ics)</h3>
-                  </div>
-                </div>
-              </b-dropdown-item>
-            </b-dropdown>
-
-            <br />
             <br />
 
             <div class="block">
@@ -522,7 +460,9 @@ export default {
     getImgUrl(value) {
       return process.env.VUE_APP_IMAGES_STORAGE_URL + value;
     },
-
+    getThumbnailImgUrl(value) {
+      return process.env.VUE_APP_IMAGES_STORAGE_URL + "thumb-" + value;
+    },
     eventTimeSplit2: function() {
       return this.eventBeginning.substr(this.eventBeginning.indexOf(" ") + 1);
     }
@@ -623,6 +563,18 @@ export default {
     eventCategories: {
       type: Array,
       required: false
+    },
+    eventPdf: {
+      type: Array,
+      required: false
+    },
+    eventTitleImg: {
+      type: Array,
+      required: false
+    },
+    eventImages: {
+      type: Array,
+      required: false
     }
   },
   computed: {
@@ -641,16 +593,18 @@ export default {
     }
   },
   created() {
-    this.$store.commit("pushToLoading", "EventDetailsLoadImages");
-    httpClient
-      .get(`/files/image/${this.eventId}`)
-      .then(response => {
-        this.images = response.data.images_path;
-        this.$store.commit("finishLoading", "EventDetailsLoadImages");
-      })
-      .catch(() => {
-        this.$store.commit("finishLoading", "EventDetailsLoadImages");
-      });
+    if (this.eventImages && this.eventImages.length > 0) {
+      this.$store.commit("pushToLoading", "EventDetailsLoadImages");
+      httpClient
+        .get(`/files/image/${this.eventId}`)
+        .then(response => {
+          this.images = response.data.images_path;
+          this.$store.commit("finishLoading", "EventDetailsLoadImages");
+        })
+        .catch(() => {
+          this.$store.commit("finishLoading", "EventDetailsLoadImages");
+        });
+    }
 
     if (this.loggedInId) {
       this.$store.commit("pushToLoading", "EventDetailsUserState");

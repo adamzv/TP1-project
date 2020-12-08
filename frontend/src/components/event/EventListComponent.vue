@@ -31,6 +31,7 @@ details accordingly. * */
           v-bind:event-department="event.department"
           v-bind:event-faculty="event.faculty"
           v-bind:event-categories="event.categories"
+          v-bind:event-title-img="event.titleImg"
           v-for="event in this.$store.getters.getCurrentlyInFilter.data"
           v-bind:key="event.id"
         />

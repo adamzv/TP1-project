@@ -230,12 +230,10 @@ export default new Vuex.Store({
             .get(`/users/${context.state.userId}`)
             .then(response => {
               const user = response.data;
-              console.log(response);
               context.commit("retrieveUser", user);
               resolve(response);
             })
             .catch(error => {
-              console.log(error);
               reject(error);
             });
         });
