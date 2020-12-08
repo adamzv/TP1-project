@@ -138,7 +138,7 @@
             downgrade(id){
                 httpClient
                     .put(`/users/updateUsersRole/${id}`, {
-                        id_role: 1,
+                        id_role: 3,
                           
                     })
                     .then(() => {

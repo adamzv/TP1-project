@@ -529,7 +529,7 @@ export default {
             id_department: this.selectedDepartment
               ? this.selectedDepartment.id
               : null,
-            id_user: parseInt(this.$store.getters.loggedInId),
+            //id_user: parseInt(this.$store.getters.loggedInId),
             attendance_limit: this.attendanceLimit || -1,
             pdfPath: this.filePath,
             titleImgPath: this.titleImagePath

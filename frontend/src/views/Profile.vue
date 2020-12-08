@@ -68,7 +68,7 @@
         <template v-if="isAdmin">
           <div id="app" class="container">
               <section>
-                <b-tabs size="is-large" class="block">
+                <b-tabs size="is-medium" class="block">
                   <b-tab-item label="Správa udalostí" icon="calendar-check" @click="getEvents">
                     <template v-if="events">
                     <EventManager :events="events" />
