@@ -229,10 +229,40 @@ class EventsController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     * @param $id
+     * @return JsonResponse
      */
     public function destroy($id)
     {
-        // TODO: while implementing destroy method, its also important to send mail to registered users to this event.
+        // find event
+        $event = Event::findOrFail($id);
+
+        // detach categories from event
+        $event->categories()->detach();
+
+        // inform users only if event time is actual
+        if ($event->beginning >= date('Y-m-d H:i:s')) {
+
+            // create and send mail to users about deletion of event
+            Mail::to('me@app.com')
+                ->bcc($this->getUsersOfEvent($id))
+                ->send(new EventChanged(
+                    $event,
+                    'delete',
+                    $event->beginning
+                ));
+        }
+
+        // detach users from event
+        $event->attendance()->detach();
+
+        // soft delete event
+        $event->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Event was successfully deleted'],
+            200);
     }
 
     /**

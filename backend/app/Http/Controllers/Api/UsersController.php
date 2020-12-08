@@ -88,10 +88,23 @@ class UsersController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
+     * @return JsonResponse
      */
     public function destroy($id)
     {
-        // TODO: discuss with team
+        // find user
+        $user = User::findOrFail($id);
+
+        // detach user from event
+        $user->events()->detach();
+
+        // soft delete user
+        $user->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User was successfully deleted'],
+            200);
     }
 
     /**
