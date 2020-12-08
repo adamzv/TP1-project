@@ -188,6 +188,34 @@
               </div>
               <div class="columns">
                 <div class="column">
+                  <b-modal v-model="newPlaceModal" has-modal-card trap-focus>
+                    <div class="modal-card" style="width: auto">
+                      <header class="modal-card-head">
+                        <p class="modal-card-title">Login</p>
+                        <button
+                          type="button"
+                          class="delete"
+                          @click="newPlaceModal = false"
+                        />
+                      </header>
+                      <section class="modal-card-body">
+                        <b-field label="Ulica">
+                          <b-input v-model="modalPlace" required></b-input>
+                        </b-field>
+                      </section>
+                      <footer class="modal-card-foot">
+                        <button
+                          class="button"
+                          type="button"
+                          @click="newPlaceModal = false"
+                        >
+                          Zrušiť
+                        </button>
+                        <button class="button is-primary">Potvrdiť</button>
+                      </footer>
+                    </div>
+                  </b-modal>
+
                   <b-field label="Miesto konania">
                     <b-autocomplete
                       v-model="placeName"
@@ -201,7 +229,7 @@
                       @select="option => (place = option)"
                     >
                       <template slot="header">
-                        <a @click="console.log('todo')">
+                        <a @click="newPlaceModal = true">
                           <span>Pridať nové miesto</span>
                         </a>
                       </template>
@@ -421,6 +449,7 @@ export default {
   data() {
     return {
       newCategoryName: "",
+      newPlaceName: "",
       availableCategories: [],
       filteredCategories: [],
       id: null,
@@ -436,6 +465,9 @@ export default {
       selectedFaculty: null,
       availableDepartments: [],
       availableFaculties: [],
+      availableCities: [],
+      availableStates: [],
+      newPlaceModal: false,
       room: null,
       lecturer: null,
       file: null,
@@ -453,7 +485,9 @@ export default {
       fileLoading: false,
       loadedImages: null,
       titleImage: null,
-      titleImagePath: null
+      titleImagePath: null,
+      // place modal properties
+      modalPlace: ""
     };
   },
   methods: {
@@ -464,11 +498,25 @@ export default {
           maxlength: 255,
           value: this.newCategoryName
         },
-        confirmText: "Add",
+        confirmText: "Pridať",
         onConfirm: value => {
           this.availableCategories.push({ name: value });
           this.categories.push({ name: value });
           this.newCategoryName = "";
+        }
+      });
+    },
+    addNewPlace() {
+      this.$buefy.dialog.prompt({
+        message: `Pridať novú miesto`,
+        inputAttrs: {
+          maxlength: 255,
+          value: this.newPlaceName
+        },
+        confirmText: "Pridať",
+        onConfirm: value => {
+          this.availablePlaces.push({ name: value });
+          this.newPlaceName = "";
         }
       });
     },
@@ -790,6 +838,18 @@ export default {
     httpClient.get("/places").then(response => {
       this.availablePlaces = response.data;
       this.$store.commit("finishLoading", "ManageEventPlaces");
+    });
+
+    this.$store.commit("pushToLoading", "ManageEventCities");
+    httpClient.get("/cities").then(response => {
+      this.availableCities = response.data;
+      this.$store.commit("finishLoading", "ManageEventCities");
+    });
+
+    this.$store.commit("pushToLoading", "ManageEventStates");
+    httpClient.get("/states").then(response => {
+      this.availableStates = response.data;
+      this.$store.commit("finishLoading", "ManageEventStates");
     });
 
     this.$store.commit("pushToLoading", "ManageEventDepartments");

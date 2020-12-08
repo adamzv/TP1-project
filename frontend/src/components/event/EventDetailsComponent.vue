@@ -191,7 +191,7 @@ format. * */
               <img
                 v-for="image in images"
                 :key="image"
-                :src="getImgUrl(image)"
+                :src="getThumbnailImgUrl(image)"
                 class="imageLink"
                 @click="(isImageModalActive = true), (imageModal = image)"
               />
@@ -460,7 +460,9 @@ export default {
     getImgUrl(value) {
       return process.env.VUE_APP_IMAGES_STORAGE_URL + value;
     },
-
+    getThumbnailImgUrl(value) {
+      return process.env.VUE_APP_IMAGES_STORAGE_URL + "thumb-" + value;
+    },
     eventTimeSplit2: function() {
       return this.eventBeginning.substr(this.eventBeginning.indexOf(" ") + 1);
     }
