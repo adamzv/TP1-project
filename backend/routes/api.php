@@ -86,10 +86,10 @@ Route::get('events', function () {
 
     // get 'events' with pivot table 'event_user'
     $query = Event::with('user', 'place', 'department', 'faculty', 'categories')
+
         ->select('events.*', DB::raw('COUNT(event_user.event_id) as participants'))
         ->leftJoin('event_user', 'events.id', '=', 'event_user.event_id')
         ->leftjoin('category_event', 'category_event.event_id', '=', 'events.id');
-
 
     // Find out if request contains 'filter' value
     if (\request()->filled('filter')) {
@@ -136,7 +136,7 @@ Route::get('events', function () {
         return $query
             ->groupBy('events.id')
             ->orderBy('beginning', 'asc')
-            ->simplePaginate(12);
+            ->simplePaginate(12)->setPath(\request()->url() . '?filter=' . \request('filter'));
     } else {
 
         // return query with no filter value
