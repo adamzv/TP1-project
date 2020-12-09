@@ -187,7 +187,7 @@ export default {
           maxlength: 255,
           type: "email"
         },
-        confirmText: "Pridať",
+        confirmText: "Odoslať",
         onConfirm: value => {
           httpClient
             .post("/users/password/create", { email: value })
