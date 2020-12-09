@@ -92,6 +92,12 @@
                     <UserComponent :users="users" />
                   </template>
                 </b-tab-item>
+                 <b-tab-item label="Kategórie" icon="animation">
+                  <template v-if="users">
+                    <CategoryComponent :category="category" />
+                  </template>
+
+                 </b-tab-item>
                 <b-tab-item label="Štatistiky" icon="chart-pie"></b-tab-item>
               </b-tabs>
             </section>
@@ -123,6 +129,7 @@
 <script>
 import { ADMIN_ROLE, MODERATOR_ROLE, USER_ROLE } from "../const.js";
 import EventManager from "../components/event/EventManager.vue";
+import CategoryComponent from "../components/CategoryComponent.vue";
 import UserComponent from "../components/UserComponent.vue";
 import EventCardComponent from "../components/event/EventCardComponent.vue";
 import httpClient from "../httpClient.js";
@@ -132,13 +139,16 @@ export default {
   components: {
     EventManager,
     EventCardComponent,
-    UserComponent
+    UserComponent,
+    CategoryComponent
   },
   data() {
     return {
       test: 0,
       events: [],
-      users: []
+      users: [],
+      category:[],
+      
     };
   },
   created() {
@@ -146,6 +156,7 @@ export default {
     // without this events list would be empty after router.back()
     this.getEvents();
     this.getUsers();
+    this.getCategory();
   },
   methods: {
     changePassword() {
@@ -205,6 +216,23 @@ export default {
             this.$store.commit("finishLoading", "Profile2");
           });
       }
+    },
+
+    getCategory() {
+      if (this.isAdmin) {
+        this.$store.commit("pushToLoading", "Profile2");
+        httpClient
+          .get("/categories")
+          .then(response => {
+            this.category = response.data;
+
+            this.$store.commit("finishLoading", "Profile2");
+          })
+          .catch(error => {
+            console.log(error);
+            this.$store.commit("finishLoading", "Profile2");
+          });
+      }
     }
   },
   // watching for a change in userRole is required because we have to wait
@@ -214,6 +242,7 @@ export default {
       if (newVal) {
         this.getEvents();
         this.getUsers();
+        this.getCategory();
       }
     },
     newEventSubmitted(newVal) {
