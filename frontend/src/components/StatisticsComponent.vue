@@ -179,7 +179,6 @@ export default {
           
           
         },
-
         legend: { position: 'top', maxLines: 3 },
         height: 500,
         responsive: true,
