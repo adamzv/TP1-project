@@ -2,22 +2,28 @@
     <section>
         <b-field>
         </b-field>
-        <b-field>
-            
-    
+        
+            <b-field>
+            <div style="width:100%">
             <GChart
                 type="ColumnChart"
                 :data="chartData"
                 :options="chartOptions"
                 :events="chartEvents"
+                
             />
+            </div>
+            </b-field>
+            <b-field>
+             <div style="width:100%">
              <GChart
                 type="PieChart"
                 :data="chartData"
                 :options="chartOptions"
             />
-        </b-field>
-
+           </div>
+            
+            </b-field>
 
     </section>
  
@@ -47,7 +53,7 @@ export default {
       chartDataHeader: [
     ],
       chartDataRows: [
-         [  ]
+         [ ]
     ],
       updatedChartData: [],
       chartOptions: {
@@ -56,14 +62,16 @@ export default {
           
           
         },
-        height:500,
-        width:800
+        legend: { position: 'top', maxLines: 3 },
+        height: 500,
+        responsive: true,
+        maintainAspectRatio: false
       },
+       self: this,
        chartEvents: {
-        select: () => {          
-          
-          alert('BAF');
-        }
+        select: function() {
+              
+            }
       }
     }
   },
