@@ -57,7 +57,7 @@
       <b-carousel-item v-for="(event, i) in events" :key="i">
         <section class="hero is-medium is-bold is-dark">
           <!-- TODO: find images for background and specify correct size -->
-          <img :src="getImgUrl(i)" width="auto" height="100%" />
+          <img class="imgSettings" :src="getImgUrl(i)" />
           <div
             class="hero-body has-text-centered is-overlay"
             v-bind:class="{
@@ -71,7 +71,9 @@
             }"
           >
             <h1 class="title">{{ event.name }}</h1>
-            <h1 class="subtitle">{{ formatRemainingTime(event.beginning) }}</h1>
+            <h1 class="subtitle">
+              {{ formatRemainingTime(event.beginning) }}
+            </h1>
           </div>
         </section>
       </b-carousel-item>
@@ -196,6 +198,13 @@ body {
 }
 .carousel.carousel-items {
   height: 100%;
+}
+
+.imgSettings {
+  filter: grayscale(100%);
+  max-height: 350px;
+  width: 100%;
+  object-fit: cover;
 }
 
 @media screen and (max-width: 768px) {
