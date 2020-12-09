@@ -145,9 +145,19 @@ export default {
     deleteUser(id) {
       httpClient
         .delete(`/users/${id}`)
-
+        .then(() => {
+          this.data = this.data.filter(data => data.id != id);
+          this.$buefy.toast.open({
+            message: "Používatel bol vymazaný!",
+            type: "is-success"
+          });
+        })
         .catch(error => {
           console.log(error);
+          this.$buefy.toast.open({
+            message: "Používatela sa nepodarilo vymazať!",
+            type: "is-danger"
+          });
         });
     },
     upgrade(id) {
