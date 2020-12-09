@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laravel\Passport\Passport;
+use Mockery\Generator\StringManipulation\Pass\Pass;
 
 /**
  * Class AuthServiceProvider
@@ -31,11 +33,13 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Passport::routes();
-
         Passport::tokensCan([
             'logged-user' => 'Logged user',
             'moderator-user' => 'Moderator user',
             'admin-user' => 'Admin user',
         ]);
+        Passport::personalAccessTokensExpireIn(Carbon::now()->addMinutes(60));
+        Passport::refreshTokensExpireIn(Carbon::now()->addMinutes(60));
+        Passport::tokensExpireIn(Carbon::now()->addMinutes(60));
     }
 }

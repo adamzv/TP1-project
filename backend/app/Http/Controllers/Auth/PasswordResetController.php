@@ -90,14 +90,13 @@ class PasswordResetController extends Controller
     {
         // validate request
         $request->validate([
-            'email' => 'required|string|email|max:255',
             'password' => 'required|string|min:6|max:255|confirmed',
             'token' => 'required|string'
         ]);
 
         // find given token and email in db
-        $passwordReset = PasswordReset::where([
-            ['token', $request->input('token')], ['email', $request->input('email')]])->first();
+        $passwordReset = PasswordReset::where(
+            'token', '=', $request->input('token'))->first();
 
         // if nothing was found
         if (!$passwordReset)

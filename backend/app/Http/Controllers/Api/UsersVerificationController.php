@@ -114,8 +114,10 @@ class UsersVerificationController extends Controller
     public function logout()
     {
         if (Auth::user()) {
-            $user = Auth::user()->token();
-            $user->revoke();
+            Auth::user()->tokens->each(function ($token) {
+                $token->delete();
+            });
+
 
             return response()->json([
                 'success' => true,
