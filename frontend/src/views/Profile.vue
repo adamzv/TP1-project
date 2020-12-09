@@ -166,7 +166,6 @@ export default {
       hodnota: [],
        faculties1: [],
       hodnota1: [],
-     
     };
   },
   created() {
