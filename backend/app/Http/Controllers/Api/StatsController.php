@@ -21,7 +21,7 @@ class StatsController extends Controller
     public function getFacultiesEventsCount()
     {
         $query = DB::table('events')
-            ->select(DB::raw('COUNT(events.id) as pocet'), 'faculties.name as meno')
+            ->select(DB::raw('COUNT(events.id) as pocet'), 'faculties.name as meno', 'events.id_faculty as fid', 'events.*')
             ->join('faculties', 'events.id_faculty', '=', 'faculties.id')
             ->whereBetween('events.beginning', [Carbon::now()->subYear(), Carbon::now()])
             ->groupBy('faculties.name')
@@ -30,18 +30,48 @@ class StatsController extends Controller
         $data = [];
         $array = [];
         $array2 = [];
+        $array3 = [];
 
         $i = 0;
         foreach ($query as $event) {
             array_push($array, $event->meno);
             array_push($array2, $event->pocet);
+
+
+            $array3[$event->meno] = $this->getDepartmentsCount($event->fid, $event->id_department);
             $i++;
         }
 
         $data['faculty'] = $array;
         $data['count'] = $array2;
+        $data['departments'] = $array3;
 
         return json_encode($data);
+    }
+
+    public function getDepartmentsCount($id, $id_departmentt)
+    {
+        $query = DB::table('events')
+            ->select(DB::raw('COUNT(events.id_department) as pocet'), 'departments.name as meno')
+            ->join('departments', 'events.id_department', '=', 'departments.id')
+            ->whereBetween('events.beginning', [Carbon::now()->subYear(), Carbon::now()])
+            ->where('events.id_faculty', '=', $id)
+            ->groupBy('departments.name')
+            ->get();
+
+        $array = [];
+        foreach ($query as $event) {
+            if (!empty($id_departmentt)) {
+                array_push($array, $event->meno);
+                array_push($array, $event->pocet);
+
+            } else {
+                array_push($array, 'faculty');
+                array_push($array, $event->pocet);
+
+            }
+        }
+        return $array;
     }
 
     /**
