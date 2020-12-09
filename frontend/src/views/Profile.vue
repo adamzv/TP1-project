@@ -25,7 +25,11 @@
                 ></b-icon>
               </b-tooltip>
             </p>
-            <p><a class="has-text-weight-semibold" href="#">Zmeniť heslo</a></p>
+            <p>
+              <a class="has-text-weight-semibold" @click="changePassword">
+                Zmeniť heslo
+              </a>
+            </p>
           </div>
         </div>
         <!-- Pouzivatelska sekcia -->
@@ -68,38 +72,49 @@
         <!-- Sprava udalosti -->
         <template v-if="isAdmin">
           <div id="app" class="container">
-              <section>
-                <b-tabs size="is-medium" class="block">
-                  <b-tab-item label="Správa udalostí" icon="calendar-check" @click="getEvents">
-                    <template v-if="events">
+            <section>
+              <b-tabs size="is-medium" class="block">
+                <b-tab-item
+                  label="Správa udalostí"
+                  icon="calendar-check"
+                  @click="getEvents"
+                >
+                  <template v-if="events">
                     <EventManager :events="events" />
-                    </template>
-                  </b-tab-item>
-                  <b-tab-item label="Používatelia" icon="account-box" @click="getUsers">
-                    <template v-if="users">
-                      <UserComponent :users="users"/>
-                    </template>
-                  </b-tab-item>
-                  <b-tab-item label="Štatistiky" icon="chart-pie"></b-tab-item>
-                </b-tabs>
-              </section>
+                  </template>
+                </b-tab-item>
+                <b-tab-item
+                  label="Používatelia"
+                  icon="account-box"
+                  @click="getUsers"
+                >
+                  <template v-if="users">
+                    <UserComponent :users="users" />
+                  </template>
+                </b-tab-item>
+                <b-tab-item label="Štatistiky" icon="chart-pie"></b-tab-item>
+              </b-tabs>
+            </section>
           </div>
         </template>
         <!-- Sprava udalosti -->
         <template v-if="isModerator">
           <div id="app" class="container">
-              <section>
-                <b-tabs size="is-large" class="block">
-                  <b-tab-item label="Správa udalostí" icon="calendar-check" @click="getEvents">
-                    <template v-if="events">
+            <section>
+              <b-tabs size="is-large" class="block">
+                <b-tab-item
+                  label="Správa udalostí"
+                  icon="calendar-check"
+                  @click="getEvents"
+                >
+                  <template v-if="events">
                     <EventManager :events="events" />
-                    </template>
-                  </b-tab-item>
-                </b-tabs>
-              </section>
+                  </template>
+                </b-tab-item>
+              </b-tabs>
+            </section>
           </div>
         </template>
-
       </div>
     </div>
   </section>
@@ -129,18 +144,29 @@ export default {
   created() {
     // this function call is for when the user returns to the profile view
     // without this events list would be empty after router.back()
-    
-   this.getEvents();
-   this.getUsers();
-   
-    
+    this.getEvents();
+    this.getUsers();
   },
   methods: {
+    changePassword() {
+      httpClient
+        .post("/users/password/create", { email: this.user.email })
+        .then(() =>
+          this.$buefy.toast.open({
+            message: "Odkaz na zmenu hesla Vám príde na email.",
+            type: "is-success"
+          })
+        )
+        .catch(() =>
+          this.$buefy.toast.open({
+            message: "Niekde nastala chyba.",
+            type: "is-danger"
+          })
+        );
+    },
     getEvents() {
-
       if (this.isAdmin) {
         this.loadEvents("/admin");
-        
       } else if (this.isModerator) {
         this.loadEvents(`/events?filter=id_user=${this.loggedInId}`);
       } else if (this.isUser) {
@@ -166,24 +192,20 @@ export default {
 
     getUsers() {
       if (this.isAdmin) {
-         this.$store.commit("pushToLoading", "Profile2");
+        this.$store.commit("pushToLoading", "Profile2");
         httpClient
           .get("/users")
           .then(response => {
             this.users = response.data;
-           
+
             this.$store.commit("finishLoading", "Profile2");
           })
           .catch(error => {
             console.log(error);
             this.$store.commit("finishLoading", "Profile2");
           });
-        
-        
       }
-    
-    },
-   
+    }
   },
   // watching for a change in userRole is required because we have to wait
   // till user information is loaded in vuex store

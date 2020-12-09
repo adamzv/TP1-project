@@ -508,7 +508,7 @@ export default {
     },
     addNewPlace() {
       this.$buefy.dialog.prompt({
-        message: `Pridať novú miesto`,
+        message: `Pridať nové miesto`,
         inputAttrs: {
           maxlength: 255,
           value: this.newPlaceName
@@ -773,6 +773,12 @@ export default {
     }
   },
   watch: {
+    selectedDepartmentName(val) {
+      console.log(val);
+      if (val === "") {
+        this.selectedDepartment = null;
+      }
+    },
     getEvent(val) {
       if (val) {
         this.editFormInputs();
