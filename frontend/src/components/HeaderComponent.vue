@@ -57,22 +57,23 @@
       <b-carousel-item v-for="(event, i) in events" :key="i">
         <section class="hero is-medium is-bold is-dark">
           <!-- TODO: find images for background and specify correct size -->
-          <!-- TODO: set color overlay for UKF -->
-          <img :src="getImgUrl(i)" width="auto" height="100%" />
+          <img class="imgSettings" :src="getImgUrl(i)" />
           <div
             class="hero-body has-text-centered is-overlay"
             v-bind:class="{
               'green-overlay': event.faculty.id == 1,
-              'pink-overlay': event.faculty.id == 4,
-              'orange-overlay': event.faculty.id == 3,
-              'blue-overlay': event.faculty.id == 5,
               'gray-overlay': event.faculty.id == 2,
-              'blue-overlay': event.faculty.id == 6,
+              'orange-overlay': event.faculty.id == 3,
+              'pink-overlay': event.faculty.id == 4,
+              'blue-overlay': event.faculty.id == 5,
+              'ukf-overlay': event.faculty.id == 6,
               'brown-overlay': event.faculty.id == 7
             }"
           >
             <h1 class="title">{{ event.name }}</h1>
-            <h1 class="subtitle">{{ formatRemainingTime(event.beginning) }}</h1>
+            <h1 class="subtitle">
+              {{ formatRemainingTime(event.beginning) }}
+            </h1>
           </div>
         </section>
       </b-carousel-item>
@@ -175,46 +176,7 @@ export default {
       counter: 0,
       langs: this.$i18n.availableLocales,
       locale: this.$i18n.locale,
-      carousel: 0,
-      // hardcoded 'events' to test carousel features
-      carousels: [
-        {
-          title: "Univerzitná knižnica",
-          time: 1603806300000,
-          color: "dark",
-          overlay: "brown-overlay"
-        },
-        {
-          title: "Fakulta sociálnych vied a zdravotníctva",
-          time: 1603806300000,
-          color: "dark",
-          overlay: "gray-overlay"
-        },
-        {
-          title: "Pedagogická fakulta",
-          time: 1603806300000,
-          color: "dark",
-          overlay: "blue-overlay"
-        },
-        {
-          title: "Fakulta prírodných vied",
-          time: 1603806300000,
-          color: "dark",
-          overlay: "green-overlay"
-        },
-        {
-          title: "Fakulta stredoeurópskych štúdií",
-          time: 1603806300000,
-          color: "dark",
-          overlay: "orange-overlay"
-        },
-        {
-          title: "Filozofická fakulta",
-          time: 1603806300000,
-          color: "dark",
-          overlay: "pink-overlay"
-        }
-      ]
+      carousel: 0
     };
   }
 };
@@ -236,6 +198,13 @@ body {
 }
 .carousel.carousel-items {
   height: 100%;
+}
+
+.imgSettings {
+  filter: grayscale(100%);
+  max-height: 350px;
+  width: 100%;
+  object-fit: cover;
 }
 
 @media screen and (max-width: 768px) {

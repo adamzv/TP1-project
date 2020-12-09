@@ -5,6 +5,7 @@ import NotFound from "./views/NotFound.vue";
 import Login from "./views/Login.vue";
 import ViewEvent from "./views/ViewEvent";
 import Profile from "./views/Profile.vue";
+import PasswordReset from "./views/PasswordReset.vue";
 
 Vue.use(Router);
 
@@ -39,6 +40,11 @@ export default new Router({
       meta: {
         requiresAuth: true
       }
+    },
+    {
+      path: "/passwordReset/:token",
+      component: PasswordReset,
+      name: "passwordReset"
     },
     {
       path: "*",
