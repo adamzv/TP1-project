@@ -2,8 +2,11 @@
   <section>
     <div style="margin-top: 24px;" class="container">
       <div class="page-margin">
-        <h1 class="is-uppercase is-size-4">
+        <h1 class="is-uppercase is-size-4" v-if="isModerator || isUser">
           Používateľská sekcia
+        </h1>
+        <h1 class="is-uppercase is-size-4" v-if="isAdmin">
+          Admin sekcia
         </h1>
         <hr class="hr" />
         <div class="box">
@@ -98,7 +101,12 @@
                   </template>
 
                  </b-tab-item>
-                <b-tab-item label="Štatistiky" icon="chart-pie"></b-tab-item>
+                <b-tab-item label="Štatistiky" icon="chart-pie">
+                    <template>
+                      <StatisticsComponent :faculties="faculties" :hodnota="hodnota"/>
+                    </template>
+
+                </b-tab-item>
               </b-tabs>
             </section>
           </div>
@@ -131,6 +139,7 @@ import { ADMIN_ROLE, MODERATOR_ROLE, USER_ROLE } from "../const.js";
 import EventManager from "../components/event/EventManager.vue";
 import CategoryComponent from "../components/CategoryComponent.vue";
 import UserComponent from "../components/UserComponent.vue";
+import StatisticsComponent from "../components/StatisticsComponent.vue";
 import EventCardComponent from "../components/event/EventCardComponent.vue";
 import httpClient from "../httpClient.js";
 
@@ -140,7 +149,8 @@ export default {
     EventManager,
     EventCardComponent,
     UserComponent,
-    CategoryComponent
+    CategoryComponent,
+    StatisticsComponent
   },
   data() {
     return {
@@ -149,6 +159,8 @@ export default {
       users: [],
       category:[],
       
+      faculties: [],
+      hodnota: [],
     };
   },
   created() {
@@ -157,6 +169,9 @@ export default {
     this.getEvents();
     this.getUsers();
     this.getCategory();
+    this.getFaculty();
+   
+    
   },
   methods: {
     changePassword() {
@@ -225,16 +240,36 @@ export default {
           .get("/categories")
           .then(response => {
             this.category = response.data;
-
+            this.$store.commit("finishLoading", "Profile2");
+          })
+          .catch(error => {
+            console.log(error);
+            this.$store.commit("finishLoading", "Profile2");
+          }); 
+      }},
+  
+  getFaculty() {
+      if (this.isAdmin) {
+         this.$store.commit("pushToLoading", "Profile2");
+        httpClient
+          .get("/users/gets")
+          .then(response => {
+            this.faculties = response.data.faculty;
+            this.hodnota = response.data.pocet;
+           
             this.$store.commit("finishLoading", "Profile2");
           })
           .catch(error => {
             console.log(error);
             this.$store.commit("finishLoading", "Profile2");
           });
+        
+        
       }
-    }
-  },
+    
+    },
+   },
+  
   // watching for a change in userRole is required because we have to wait
   // till user information is loaded in vuex store
   watch: {
@@ -243,6 +278,7 @@ export default {
         this.getEvents();
         this.getUsers();
         this.getCategory();
+        this.getFaculty();
       }
     },
     newEventSubmitted(newVal) {

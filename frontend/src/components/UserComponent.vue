@@ -51,64 +51,34 @@
         {{ props.row.name }}
       </b-table-column>
 
-      <b-table-column
-        field="surname"
-        label="Priezvisko"
-        :searchable="nameSearchable"
-        sortable
-        v-slot="props"
-      >
-        {{ props.row.surname }}
-      </b-table-column>
-      <b-table-column
-        field="email"
-        label="Email"
-        :searchable="nameSearchable"
-        sortable
-        v-slot="props"
-      >
-        {{ props.row.email }}
-      </b-table-column>
-      <b-table-column
-        field="id_role"
-        label="Práva"
-        :searchable="nameSearchable"
-        sortable
-        v-slot="props"
-      >
-        <label v-if="props.row.id_role === 1">Admin</label>
-        <label v-if="props.row.id_role === 2">Moderátor</label>
-        <label v-if="props.row.id_role === 3">Používateľ</label>
-      </b-table-column>
-      <b-table-column custom-key="actions" label="Actions" v-slot="props">
-        <b-tooltip label="Povýšiť" type="is-dark">
-          <button
-            v-if="props.row.id_role === 3"
-            class="button is-small is-light"
-            @click="upgrade(props.row.id)"
-          >
-            <b-icon icon="arrow-up" size="is-small"></b-icon>
-          </button>
-        </b-tooltip>
-        <b-tooltip label="Degradovať" type="is-dark">
-          <button
-            v-if="props.row.id_role === 2"
-            class="button is-small is-light"
-            @click="downgrade(props.row.id)"
-          >
-            <b-icon icon="arrow-down" size="is-small"></b-icon>
-          </button>
-        </b-tooltip>
-        <button
-          v-if="props.row.id_role != 1"
-          class="button is-small is-danger"
-          @click="deleteUser(props.row.id)"
-        >
-          <b-icon icon="delete" size="is-small"></b-icon>
-        </button>
-      </b-table-column>
-    </b-table>
-  </section>
+            <b-table-column field="surname" label="Priezvisko" :searchable="nameSearchable" sortable v-slot="props" >
+                {{ props.row.surname }}
+            </b-table-column>
+            <b-table-column field="email" label="Email" :searchable="nameSearchable" sortable v-slot="props" >
+                {{ props.row.email}}
+            </b-table-column>
+            <b-table-column field="id_role" label="Práva"  sortable v-slot="props" >
+                <label v-if="props.row.id_role ===1">Admin</label>
+                <label v-if="props.row.id_role ===2">Moderátor</label>
+                <label v-if="props.row.id_role ===3">Používateľ</label>
+            </b-table-column>
+            <b-table-column custom-key="actions" label="Actions"  v-slot="props"> 
+                <b-tooltip label="Povýšiť"  type="is-dark">
+                <button v-if="props.row.id_role ===3" class="button is-small is-light" @click="upgrade(props.row.id)"> 
+                    <b-icon icon="arrow-up" size="is-small"></b-icon> </button>
+                </b-tooltip>
+                <b-tooltip label="Degradovať"  type="is-dark">
+                <button v-if="props.row.id_role ===2" class="button is-small is-light" @click="downgrade(props.row.id)"> 
+                    <b-icon icon="arrow-down" size="is-small"></b-icon> </button> 
+                </b-tooltip>    
+                <button v-if="props.row.id_role !=1" class="button is-small is-danger" @click="deleteUser(props.row.id)"> 
+                    <b-icon icon="delete" size="is-small"></b-icon> </button>
+            </b-table-column>
+
+            
+
+        </b-table>
+    </section>
 </template>
 
 <script>
