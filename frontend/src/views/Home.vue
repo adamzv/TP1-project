@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <FilterComponent id="myFilter" class="filter" @clicked="onClickChild" />
-    <EventListComponent />
+    <EventListComponent :events="loadedEvents" />
   </div>
 </template>
 
@@ -18,7 +18,9 @@ export default {
   destroyed() {
     window.removeEventListener("scroll", this.myFunction);
   },
-
+  props: {
+    loadedEvents: Array
+  },
   methods: {
     myFunction() {
       var filter = document.getElementById("myFilter");

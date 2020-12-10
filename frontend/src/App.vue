@@ -18,7 +18,7 @@
       <HeaderComponent :events="events" class="element" />
     </template>
 
-    <router-view />
+    <router-view :loaded-events="events" />
     <FooterComponent />
 
     <back-to-top bottom="50px" right="50px">
