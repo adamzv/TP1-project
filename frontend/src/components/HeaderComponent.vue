@@ -59,7 +59,18 @@
       <b-carousel-item v-for="(event, i) in events" :key="i">
         <section class="hero is-medium is-bold is-dark">
           <!-- TODO: find images for background and specify correct size -->
-          <img class="imgSettings" :src="getImgUrl(i)" />
+          <img
+            class="imgSettings"
+            :alt="event.name"
+            v-if="event.titleImg[0]"
+            :src="getImgUrl(event.titleImg[0])"
+          />
+          <img
+            v-else
+            class="imgSettings"
+            src="https://picsum.photos/id/2/1230/350"
+            :alt="event.name"
+          />
           <div
             class="hero-body has-text-centered is-overlay"
             v-bind:class="{
@@ -108,7 +119,8 @@ export default {
     // sample function which returns "lorem ipsum" image for carousel background
     // in the future every background image needs to have at least 350px height
     getImgUrl(value) {
-      return `https://picsum.photos/id/43${value}/1230/350`;
+      // return `https://picsum.photos/id/43${value}/1230/350`;
+      return process.env.VUE_APP_IMAGES_STORAGE_URL + value;
     },
     advance: function() {
       setTimeout(() => {
@@ -147,13 +159,16 @@ export default {
       }
     },
     loadEvents(route) {
+      this.$store.commit("pushToLoading", "HeaderLoadEvents");
       httpClient
         .get(route)
         .then(response => {
           this.events = response.data.data.slice(0, 6);
+          this.$store.commit("finishLoading", "HeaderLoadEvents");
         })
         .catch(error => {
           console.log(error);
+          this.$store.commit("finishLoading", "HeaderLoadEvents");
         });
     },
     logout() {

@@ -94,8 +94,10 @@ export default {
   },
   mounted() {
     // App hned po starte
+    this.$store.commit("pushToLoading", "AppEvents");
     httpClient.get(`/events`).then(response => {
       this.$store.commit("setCurrentlyInFilter", response.data);
+      this.$store.commit("finishLoading", "AppEvents");
     });
   }
 };
