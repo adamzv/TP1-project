@@ -1,12 +1,11 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use \App\Models\State;
 
 /**
  * Class CitiesSeeder
  *
- * @author klukak
+ * @author klukak, lacal
  */
 class CitiesSeeder extends Seeder
 {
@@ -98,7 +97,7 @@ class CitiesSeeder extends Seeder
             'Žiar nad Hronom',
             'Žilina');
 
-        // adding categories in loop from array
+        // adding cities in loop from array
         for ($i = 1; $i <= (sizeof($city_array)); $i++) {
             DB::table('cities')->insert([
                 'name' => $city_array[$i - 1],
