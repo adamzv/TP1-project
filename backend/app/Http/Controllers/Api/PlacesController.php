@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePlaceRequest;
 use App\Models\Place;
+use Illuminate\Support\Collection;
 
 /**
  * Class PlacesController
@@ -21,11 +22,11 @@ class PlacesController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Place
+     * @return Collection
      */
     public function index()
     {
-        return Place::orderBy('name', 'asc')->get();
+        return Place::with('city')->orderBy('name', 'asc')->get();
     }
 
     /**
@@ -43,11 +44,11 @@ class PlacesController extends Controller
      * Display the specified resource.
      *
      * @param int $id
-     * @return Place
+     * @return Collection
      */
     public function show($id)
     {
-        return Place::findOrFail($id);
+        return Place::with('city')->findOrFail($id);
     }
 
     /**
