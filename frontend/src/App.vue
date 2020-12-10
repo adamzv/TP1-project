@@ -14,7 +14,9 @@
         class="rotate"
       />
     </b-loading>
-    <HeaderComponent class="element" />
+    <template v-if="events.length > 0">
+      <HeaderComponent :events="events" class="element" />
+    </template>
 
     <router-view />
     <FooterComponent />
@@ -41,6 +43,7 @@ export default {
   },
   data() {
     return {
+      events: [],
       loading: true,
       carouselHeight: Number,
       filteredEvents: Object
@@ -97,6 +100,7 @@ export default {
     this.$store.commit("pushToLoading", "AppEvents");
     httpClient.get(`/events`).then(response => {
       this.$store.commit("setCurrentlyInFilter", response.data);
+      this.events = response.data.data;
       this.$store.commit("finishLoading", "AppEvents");
     });
   }

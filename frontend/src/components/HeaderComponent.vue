@@ -47,50 +47,49 @@
         </b-navbar-dropdown>
       </template>
     </b-navbar>
-    <div  v-if="events.length > 0" style="width:100%">
-    <b-carousel 
-      v-model="carousel"
-      :has-drag="true"
-      :pause-info="false"
-      :interval="4000"
-      :repeat="true"
-      
-    >
-      <b-carousel-item v-for="(event, i) in events" :key="i">
-        <section class="hero is-medium is-bold is-dark">
-          <!-- TODO: find images for background and specify correct size -->
-          <img
-            class="imgSettings"
-            :alt="event.name"
-            v-if="event.titleImg[0]"
-            :src="getImgUrl(event.titleImg[0])"
-          />
-          <img
-            v-else
-            class="imgSettings"
-            src="https://picsum.photos/id/2/1230/350"
-            :alt="event.name"
-          />
-          <div
-            class="hero-body has-text-centered is-overlay"
-            v-bind:class="{
-              'green-overlay': event.faculty.id == 1,
-              'gray-overlay': event.faculty.id == 2,
-              'orange-overlay': event.faculty.id == 3,
-              'pink-overlay': event.faculty.id == 4,
-              'blue-overlay': event.faculty.id == 5,
-              'ukf-overlay': event.faculty.id == 6,
-              'brown-overlay': event.faculty.id == 7
-            }"
-          >
-            <h1 class="title">{{ event.name }}</h1>
-            <h1 class="subtitle">
-              {{ formatRemainingTime(event.beginning) }}
-            </h1>
-          </div>
-        </section>
-      </b-carousel-item>
-    </b-carousel>
+    <div v-if="events.length > 0" style="width:100%">
+      <b-carousel
+        v-model="carousel"
+        :has-drag="true"
+        :pause-info="false"
+        :interval="4000"
+        :repeat="true"
+      >
+        <b-carousel-item v-for="(event, i) in events" :key="i">
+          <section class="hero is-medium is-bold is-dark">
+            <!-- TODO: find images for background and specify correct size -->
+            <img
+              class="imgSettings"
+              :alt="event.name"
+              v-if="event.titleImg[0]"
+              :src="getImgUrl(event.titleImg[0])"
+            />
+            <img
+              v-else
+              class="imgSettings"
+              src="https://picsum.photos/id/2/1230/350"
+              :alt="event.name"
+            />
+            <div
+              class="hero-body has-text-centered is-overlay"
+              v-bind:class="{
+                'green-overlay': event.faculty.id == 1,
+                'gray-overlay': event.faculty.id == 2,
+                'orange-overlay': event.faculty.id == 3,
+                'pink-overlay': event.faculty.id == 4,
+                'blue-overlay': event.faculty.id == 5,
+                'ukf-overlay': event.faculty.id == 6,
+                'brown-overlay': event.faculty.id == 7
+              }"
+            >
+              <h1 class="title">{{ event.name }}</h1>
+              <h1 class="subtitle">
+                {{ formatRemainingTime(event.beginning) }}
+              </h1>
+            </div>
+          </section>
+        </b-carousel-item>
+      </b-carousel>
     </div>
   </div>
 </template>
@@ -99,17 +98,14 @@
 import moment from "moment";
 import countdown from "countdown";
 import { ONE, FEW, MANY } from "../const.js";
-import httpClient from "../httpClient.js";
 
 export default {
   created: function() {
     // every second an anonymous function will be called which causes re-render of the countdown string
     this.advance();
     this.countdownTranslate();
-    this.loadEvents("/events");
-   
   },
- 
+
   methods: {
     setLocale(lang) {
       this.$i18n.locale = lang;
@@ -119,7 +115,6 @@ export default {
     // sample function which returns "lorem ipsum" image for carousel background
     // in the future every background image needs to have at least 350px height
     getImgUrl(value) {
-      // return `https://picsum.photos/id/43${value}/1230/350`;
       return process.env.VUE_APP_IMAGES_STORAGE_URL + value;
     },
     advance: function() {
@@ -158,19 +153,6 @@ export default {
         countdown.resetFormat();
       }
     },
-    loadEvents(route) {
-      this.$store.commit("pushToLoading", "HeaderLoadEvents");
-      httpClient
-        .get(route)
-        .then(response => {
-          this.events = response.data.data.slice(0, 6);
-          this.$store.commit("finishLoading", "HeaderLoadEvents");
-        })
-        .catch(error => {
-          console.log(error);
-          this.$store.commit("finishLoading", "HeaderLoadEvents");
-        });
-    },
     logout() {
       this.$store.dispatch("destroyToken").then(() => {
         this.$router.push({ name: "home" });
@@ -189,10 +171,11 @@ export default {
       return this.$store.getters.permissionToAddEvents;
     }
   },
-
+  props: {
+    events: Array
+  },
   data() {
     return {
-      events: [],
       counter: 0,
       langs: this.$i18n.availableLocales,
       locale: this.$i18n.locale,

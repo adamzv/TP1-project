@@ -13,6 +13,8 @@ module.exports = {
     plugins: [
       new TerserPlugin({
         terserOptions: {
+          parallel: true,
+          sourceMap: true,
           ecma: undefined,
           warnings: false,
           parse: {},
@@ -24,7 +26,7 @@ module.exports = {
           nameCache: null,
           ie8: false,
           keep_classnames: undefined,
-          keep_fnames: false,
+          keep_fnames: /./,
           safari10: false
         }
       })
