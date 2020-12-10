@@ -76,7 +76,14 @@
         <template v-if="isAdmin">
           <div id="app" class="container">
             <section>
+              
               <b-tabs size="is-medium" class="block">
+                <b-tab-item label="Štatistiky" icon="chart-pie" >
+                    <template v-if="faculties && hodnota && online && faculties1 && hodnota1" >
+                      <StatisticsComponent :faculties="faculties" :hodnota="hodnota" :online="online" :faculties1="faculties1" :hodnota1="hodnota1" />
+                    </template>
+
+                </b-tab-item>
                 <b-tab-item
                   label="Správa udalostí"
                   icon="calendar-check"
@@ -101,12 +108,7 @@
                   </template>
 
                  </b-tab-item>
-                <b-tab-item label="Štatistiky" icon="chart-pie" >
-                    <template v-if="faculties && hodnota && online">
-                      <StatisticsComponent :faculties="faculties" :hodnota="hodnota" :online="online" />
-                    </template>
-
-                </b-tab-item>
+                
                 
               </b-tabs>
             </section>
@@ -162,6 +164,9 @@ export default {
       online: [],
       faculties: [],
       hodnota: [],
+       faculties1: [],
+      hodnota1: [],
+     
     };
   },
   created() {
@@ -259,6 +264,7 @@ export default {
           .get("/categories")
           .then(response => {
             this.category = response.data;
+            
             this.$store.commit("finishLoading", "Profile2");
           })
           .catch(error => {
@@ -275,6 +281,8 @@ export default {
           .then(response => {
             this.faculties = response.data.faculty;
             this.hodnota = response.data.pocet;
+            this.faculties1 = response.data.faculty1;
+             this.hodnota1 = response.data.pocet1;
            
             this.$store.commit("finishLoading", "Profile2");
           })
