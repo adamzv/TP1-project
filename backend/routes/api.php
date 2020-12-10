@@ -62,8 +62,8 @@ Route::namespace('Api')->group(function () {
     Route::get('admin', 'EventsController@admin');
 
     Route::prefix('stats')->group(function () {
-        Route::get('faculties', 'StatsController@getFacultiesEventsCount');
-        Route::get('onlineUsers', 'StatsController@getOnlineUsers');
+        Route::get('faculties', 'StatsController@getEventsFaculties');
+        Route::get('onlineUsers', 'StatsController@getStats');
     });
 
     Route::prefix('files')->group(function () {
