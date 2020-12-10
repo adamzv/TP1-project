@@ -96,17 +96,18 @@
                   </template>
                 </b-tab-item>
                  <b-tab-item label="Kategórie" icon="animation">
-                  <template v-if="users">
+                  <template v-if="category">
                     <CategoryComponent :category="category" />
                   </template>
 
                  </b-tab-item>
-                <b-tab-item label="Štatistiky" icon="chart-pie">
-                    <template>
-                      <StatisticsComponent :faculties="faculties" :hodnota="hodnota"/>
+                <b-tab-item label="Štatistiky" icon="chart-pie" >
+                    <template v-if="faculties && hodnota && online">
+                      <StatisticsComponent :faculties="faculties" :hodnota="hodnota" :online="online" />
                     </template>
 
                 </b-tab-item>
+                
               </b-tabs>
             </section>
           </div>
@@ -158,7 +159,7 @@ export default {
       events: [],
       users: [],
       category:[],
-      
+      online: [],
       faculties: [],
       hodnota: [],
     };
@@ -170,10 +171,12 @@ export default {
     this.getUsers();
     this.getCategory();
     this.getFaculty();
+    this.getOnlineUsers();
    
     
   },
   methods: {
+    
     changePassword() {
       httpClient
         .post("/users/password/create", { email: this.user.email })
@@ -232,6 +235,22 @@ export default {
           });
       }
     },
+    getOnlineUsers() {
+      if (this.isAdmin) {
+        this.$store.commit("pushToLoading", "Profile2");
+        httpClient
+          .get("/users/getss")
+          .then(response => {
+            this.online = response.data;
+
+            this.$store.commit("finishLoading", "Profile2");
+          })
+          .catch(error => {
+            console.log(error);
+            this.$store.commit("finishLoading", "Profile2");
+          });
+      }
+    },
 
     getCategory() {
       if (this.isAdmin) {
@@ -275,10 +294,12 @@ export default {
   watch: {
     userRole(newVal) {
       if (newVal) {
+        this.getFaculty();
         this.getEvents();
         this.getUsers();
         this.getCategory();
-        this.getFaculty();
+        this.getOnlineUsers();
+        
       }
     },
     newEventSubmitted(newVal) {
@@ -330,4 +351,6 @@ export default {
   margin-left: 20px;
   margin-right: 20px;
 }
+
+
 </style>
