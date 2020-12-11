@@ -41,6 +41,8 @@ php artisan key:generate
 
 6) Run `php artisan passport:keys` (or `php artisan passport:install`) to generate files and keys required for Laravel Passport
 
+**Attention!** Azure Storage access key is required for backend to work 
+
 Notes:
 
 `php artisan route:list` to show every route 

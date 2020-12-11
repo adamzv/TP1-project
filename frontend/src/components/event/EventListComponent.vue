@@ -46,7 +46,6 @@ details accordingly. * */
 
 <script>
 import EventCardComponent from "./EventCardComponent";
-import httpClient from "../../httpClient";
 
 export default {
   name: "EventListComponent",
@@ -54,21 +53,14 @@ export default {
   components: {
     EventCardComponent
   },
-
-  // Test data (later the data will be fetched from the backend as .json objects)
+  props: {
+    events: Array
+  },
   data() {
-    return {
-      events: []
-    };
+    return {};
   },
 
-  mounted() {
-    this.$store.commit("pushToLoading", "EventListComponent");
-    httpClient.get("/events").then(response => {
-      this.events = response.data;
-      this.$store.commit("finishLoading", "EventListComponent");
-    });
-  }
+  mounted() {}
 };
 </script>
 
