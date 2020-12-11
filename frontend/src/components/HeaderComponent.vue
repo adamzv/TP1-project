@@ -47,12 +47,14 @@
         </b-navbar-dropdown>
       </template>
     </b-navbar>
-    <b-carousel
+    <div  v-if="events.length > 0" style="width:100%">
+    <b-carousel 
       v-model="carousel"
       :has-drag="true"
       :pause-info="false"
       :interval="4000"
       :repeat="true"
+      
     >
       <b-carousel-item v-for="(event, i) in events" :key="i">
         <section class="hero is-medium is-bold is-dark">
@@ -78,6 +80,7 @@
         </section>
       </b-carousel-item>
     </b-carousel>
+    </div>
   </div>
 </template>
 
@@ -93,7 +96,9 @@ export default {
     this.advance();
     this.countdownTranslate();
     this.loadEvents("/events");
+   
   },
+ 
   methods: {
     setLocale(lang) {
       this.$i18n.locale = lang;

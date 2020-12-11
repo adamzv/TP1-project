@@ -140,20 +140,20 @@ class StatsController extends Controller
     /**
      * Get number of online users
      *
-     * @return Collection
+     * @return 
      */
     public function getOnlineUsers()
     {
         return $query = DB::table('oauth_access_tokens')
             ->select(DB::raw('COUNT(DISTINCT(user_id)) AS pocet'))
             ->where('oauth_access_tokens.expires_at', '>=', Carbon::now())
-            ->get();
+            ->first();
     }
 
     /**
      * Get number of registered users
      *
-     * @return Collection
+     * @return
      */
     public function getRegisteredUsers()
     {
@@ -163,32 +163,32 @@ class StatsController extends Controller
             ->whereNotNull('users.email_verified_at')
             ->where('roles.type', '!=', 'admin')
             ->where('roles.type', '!=', 'host<')
-            ->get();
+            ->first();
     }
 
     /**
      * Get number of events, that are planned
      *
-     * @return Collection
+     * @return
      */
     public function getNewEvents()
     {
         return $query = DB::table('events')
             ->select(DB::raw('COUNT(DISTINCT(events.id)) as eventy'))
             ->where('events.beginning', '>=', Carbon::now())
-            ->get();
+            ->first();
     }
 
     /**
      * Get number of events, which took place
      *
-     * @return Collection
+     * @return
      */
     public function getUntilEvents()
     {
         return $query = DB::table('events')
             ->select(DB::raw('COUNT(DISTINCT(events.id)) as eventy_doteraz'))
             ->where('events.beginning', '<', Carbon::now())
-            ->get();
+            ->first();
     }
 }
