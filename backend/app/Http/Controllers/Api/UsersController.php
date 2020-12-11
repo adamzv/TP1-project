@@ -9,6 +9,7 @@ use App\Models\Email;
 use App\Models\Event;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
+use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -105,6 +106,45 @@ class UsersController extends Controller
             'success' => true,
             'message' => 'User was successfully deleted'],
             200);
+    }
+
+    /**
+     * Change users name
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function changeUserName(Request $request)
+    {
+        if (Auth::user()) {
+
+            $validator = Validator::make($request->only(['name', 'surname']), [
+                'name' => 'required|string|max:255',
+                'surname' => 'required|string|max:255',
+            ]);
+
+            if (!$validator->fails()) {
+                $user = Auth::user();
+                $user->name = $request->input('name');
+                $user->surname = $request->input('surname');
+                $user->save();
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'User name was updated successfully',
+                    'user' => $user],
+                    201);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->messages()],
+                    404);
+            }
+        }
+        return response()->json([
+            'success' => false,
+            'message' => 'User not found'],
+            404);
     }
 
     /**

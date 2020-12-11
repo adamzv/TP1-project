@@ -39,21 +39,11 @@ class UsersVerificationController extends Controller
             $user = Auth::user();
             if ($user->email_verified_at !== NULL) {
 
-                // get user role
-                $userRole = $user->role->type;
-                if ($userRole == 'admin') {
+                // get object token
+                $objToken = $this->createUserToken($user);
 
-                    // create token to user with admin scope and return it
-                    $accessToken = Auth::user()->createToken('authToken', ['admin-user'])->accessToken;
-                } else if ($userRole == 'moderator') {
-
-                    // create token to user with moderator scope and return it
-                    $accessToken = Auth::user()->createToken('authToken', ['moderator-user'])->accessToken;
-                } else {
-
-                    // create token to user and return it
-                    $accessToken = Auth::user()->createToken('authToken', ['logged-user'])->accessToken;
-                }
+                // get access token
+                $accessToken = $objToken->accessToken;
 
                 $success['message'] = 'Login successfull';
 
@@ -61,7 +51,8 @@ class UsersVerificationController extends Controller
                     'success' => true,
                     'message' => $success,
                     'user' => Auth::user(),
-                    'access_token' => $accessToken], $this->successStatus);
+                    'access_token' => $accessToken,
+                    'expires_at' => strtotime($objToken->token->expires_at)], $this->successStatus);
             } else {
                 return response()->json([
                     'error' => 'Please Verify Email'], 401);
@@ -69,6 +60,29 @@ class UsersVerificationController extends Controller
         } else {
             return response()->json([
                 'error' => 'Unauthorised'], 401);
+        }
+    }
+
+    /**
+     * Creates user token according role
+     *
+     * @param $userRole
+     * @return mixed
+     */
+    public function createUserToken($user)
+    {
+        if ($user->role->type == 'admin') {
+
+            // create token to user with admin scope and return it
+            return $objToken = $user->createToken('authToken', ['admin-user']);
+        } else if ($user->role->type == 'moderator') {
+
+            // create token to user with moderator scope and return it
+            return $objToken = $user->createToken('authToken', ['moderator-user']);
+        } else {
+
+            // create token to user and return it
+            return $objToken = $user->createToken('authToken', ['logged-user']);
         }
     }
 
@@ -141,5 +155,39 @@ class UsersVerificationController extends Controller
         $user = Auth::user();
         return response()->json([
             'success' => $user], $this->successStatus);
+    }
+
+    /**
+     * Refreshes users personal token
+     *
+     * @return JsonResponse
+     */
+    public function refreshToken()
+    {
+        if (Auth::user()) {
+            $user = Auth::user();
+
+            // remove old tokens from user
+            $user->tokens->each(function ($token) {
+                $token->delete();
+            });
+
+            // get new object token
+            $objToken = $this->createUserToken($user);
+
+            // create new access token
+            $accessToken = $objToken->accessToken;
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Successfully returned new token',
+                'user' => $user,
+                'access_token' => $accessToken,
+                'expires_at' => strtotime($objToken->token->expires_at)], $this->successStatus);
+
+        } else {
+            return response()->json([
+                'error' => 'Token doesnt existss'], 401);
+        }
     }
 }

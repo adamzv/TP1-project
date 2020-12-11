@@ -28,6 +28,7 @@ Route::prefix('users')->group(function () {
     Route::get('email/verify/{id}', 'Auth\VerificationApiController@verify')->name('verificationapi.verify')->middleware('signed');
 
     Route::put('updateUsersRole/{id}', 'Api\UsersController@updateUsersRole');
+    Route::post('changeUserName', 'Api\UsersController@changeUserName');
 
     // password reset routes
     Route::group(['namespace' => 'Auth', 'middleware' => 'api', 'prefix' => 'password'], function () {
@@ -39,13 +40,14 @@ Route::prefix('users')->group(function () {
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('details', 'Api\UsersVerificationController@details')->middleware('verified');
         Route::get('logout', 'Api\UsersVerificationController@logout')->middleware('verified');
+        Route::get('refreshToken', 'Api\UsersVerificationController@refreshToken')->middleware('verified');
     }); // will work only when user has verified the email
 
     // User registration on events
     Route::post('eventRegister', 'Api\UsersController@eventRegister');
     Route::post('eventUnregister', 'Api\UsersController@eventUnregister');
     Route::post('eventEmail', 'Api\UsersController@eventEmail')->name('users.email');
-    Route::post('checkEvent','Api\UsersController@checkEvent');
+    Route::post('checkEvent', 'Api\UsersController@checkEvent');
 });
 
 Route::namespace('Api')->group(function () {
@@ -97,7 +99,6 @@ Route::get('events', function () {
 
     // get 'events' with pivot table 'event_user'
     $query = Event::with('user', 'place', 'department', 'faculty', 'categories')
-
         ->select('events.*', DB::raw('COUNT(event_user.event_id) as participants'))
         ->leftJoin('event_user', 'events.id', '=', 'event_user.event_id')
         ->leftjoin('category_event', 'category_event.event_id', '=', 'events.id');
@@ -132,8 +133,7 @@ Route::get('events', function () {
                         ->orderBy('beginning', 'asc')
                         ->get();
 
-                }
-                else $query->where($criteria, '=', $value);
+                } else $query->where($criteria, '=', $value);
             } elseif ($criteria == 'event_user_id') {
                 $query->where('event_user.user_id', '=', $value);
                 $datetimeFilter = false;
