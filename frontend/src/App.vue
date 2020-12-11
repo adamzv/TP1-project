@@ -15,7 +15,7 @@
       />
     </b-loading>
     <template v-if="events.length > 0">
-      <HeaderComponent :events="events" class="element" />
+      <HeaderComponent :events="events.slice(0, 6)" class="element" />
     </template>
 
     <router-view :loaded-events="events" />
@@ -59,7 +59,11 @@ export default {
         .then(() => {
           this.$store.commit("finishLoading", "App");
         })
-        .catch(() => {
+        .catch(error => {
+          console.log(error);
+          if (error === "Token is expired") {
+            this.$router.push("/login");
+          }
           this.$store.commit("finishLoading", "App");
         });
     }

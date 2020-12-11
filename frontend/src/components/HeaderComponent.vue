@@ -7,10 +7,10 @@
         </b-navbar-item>
       </template>
       <template slot="end">
-        <b-navbar-item href="#">
+        <b-navbar-item href="https://www.ukf.sk">
           UKF.sk
         </b-navbar-item>
-        <b-navbar-item href="#">
+        <b-navbar-item href="https://www.ukf.sk/mojaukf">
           {{ $t("ukf") }}
         </b-navbar-item>
         <b-navbar-dropdown
@@ -159,7 +159,6 @@ export default {
       });
     }
   },
-
   computed: {
     loggedIn() {
       return this.$store.getters.loggedIn;
