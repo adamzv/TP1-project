@@ -243,7 +243,7 @@ export default {
       if (this.isAdmin) {
         this.$store.commit("pushToLoading", "Profile2");
         httpClient
-          .get("/users/getss")
+          .get("/stats/onlineUsers")
           .then(response => {
             this.online = response.data;
 
@@ -276,7 +276,7 @@ export default {
       if (this.isAdmin) {
          this.$store.commit("pushToLoading", "Profile2");
         httpClient
-          .get("/users/gets")
+          .get("/stats/faculties")
           .then(response => {
             this.faculties = response.data.faculty;
             this.hodnota = response.data.pocet;

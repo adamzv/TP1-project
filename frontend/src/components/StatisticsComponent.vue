@@ -3,14 +3,14 @@
 <template>
     <section>
         <b-field style="overflow-x:auto;"> 
-<table class="center" style="margin-left:12%;margin-right:10%;">
+<table class="center" style="margin-left:11%;margin-right:13%;">
   <tr>
     <td>
 <div class="box  is-flex">
   <article class="media">
     <div class="media-left">
       <figure class="image is-64x64">
-        <img src="../assets/account-group.png" alt="Image" @click="updateData">
+        <img src="../assets/account-group.png" alt="Image" >
       </figure>
     </div>
     <div class="media-content">
@@ -30,14 +30,14 @@
   <article class="media">
     <div class="media-left">
       <figure class="image is-64x64">
-        <img src="../assets/account-details.png" alt="Image" @click="updateData">
+        <img src="../assets/account-details.png" alt="Image" >
       </figure>
     </div>
     <div class="media-content">
       <div class="content">
         <p v-if="this.online.length > 0">
           <strong>Registrovaných používateľov</strong><br>
-          <a style="color:green; font-size:20px">•</a> {{online[0].pocet}}</p>
+          <a style="color:green; font-size:20px"></a> {{online[1].registrovani}}</p>
       </div>
       
     </div>
@@ -49,14 +49,16 @@
   <article class="media">
     <div class="media-left">
       <figure class="image is-64x64">
+         <b-tooltip label="Graf nadchádzajúce udalosti"  type="is-dark" position="is-left">
         <img src="../assets/calendar.png" alt="Image" @click="newData">
+         </b-tooltip>
       </figure>
     </div>
     <div class="media-content">
       <div class="content">
         <p v-if="this.online.length > 0">
           <strong>Nadchádzajúce udalosti</strong><br>
-          <a style="color:green; font-size:20px">•</a> {{online[0].pocet}}</p>
+          <a style="color:green; font-size:20px"></a> {{online[2].eventy}}</p>
       </div>
       
     </div>
@@ -65,45 +67,29 @@
 
     </td>
     <td>
+      
 <div class="box  is-flex">
   <article class="media">
     <div class="media-left">
       <figure class="image is-64x64">
-        <img src="https://www.flaticon.com/svg/vstatic/svg/33/33308.svg?token=exp=1607607373~hmac=4cd7739d7a77eb2357fa26b1dddb4f22" alt="Image" @click="updateData">
+        <b-tooltip label="Graf udalosti za posledný rok"  type="is-dark" position="is-left">
+        <img src="../assets/archive.png" alt="Image" @click="updateData">
+         </b-tooltip>
       </figure>
     </div>
     <div class="media-content">
       <div class="content">
         <p v-if="this.online.length > 0">
-          <strong>ONLINE</strong><br>
-          <a style="color:green; font-size:20px">•</a> {{online[0].pocet}}</p>
+          <strong>Počet udalostí od vzniku</strong><br>
+          <a style="color:green; font-size:20px"></a> {{online[3].eventy_doteraz}}</p>
       </div>
       
     </div>
   </article>
 </div>
-
+     
     </td>
-    <td>
-<div class="box  is-flex">
-  <article class="media">
-    <div class="media-left">
-      <figure class="image is-64x64">
-        <img src="https://www.flaticon.com/svg/vstatic/svg/33/33308.svg?token=exp=1607607373~hmac=4cd7739d7a77eb2357fa26b1dddb4f22" alt="Image" @click="updateData">
-      </figure>
-    </div>
-    <div class="media-content">
-      <div class="content">
-        <p v-if="this.online.length > 0">
-          <strong>ONLINE</strong><br>
-          <a style="color:green; font-size:20px">•</a> {{online[0].pocet}}</p>
-      </div>
-      
-    </div>
-  </article>
-</div>
-
-    </td>
+    
   </tr>
 
 </table>
