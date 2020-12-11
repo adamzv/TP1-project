@@ -82,7 +82,11 @@
                 'brown-overlay': event.faculty.id == 7
               }"
             >
-              <h1 class="title">{{ event.name }}</h1>
+              <h1 class="title">
+                <a class="title" :href="`/event/${event.id}`">
+                  {{ event.name }}
+                </a>
+              </h1>
               <h1 class="subtitle">
                 {{ formatRemainingTime(event.beginning) }}
               </h1>
