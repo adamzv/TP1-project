@@ -132,6 +132,7 @@ class StatsController extends Controller
         array_push($data, $this->getOnlineUsers());
         array_push($data, $this->getRegisteredUsers());
         array_push($data, $this->getNewEvents());
+        array_push($data, $this->getUntilEvents());
 
         return $data;
     }
@@ -175,6 +176,19 @@ class StatsController extends Controller
         return $query = DB::table('events')
             ->select(DB::raw('COUNT(DISTINCT(events.id)) as eventy'))
             ->where('events.beginning', '>=', Carbon::now())
+            ->get();
+    }
+
+    /**
+     * Get number of events, which took place
+     *
+     * @return Collection
+     */
+    public function getUntilEvents()
+    {
+        return $query = DB::table('events')
+            ->select(DB::raw('COUNT(DISTINCT(events.id)) as eventy_doteraz'))
+            ->where('events.beginning', '<', Carbon::now())
             ->get();
     }
 }
