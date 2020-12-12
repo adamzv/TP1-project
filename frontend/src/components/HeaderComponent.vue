@@ -67,7 +67,7 @@
             <img
               v-else
               class="imgSettings"
-              src="https://picsum.photos/id/2/1230/350"
+              src="https://picsum.photos/id/2/1230/500"
               :alt="event.name"
             />
             <div
@@ -216,6 +216,18 @@ body {
 @media screen and (max-width: 768px) {
   .carousel {
     margin-bottom: 0px;
+  }
+  .imgSettings {
+    max-height: 500px;
+  }
+  h1.title {
+    font-size: 1.25rem;
+  }
+  a.title {
+    font-size: 1.25rem;
+  }
+  h1.subtitle {
+    font-size: 1rem;
   }
 }
 </style>

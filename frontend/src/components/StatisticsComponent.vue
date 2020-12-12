@@ -101,7 +101,7 @@
                 <div class="media-content">
                   <div class="content">
                     <p v-if="this.online.length > 0">
-                      <strong>Počet udalostí od vzniku</strong>
+                      <strong>Archív udalostí</strong>
                       <br />
                       <a style="color:green; font-size:20px"></a>
                       {{ online[3].eventy_doteraz }}
