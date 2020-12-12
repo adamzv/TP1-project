@@ -10,8 +10,48 @@
         </h1>
         <hr class="hr" />
         <div class="box">
+          <template v-if="user">
+            <b-modal v-model="newPlaceModal" has-modal-card trap-focus>
+              <div class="modal-card" style="width: auto">
+                <header class="modal-card-head">
+                  <p class="modal-card-title">Zmena údajov</p>
+                  <button
+                    type="button"
+                    class="delete"
+                    @click="newPlaceModal = false"
+                  />
+                </header>
+                <section class="modal-card-body">
+                  <b-field label="Meno">
+                    <b-input v-model="name" required></b-input>
+                  </b-field>
+                  <b-field label="Priezvisko">
+                    <b-input v-model="surname" required></b-input>
+                  </b-field>
+                </section>
+                <footer class="modal-card-foot">
+                  <button
+                    class="button"
+                    type="button"
+                    @click="newPlaceModal = false"
+                  >
+                    Zrušiť
+                  </button>
+                  <button class="button is-primary" @click="editUser">
+                    Potvrdiť
+                  </button>
+                </footer>
+              </div>
+            </b-modal>
+          </template>
           <div v-if="user">
-            <h2 class="is-size-4">{{ loggedInName }}</h2>
+            <h2 class="is-size-4">
+              {{ loggedInName }}
+              <a @click="newPlaceModal = true">
+                <b-icon type="is-small" icon="account-cog"></b-icon>
+              </a>
+            </h2>
+
             <p>
               <span class="has-text-weight-semibold">Emailová adresa:</span>
               {{ user.email }}
@@ -31,6 +71,14 @@
             <p>
               <a class="has-text-weight-semibold" @click="changePassword">
                 Zmeniť heslo
+              </a>
+              <br />
+              <a
+                v-if="isUser && user.notify === null"
+                class="has-text-weight-semibold"
+                @click="notify"
+              >
+                Zmena práv
               </a>
             </p>
           </div>
@@ -76,13 +124,21 @@
         <template v-if="isAdmin">
           <div id="app" class="container">
             <section>
-              
-              <b-tabs size="is-medium" class="block">
-                <b-tab-item label="Štatistiky" icon="chart-pie" >
-                    <template v-if="faculties && hodnota && online && faculties1 && hodnota1" >
-                      <StatisticsComponent :faculties="faculties" :hodnota="hodnota" :online="online" :faculties1="faculties1" :hodnota1="hodnota1" />
-                    </template>
-
+              <b-tabs size="is-medium" class="block" :multiline="true">
+                <b-tab-item label="Štatistiky" icon="chart-pie">
+                  <template
+                    v-if="
+                      faculties && hodnota && online && faculties1 && hodnota1
+                    "
+                  >
+                    <StatisticsComponent
+                      :faculties="faculties"
+                      :hodnota="hodnota"
+                      :online="online"
+                      :faculties1="faculties1"
+                      :hodnota1="hodnota1"
+                    />
+                  </template>
                 </b-tab-item>
                 <b-tab-item
                   label="Správa udalostí"
@@ -102,14 +158,11 @@
                     <UserComponent :users="users" />
                   </template>
                 </b-tab-item>
-                 <b-tab-item label="Kategórie" icon="animation">
+                <b-tab-item label="Kategórie" icon="animation">
                   <template v-if="category">
                     <CategoryComponent :category="category" />
                   </template>
-
-                 </b-tab-item>
-                
-                
+                </b-tab-item>
               </b-tabs>
             </section>
           </div>
@@ -160,12 +213,15 @@ export default {
       test: 0,
       events: [],
       users: [],
-      category:[],
+      category: [],
       online: [],
       faculties: [],
       hodnota: [],
-       faculties1: [],
+      faculties1: [],
       hodnota1: [],
+      newPlaceModal: false,
+      name: "",
+      surname: ""
     };
   },
   created() {
@@ -176,11 +232,11 @@ export default {
     this.getCategory();
     this.getFaculty();
     this.getOnlineUsers();
-   
-    
+  },
+  mounted() {
+    this.loadProp(this.user);
   },
   methods: {
-    
     changePassword() {
       httpClient
         .post("/users/password/create", { email: this.user.email })
@@ -196,6 +252,23 @@ export default {
             type: "is-danger"
           })
         );
+    },
+    notify() {
+      httpClient
+        .post(`/users/notify/${this.loggedInId}`, { notify: 1 })
+        .then(() => {
+          this.$buefy.toast.open({
+            message: "Notifikácia bolo odoslaná!",
+            type: "is-success"
+          });
+        })
+        .catch(error => {
+          console.log(error);
+          this.$buefy.toast.open({
+            message: "Notifikáciu sa nepodarilo odoslať!",
+            type: "is-danger"
+          });
+        });
     },
     getEvents() {
       if (this.isAdmin) {
@@ -263,39 +336,68 @@ export default {
           .get("/categories")
           .then(response => {
             this.category = response.data;
-            
-            this.$store.commit("finishLoading", "Profile2");
-          })
-          .catch(error => {
-            console.log(error);
-            this.$store.commit("finishLoading", "Profile2");
-          }); 
-      }},
-  
-  getFaculty() {
-      if (this.isAdmin) {
-         this.$store.commit("pushToLoading", "Profile2");
-        httpClient
-          .get("/stats/faculties")
-          .then(response => {
-            this.faculties = response.data.faculty;
-            this.hodnota = response.data.pocet;
-            this.faculties1 = response.data.faculty1;
-             this.hodnota1 = response.data.pocet1;
-           
+
             this.$store.commit("finishLoading", "Profile2");
           })
           .catch(error => {
             console.log(error);
             this.$store.commit("finishLoading", "Profile2");
           });
-        
-        
       }
-    
     },
-   },
-  
+
+    editUser() {
+      httpClient
+        .post("/users/changeUserName", {
+          name: this.name,
+          surname: this.surname
+        })
+        .then(() => {
+          this.$router.go();
+          this.newPlaceModal = false;
+          this.$buefy.toast.open({
+            message: "Meno a priezvisko bolo zmenené!",
+            type: "is-success"
+          });
+        })
+        .catch(error => {
+          console.log(error);
+          this.$store.commit("finishLoading", "Profile2");
+          this.newPlaceModal = false;
+          this.$buefy.toast.open({
+            message: "Meno a priezvisko sa nepodarilo zmeniť!",
+            type: "is-danger"
+          });
+        });
+    },
+
+    getFaculty() {
+      if (this.isAdmin) {
+        this.$store.commit("pushToLoading", "Profile2");
+        httpClient
+          .get("/stats/faculties")
+          .then(response => {
+            this.faculties = response.data.faculty;
+            this.hodnota = response.data.pocet;
+            this.faculties1 = response.data.faculty1;
+            this.hodnota1 = response.data.pocet1;
+
+            this.$store.commit("finishLoading", "Profile2");
+          })
+          .catch(error => {
+            console.log(error);
+            this.$store.commit("finishLoading", "Profile2");
+          });
+      }
+    },
+    loadProp(user) {
+      if (user != null) {
+        this.name = this.user.name;
+        this.surname = this.user.surname;
+      }
+    }
+  },
+
   // watching for a change in userRole is required because we have to wait
   // till user information is loaded in vuex store
   watch: {
@@ -306,7 +408,7 @@ export default {
         this.getUsers();
         this.getCategory();
         this.getOnlineUsers();
-        
+        this.loadProp(this.user);
       }
     },
     newEventSubmitted(newVal) {
@@ -358,6 +460,4 @@ export default {
   margin-left: 20px;
   margin-right: 20px;
 }
-
-
 </style>

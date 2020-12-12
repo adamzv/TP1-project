@@ -435,7 +435,7 @@
             </div>
             <div class="level-item" v-if="isAdmin && id">
               <input
-              type="button"
+                type="button"
                 @click="deleteEvent()"
                 class="button is-danger"
                 value="Vymazať udalosť"
@@ -788,24 +788,23 @@ export default {
       // this.titleImage = this.getEvent.titleImage
     },
 
-    deleteEvent(){
+    deleteEvent() {
       httpClient
-          .delete(`/events/${this.id}`)
-          .then(() => {
-           this.$store.commit("submitNewEvent", true);
-           this.$buefy.toast.open({
-              message: "Udalosť bola úspešne vymazaná!",
-              type: "is-success"
-            });
-          })
-          .catch(error => {
-            console.log(error);
-            this.$buefy.toast.open({
-              message: "Udalosť sa nepodarilo vymazať!",
-              type: "is-danger"
-            });
+        .delete(`/events/${this.id}`)
+        .then(() => {
+          this.$store.commit("submitNewEvent", true);
+          this.$buefy.toast.open({
+            message: "Udalosť bola úspešne vymazaná!",
+            type: "is-success"
           });
-
+        })
+        .catch(error => {
+          console.log(error);
+          this.$buefy.toast.open({
+            message: "Udalosť sa nepodarilo vymazať!",
+            type: "is-danger"
+          });
+        });
     }
   },
   watch: {
@@ -877,7 +876,7 @@ export default {
     },
     isAdmin() {
       return this.userRole === ADMIN_ROLE;
-    },
+    }
   },
   created() {
     this.$store.commit("pushToLoading", "ManageEventCategories");
