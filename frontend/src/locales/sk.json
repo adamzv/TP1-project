@@ -45,6 +45,17 @@
 
   "event_detail": {
     "when": "KEDY",
-    "where": "KDE"
+    "where": "KDE",
+    "room": "Miestnosť",
+    "calendar": "KALENDÁR",
+    "seat_limit": "LIMIT MIEST",
+    "unlimited": "Neobmedzene",
+    "event_description": "POPIS UDALOSTI",
+    "gallery": "GALÉRIA",
+    "map": "Mapa",
+    "created_for": "URČENÉ PRE",
+    "created": "VYTVORIL",
+    "all_departments": "Všetky katedry",
+    "download_information_sheet": "Stiahnuť informačný list"
   }
 }

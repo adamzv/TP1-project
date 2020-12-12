@@ -45,7 +45,18 @@
 
   "event_detail": {
     "when": "WHEN",
-    "where": "WHERE"
+    "where": "WHERE",
+    "room": "The room",
+    "calendar": "CALENDAR",
+    "seat_limit": "SEAT LIMIT",
+    "unlimited": "Unlimited",
+    "event_description": "EVENT DESCRIPTION",
+    "gallery": "GALLERY",
+    "map": "Map",
+    "created_for": "CREATED FOR",
+    "created": "CREATED",
+    "all_departments": "All departments",
+    "download_information_sheet": "Download the information sheet"
   }
 
 }
