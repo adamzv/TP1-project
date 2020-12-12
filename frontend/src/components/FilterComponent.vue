@@ -3,7 +3,7 @@
   <form class="container is-fluid filterPanel" v-on:keydown.enter="sendDataToParent">
 
     <!-- Filter view for mobile screen sizes  -->
-    <div v-if="showMobile && !showDesktop">
+    <div v-if="showMobile && !showDesktop && render">
       <b-collapse
         aria-id="contentIdForA11y2"
         class="panel collapse"
@@ -166,7 +166,7 @@
     </div>
 
     <!-- Filter view for desktop and tablet screen sizes  -->
-    <div v-else-if="!showMobile && showDesktop">
+    <div v-else-if="!showMobile && showDesktop && render">
       <b-collapse
         aria-id="contentIdForA11y2"
         class="panel collapse"
@@ -362,6 +362,7 @@ export default {
       pageUrls: [],
       index: 0,
       apiRequest: `/events`
+      render: true
     };
   },
 
@@ -915,16 +916,24 @@ export default {
 
     setFilterOptionsClear() {
       this.eventName = "";
-      this.beginning = "";
+      this.beginning = null;
       this.categories = "";
       this.selectedFacultyName = "";
       this.selectedDepartmentName = "";
       this.placeName = "";
+      this.render = false;
+      this.$nextTick(() => {
+        this.render = true;
+      });
     },
 
     clearDateFilter() {
       this.beginning = null;
       this.$store.commit("setFilterBeginning", null);
+      this.render = false;
+      this.$nextTick(() => {
+        this.render = true;
+      });
     }
   },
 

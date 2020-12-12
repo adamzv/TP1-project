@@ -14,9 +14,11 @@
         class="rotate"
       />
     </b-loading>
-    <HeaderComponent class="element" />
+    <template v-if="events.length > 0">
+      <HeaderComponent :events="events.slice(0, 6)" class="element" />
+    </template>
 
-    <router-view />
+    <router-view :loaded-events="events" />
     <FooterComponent />
 
     <back-to-top bottom="50px" right="50px">
@@ -41,6 +43,7 @@ export default {
   },
   data() {
     return {
+      events: [],
       loading: true,
       carouselHeight: Number,
       filteredEvents: Object
@@ -56,7 +59,11 @@ export default {
         .then(() => {
           this.$store.commit("finishLoading", "App");
         })
-        .catch(() => {
+        .catch(error => {
+          console.log(error);
+          if (error === "Token is expired") {
+            this.$router.push("/login");
+          }
           this.$store.commit("finishLoading", "App");
         });
     }
@@ -71,9 +78,24 @@ export default {
       var style = getComputedStyle(element);
       this.carouselHeight = style.height;
       this.$store.commit("changeCarouselHeight", style.height);
-
-      // Print the carouselHeight (this variable is accessible from any component
-      //console.log(this.$store.state.carouselHeight);
+    },
+    toastGenerator(message) {
+      if (message === "Event Full") {
+        this.$buefy.toast.open({
+          message: "Všetky miesta sú už obsadené!",
+          type: "is-danger"
+        });
+      } else if (message === "User is already registered on event") {
+        this.$buefy.toast.open({
+          message: `Už ste zaregistrovaná/ý na udalosť!`,
+          type: "is-danger"
+        });
+      } else if (message === "Email was successfully registered on event") {
+        this.$buefy.toast.open({
+          message: `Boli ste prihlásená/ý na udalosť.`,
+          type: "is-danger"
+        });
+      }
     }
   },
   computed: {
@@ -86,19 +108,18 @@ export default {
       if (!val) {
         // TODO toast is shown multiple times
         if (this.$router.history.current.query.message) {
-          this.$buefy.toast.open({
-            message: `Boli ste prihlásená/ý na udalosť.`,
-            duration: 3500,
-            type: "is-success"
-          });
+          this.toastGenerator(this.$router.history.current.query.message);
         }
       }
     }
   },
   mounted() {
     // App hned po starte
+    this.$store.commit("pushToLoading", "AppEvents");
     httpClient.get(`/events`).then(response => {
       this.$store.commit("setCurrentlyInFilter", response.data);
+      this.events = response.data.data;
+      this.$store.commit("finishLoading", "AppEvents");
     });
   }
 };

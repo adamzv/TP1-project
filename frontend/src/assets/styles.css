@@ -1,35 +1,44 @@
 /* TODO: Unify overlays according to faculty color schemes */
 .blue-overlay {
-  background: rgb(96, 212, 255);
-  background: linear-gradient(
+  /* background: rgb(96, 212, 255); */
+  background-image: linear-gradient(
     90deg,
-    rgba(96, 212, 255, 0.7) 0%,
-    rgba(23, 144, 228, 0.7) 43%,
-    rgba(0, 98, 167, 0.7) 75%,
-    rgba(0, 78, 131, 0.7) 100%
+    rgba(96, 212, 255, 0.6) 0%,
+    rgba(23, 144, 228, 0.6) 43%,
+    rgba(0, 98, 167, 0.6) 75%,
+    rgba(0, 78, 131, 0.6) 100%
+  );
+}
+.ukf-overlay {
+  background: rgb(0, 92, 106);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 158, 182, 0.6) 0%,
+    rgba(40, 184, 206, 0.6) 35%,
+    rgba(135, 235, 255, 0.6) 100%
   );
 }
 .green-overlay {
   background-image: linear-gradient(
     135deg,
-    rgba(112, 245, 112, 0.7) 10%,
-    rgba(73, 198, 40, 0.7) 100%
+    rgba(112, 245, 112, 0.6) 10%,
+    rgba(73, 198, 40, 0.6) 100%
   );
 }
 .orange-overlay {
   background-image: linear-gradient(
     135deg,
-    rgba(253, 216, 25, 0.7) 10%,
-    rgba(232, 5, 5, 0.7) 100%
+    rgba(253, 216, 25, 0.6) 10%,
+    rgba(232, 5, 5, 0.6) 100%
   );
 }
 .pink-overlay {
   background: rgb(244, 121, 188);
   background: linear-gradient(
     90deg,
-    rgba(244, 121, 188, 0.7) 0%,
-    rgba(212, 0, 117, 0.7) 73%,
-    rgba(175, 0, 92, 0.7) 100%
+    rgba(244, 121, 188, 0.6) 0%,
+    rgba(212, 0, 117, 0.6) 73%,
+    rgba(175, 0, 92, 0.6) 100%
   );
 }
 .brown-overlay {
@@ -37,14 +46,14 @@
   background: linear-gradient(
     43deg,
     rgba(238, 109, 67, 0.3) 0%,
-    rgba(127, 24, 16, 0.7) 100%
+    rgba(127, 24, 16, 0.6) 100%
   );
 }
 .gray-overlay {
   background: rgb(244, 244, 244);
   background: linear-gradient(
     90deg,
-    rgba(244, 244, 244, 0.7) 0%,
-    rgba(178, 178, 178, 0.7) 100%
+    rgba(244, 244, 244, 0.6) 0%,
+    rgba(178, 178, 178, 0.6) 100%
   );
 }

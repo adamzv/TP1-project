@@ -69,7 +69,7 @@ format. * */
           </div>
 
           <p class="panel-info" style="font-size: small;">
-            Miestnost {{ eventRoom }}
+            Miestnosť {{ eventRoom }}
             <br />
             {{ eventFaculty.name }}
             <br />
@@ -179,7 +179,7 @@ format. * */
           <!-- Heading of section 2 -->
           <div class="section2-heading">
             <b-icon icon="image-outline"></b-icon>
-            <strong style="padding-left: 5px;">GALERIA</strong>
+            <strong style="padding-left: 5px;">GALÉRIA</strong>
           </div>
 
           <!-- Separator line -->
@@ -217,7 +217,7 @@ format. * */
           <!-- Other details about the event -->
           <div class="other-details">
             <div class="forLabel">
-              URCENE PRE
+              URČENÉ PRE
               <b-icon icon="school"></b-icon>
             </div>
 
@@ -229,7 +229,7 @@ format. * */
               </span>
 
               <span v-else style="font-weight: normal;">
-                Vsetky katedry
+                Všetky katedry
               </span>
             </div>
 
@@ -849,7 +849,7 @@ export default {
 }
 
 .eventBackColorFSVZ {
-  background: #f31a33;
+  background: #b2b2b2;
 }
 
 .eventDetailsHeaderColor {

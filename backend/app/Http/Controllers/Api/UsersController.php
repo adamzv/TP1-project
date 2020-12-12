@@ -9,6 +9,7 @@ use App\Models\Email;
 use App\Models\Event;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
+use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -24,8 +25,8 @@ class UsersController extends Controller
 {
     function __construct()
     {
-        $this->middleware(['auth:api', 'scope:admin-user'])->except(['eventRegister', 'eventUnregister', 'eventEmail', 'show', 'checkEvent']);
-        $this->middleware(['auth:api', 'scope:moderator-user,logged-user,admin-user'])->only(['show', 'checkEvent']);
+        $this->middleware(['auth:api', 'scope:admin-user'])->except(['eventRegister', 'eventUnregister', 'eventEmail', 'show', 'checkEvent','notify','changeUserName']);
+        $this->middleware(['auth:api', 'scope:moderator-user,logged-user,admin-user'])->only(['show', 'checkEvent','notify','changeUserName']);
     }
 
     /**
@@ -108,6 +109,45 @@ class UsersController extends Controller
     }
 
     /**
+     * Change users name
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function changeUserName(Request $request)
+    {
+        if (Auth::user()) {
+
+            $validator = Validator::make($request->only(['name', 'surname']), [
+                'name' => 'required|string|max:255',
+                'surname' => 'required|string|max:255',
+            ]);
+
+            if (!$validator->fails()) {
+                $user = Auth::user();
+                $user->name = $request->input('name');
+                $user->surname = $request->input('surname');
+                $user->save();
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'User name was updated successfully',
+                    'user' => $user],
+                    201);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->messages()],
+                    404);
+            }
+        }
+        return response()->json([
+            'success' => false,
+            'message' => 'User not found'],
+            404);
+    }
+
+    /**
      * Method that updates users role (For admin environment)
      *
      * @param Request $request
@@ -116,8 +156,9 @@ class UsersController extends Controller
      */
     public function updateUsersRole(Request $request, $id)
     {
-        $validator = Validator::make($request->only(['id_role']), [
+        $validator = Validator::make($request->only(['id_role','notify']), [
             'id_role' => 'required|numeric|min:1|max:4',
+
         ]);
 
         if ($validator->fails()) {
@@ -128,7 +169,7 @@ class UsersController extends Controller
         }
 
         $user = User::with('role')->findOrFail($id);
-        $user->update($request->only(['id_role']));
+        $user->update($request->only(['id_role','notify']));
 
         return response()->json([
             'success' => true,
@@ -323,4 +364,28 @@ class UsersController extends Controller
             'message' => true],
             200);
     }
+
+
+    public function notify(Request $request, $id)
+    {
+        $validator = Validator::make($request->only(['notify']), [
+
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid notification'],
+                404);
+        }
+
+        $user = User::findOrFail($id);
+        $user->update($request->only(['notify']));
+
+        return response()->json([
+            'success' => true,
+            'user' => $user],
+            200);
+    }
+
 }

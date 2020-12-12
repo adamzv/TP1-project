@@ -419,11 +419,26 @@
                 Vytvoriť ďalší
               </b-checkbox>
             </div>
-            <div class="level-item">
+            <div class="level-item" v-if="!id">
               <input
                 type="submit"
                 class="button is-success"
                 value="Vytvoriť udalosť"
+              />
+            </div>
+            <div class="level-item" v-if="id">
+              <input
+                type="submit"
+                class="button is-success"
+                value="Upraviť udalosť"
+              />
+            </div>
+            <div class="level-item" v-if="isAdmin && id">
+              <input
+                type="button"
+                @click="deleteEvent()"
+                class="button is-danger"
+                value="Vymazať udalosť"
               />
             </div>
           </div>
@@ -434,6 +449,7 @@
 </template>
 
 <script>
+import { ADMIN_ROLE } from "../../const.js";
 import httpClient from "../../httpClient.js";
 import moment from "moment";
 import Spinner from "vue-simple-spinner";
@@ -508,7 +524,7 @@ export default {
     },
     addNewPlace() {
       this.$buefy.dialog.prompt({
-        message: `Pridať novú miesto`,
+        message: `Pridať nové miesto`,
         inputAttrs: {
           maxlength: 255,
           value: this.newPlaceName
@@ -770,9 +786,34 @@ export default {
         : "";
       this.selectedFacultyName = this.selectedFaculty.name;
       // this.titleImage = this.getEvent.titleImage
+    },
+
+    deleteEvent() {
+      httpClient
+        .delete(`/events/${this.id}`)
+        .then(() => {
+          this.$store.commit("submitNewEvent", true);
+          this.$buefy.toast.open({
+            message: "Udalosť bola úspešne vymazaná!",
+            type: "is-success"
+          });
+        })
+        .catch(error => {
+          console.log(error);
+          this.$buefy.toast.open({
+            message: "Udalosť sa nepodarilo vymazať!",
+            type: "is-danger"
+          });
+        });
     }
   },
   watch: {
+    selectedDepartmentName(val) {
+      console.log(val);
+      if (val === "") {
+        this.selectedDepartment = null;
+      }
+    },
     getEvent(val) {
       if (val) {
         this.editFormInputs();
@@ -824,6 +865,17 @@ export default {
     },
     fileUploadLoading() {
       return this.$store.getters.fileUploadLoading;
+    },
+
+    userRole() {
+      return this.user ? this.$store.getters.loggedInUser.id_role : null;
+    },
+    // user is used as a computed property
+    user() {
+      return this.$store.getters.loggedInUser || null;
+    },
+    isAdmin() {
+      return this.userRole === ADMIN_ROLE;
     }
   },
   created() {

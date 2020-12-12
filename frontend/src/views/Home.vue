@@ -3,7 +3,8 @@
     <FilterComponent id="myFilter" class="filter" ref="filter" />
     <EventListComponent v-bind:page-id="increasePageId(page)"
                         v-for="page in this.$store.getters.getPages.length"
-                        v-bind:key="page.id"/>
+                        v-bind:key="page.id"
+                        :events="loadedEvents"/>
   </div>
 </template>
 
@@ -14,7 +15,6 @@ import FilterComponent from "../components/FilterComponent";
 export default {
   name: "home",
   components: { EventListComponent, FilterComponent },
-
   created() {
     window.addEventListener("scroll", this.myFunction);
   },
@@ -26,6 +26,10 @@ export default {
     this.scrolledToBottom();
   },
 
+  props: {
+    loadedEvents: Array
+  },
+  
   methods: {
     myFunction() {
       var filter = document.getElementById("myFilter");

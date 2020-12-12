@@ -41,12 +41,15 @@
               </div>
             </div>
             <div class="columns">
-              <div class="column">
+              <div class="column level">
                 <input
                   type="submit"
                   class="button is-success"
                   value="Prihlásenie"
                 />
+                <b-button type="is-text" @click="changePassword">
+                  Zabudnuté heslo
+                </b-button>
               </div>
             </div>
           </form>
@@ -151,10 +154,13 @@
 </template>
 
 <script>
+import httpClient from "../httpClient";
+
 export default {
   name: "login",
   data() {
     return {
+      resetEmail: "",
       emailLogin: null,
       passwordLogin: null,
       emailRegistration: null,
@@ -174,6 +180,32 @@ export default {
     };
   },
   methods: {
+    changePassword() {
+      this.$buefy.dialog.prompt({
+        message: `Zadajte Vašu emailovú adresu`,
+        inputAttrs: {
+          maxlength: 255,
+          type: "email"
+        },
+        confirmText: "Odoslať",
+        onConfirm: value => {
+          httpClient
+            .post("/users/password/create", { email: value })
+            .then(() =>
+              this.$buefy.toast.open({
+                message: "Odkaz na zmenu hesla Vám príde na email.",
+                type: "is-success"
+              })
+            )
+            .catch(() =>
+              this.$buefy.toast.open({
+                message: "Niekde nastala chyba.",
+                type: "is-danger"
+              })
+            );
+        }
+      });
+    },
     checkLoginForm() {
       this.$store
         .dispatch("retrieveToken", {
@@ -214,7 +246,7 @@ export default {
       }
       if (
         this.passwordRegistration === null ||
-        this.passwordRegistration.length < 6
+        this.passwordRegistration.length < 7
       ) {
         this.registerValidation.passwordHasErrors = true;
       }
@@ -287,5 +319,10 @@ export default {
 .container {
   margin-top: 24px;
   padding: 0 0 !important;
+}
+.is-text {
+  text-decoration: none;
+  font-weight: 600;
+  margin-left: 8px;
 }
 </style>
