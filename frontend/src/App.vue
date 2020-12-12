@@ -78,6 +78,24 @@ export default {
       var style = getComputedStyle(element);
       this.carouselHeight = style.height;
       this.$store.commit("changeCarouselHeight", style.height);
+    },
+    toastGenerator(message) {
+      if (message === "Event Full") {
+        this.$buefy.toast.open({
+          message: "Všetky miesta sú už obsadené!",
+          type: "is-danger"
+        });
+      } else if (message === "User is already registered on event") {
+        this.$buefy.toast.open({
+          message: `Už ste zaregistrovaná/ý na udalosť!`,
+          type: "is-danger"
+        });
+      } else if (message === "Email was successfully registered on event") {
+        this.$buefy.toast.open({
+          message: `Boli ste prihlásená/ý na udalosť.`,
+          type: "is-danger"
+        });
+      }
     }
   },
   computed: {
@@ -90,11 +108,7 @@ export default {
       if (!val) {
         // TODO toast is shown multiple times
         if (this.$router.history.current.query.message) {
-          this.$buefy.toast.open({
-            message: `Boli ste prihlásená/ý na udalosť.`,
-            duration: 3500,
-            type: "is-success"
-          });
+          this.toastGenerator(this.$router.history.current.query.message);
         }
       }
     }
