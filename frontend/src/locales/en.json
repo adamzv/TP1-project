@@ -1,9 +1,51 @@
 {
   "language": "EN",
   "ukf": "My UKF",
-  "login": "Log in",
+  "login": "Sign in",
   "logout": "Logout",
   "ukfNitra": "UKF in Nitra",
   "addEvent": "Add event",
-  "profile": "Profile"
+  "profile": "Profile",
+  "or": "Or",
+  "send": "Send",
+  "forgotten_password": "Forgotten password",
+  "sign_in": "Login",
+  "password": "Password",
+  "password_bad": "Password must contain at least 6 characters",
+  "registration": "Registration",
+  "register": "Register",
+  "name": "Name",
+  "surname": "Surname",
+  "rights_reserved": "All rights reserved.",
+  "logged_in_event": "You have been logged in to the event.",
+
+  "login_messages": {
+      "registration_failed": "Registration failed!",
+      "invalid_password": "The password you entered is invalid!",
+      "email_exists": "The entered email already exists in the system!",
+      "registered_successfully": "You have been successfully registered!",
+      "invalid_login_attempt": "Invalid login attempt, please try again",
+      "error_occurred": "An error occurred somewhere.",
+      "link_to_change_password": "A link to change your password will be sent to you by email.",
+      "enter_email": "Enter your email address"
+  },
+
+  "not_found": {
+    "page_not_found": "Error 404: Page not found",
+    "back_to_main": "Back to the main page"
+  },
+
+  "password_reset": {
+    "change": "Password change",
+    "new_password": "New password",
+    "repeat_new_password": "Repeat the new password",
+    "change_password": "Change Password",
+    "password_changed": "Password changed"
+  },
+
+  "event_detail": {
+    "when": "WHEN",
+    "where": "WHERE"
+  }
+
 }

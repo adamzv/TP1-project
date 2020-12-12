@@ -106,7 +106,6 @@ export default {
   watch: {
     isLoading(val) {
       if (!val) {
-        // TODO toast is shown multiple times
         if (this.$router.history.current.query.message) {
           this.toastGenerator(this.$router.history.current.query.message);
         }

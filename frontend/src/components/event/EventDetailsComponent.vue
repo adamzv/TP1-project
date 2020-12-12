@@ -52,7 +52,9 @@ format. * */
 
           <div style="padding-top: 10px;">
             <b-icon icon="clock-time-four-outline"></b-icon>
-            <strong style="padding-left: 5px;">KEDY</strong>
+            <strong style="padding-left: 5px;">
+              {{ $t("event_detail.when") }}
+            </strong>
           </div>
 
           <p class="panel-info" style="font-size: small;">
@@ -65,7 +67,9 @@ format. * */
 
           <div style="padding-top: 20px;">
             <b-icon icon="map-marker"></b-icon>
-            <strong style="padding-left: 5px;">KDE</strong>
+            <strong style="padding-left: 5px;">
+              {{ $t("event_detail.where") }}
+            </strong>
           </div>
 
           <p class="panel-info" style="font-size: small;">

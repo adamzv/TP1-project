@@ -29,7 +29,7 @@
         </b-navbar-dropdown>
         <b-navbar-item v-if="!loggedIn">
           <b-button tag="router-link" to="/login" type="is-light">
-            {{ $t("login") }}
+            {{ $t("sign_in") }}
           </b-button>
         </b-navbar-item>
         <b-navbar-dropdown

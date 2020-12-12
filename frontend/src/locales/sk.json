@@ -5,5 +5,46 @@
   "logout": "Odhlásiť sa",
   "ukfNitra": "UKF v Nitre",
   "addEvent": "Pridať event",
-  "profile": "Profil"
+  "profile": "Profil",
+  "or": "Alebo",
+  "send": "Odoslať",
+  "forgotten_password": "Zabudnuté heslo",
+  "sign_in": "Prihlásenie",
+  "password": "Heslo",
+  "password_bad": "Heslo musí obsahovať minimálne 6 znakov",
+  "registration": "Registrácia",
+  "register": "Registrovať",
+  "name": "Meno",
+  "surname": "Priezvisko",
+  "rights_reserved": "Všetky práva vyhradené.",
+  "logged_in_event": "Boli ste prihlásená/ý na udalosť.",
+
+  "login_messages": {
+    "registration_failed": "Registrácia bola neúspešná!",
+    "invalid_password": "Zadané heslo je neplatné!",
+    "email_exists": "Zadaný email už existuje v systéme!",
+    "registered_successfully": "Boli ste úspešne zaregistrovaná/ý!",
+    "invalid_login_attempt": "Neplatný pokus o prihlásenie, skúste ešte raz",
+    "error_occurred": "Niekde nastala chyba.",
+    "link_to_change_password": "Odkaz na zmenu hesla Vám príde na email.",
+    "enter_email": "Zadajte Vašu emailovú adresu"
+  },
+
+  "not_found": {
+    "page_not_found": "Chyba 404: Stránka nenájdená",
+    "back_to_main": "Späť na úvod"
+  },
+
+  "password_reset": {
+    "change": "Zmena hesla",
+    "new_password": "Nové heslo",
+    "repeat_new_password": "Zopakujte nové heslo",
+    "change_password": "Zmeniť heslo",
+    "password_changed": "Heslo bolo zmenené"
+  },
+
+  "event_detail": {
+    "when": "KEDY",
+    "where": "KDE"
+  }
 }
