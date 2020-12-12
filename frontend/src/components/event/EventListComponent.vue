@@ -5,6 +5,7 @@ details accordingly. * */
 <template>
   <!-- Temporary top padding -->
   <div style="padding-top: 30px;">
+
     <div v-if="this.$store.getters.getCurrentlyInFilter.data != 0">
       <!-- Using Bulma column layout system -->
       <div class="columns is-mobile is-multiline is-centered">
@@ -32,7 +33,7 @@ details accordingly. * */
           v-bind:event-faculty="event.faculty"
           v-bind:event-categories="event.categories"
           v-bind:event-title-img="event.titleImg"
-          v-for="event in this.$store.getters.getCurrentlyInFilter.data"
+          v-for="event in this.$store.getters.getPages[pageId - 2]"
           v-bind:key="event.id"
         />
       </div>
@@ -46,7 +47,6 @@ details accordingly. * */
 
 <script>
 import EventCardComponent from "./EventCardComponent";
-import httpClient from "../../httpClient";
 
 export default {
   name: "EventListComponent",
@@ -55,19 +55,14 @@ export default {
     EventCardComponent
   },
 
-  // Test data (later the data will be fetched from the backend as .json objects)
+  props: {
+    pageId: Number
+  },
+
   data() {
     return {
       events: []
     };
-  },
-
-  mounted() {
-    this.$store.commit("pushToLoading", "EventListComponent");
-    httpClient.get("/events").then(response => {
-      this.events = response.data;
-      this.$store.commit("finishLoading", "EventListComponent");
-    });
   }
 };
 </script>

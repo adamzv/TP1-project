@@ -335,16 +335,15 @@ export default {
 
   .panel .panel-heading {
     color: white;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
   }
 }
 
 ._card {
   padding: 0px;
   margin: 10px;
-  border-radius: 5px;
-  -webkit-box-shadow: 0px 18px 42px -17px rgba(0, 0, 0, 0.74);
-  -moz-box-shadow: 0px 18px 42px -17px rgba(0, 0, 0, 0.74);
-  box-shadow: 0px 18px 42px -17px rgba(0, 0, 0, 0.74);
+  border-radius: 4px;
 }
 
 .quickDetailsHeader {
@@ -423,12 +422,32 @@ export default {
 }
 
 .panel {
-  transition: all 0.14s ease-in-out;
+
+  /*box-shadow: 0px 5px 10px #0057ab;*/
+  -webkit-box-shadow: 0px 18px 42px -17px rgba(0, 0, 0, 0.74);
+  -moz-box-shadow: 0px 18px 42px -17px rgba(0, 0, 0, 0.74);
+  box-shadow: 0px 18px 42px -17px rgba(0, 0, 0, 0.74);
+  -webkit-transition: all 0.25s;
+  transition: all 0.25s;
+  cursor: pointer;
 }
 
 .panel:hover {
-  transform: scale(1.02);
-  cursor: pointer;
+
+  -webkit-box-shadow: 0px 24px 46px -22px rgba(0, 0, 0, 0.74);
+  -moz-box-shadow: 0px 24px 46px -22px rgba(0, 0, 0, 0.74);
+  box-shadow: 0px 24px 46px -22px rgba(0, 0, 0, 0.74);
+
+  /*box-shadow: 0px 15px 25px -5px #0057ab;*/
+  -webkit-transform: scale(1.015);
+  transform: scale(1.015);
+
+}
+
+.panel:active {
+  /*box-shadow: 0px 4px 8px #0065c8;*/
+  -webkit-transform: scale(0.98);
+  transform: scale(0.98);
 }
 
 /* Scrollbar style */

@@ -21,8 +21,13 @@ export default new Vuex.Store({
     filterFaculty: "",
     filterDepartment: "",
     filterPlace: "",
-
-    URL_API_FILTER: `/events`
+    URL_API_FILTER: `/events`,
+    pages: [],
+    pageIndex: 0,
+    currentApiUrl: `/events`,
+    firstTimeLoaded: false,
+    canLoadEvents: true,
+    nextPage: ``
   },
   getters: {
     fileUploadLoading(state) {
@@ -83,6 +88,24 @@ export default new Vuex.Store({
     },
     getFilterPlace(state) {
       return state.filterPlace;
+    },
+    getPages(state) {
+        return state.pages;
+    },
+    getPageIndex(state) {
+        return state.pageIndex;
+    },
+    getCurrentApiUrl(state) {
+        return state.currentApiUrl;
+    },
+    getFirstTimeLoaded(state) {
+        return state.firstTimeLoaded;
+    },
+    getCanLoadEvents(state) {
+        return state.canLoadEvents;
+    },
+    getNextPage(state) {
+        return state.nextPage;
     }
   },
   mutations: {
@@ -146,6 +169,31 @@ export default new Vuex.Store({
     },
     setFilterPlace(state, change) {
       state.filterPlace = change;
+    },
+    addPageToArray(state, change) {
+        state.pages.push(change);
+    },
+    clearPageArray(state, change) {
+        state.pages = change;
+        state.pages.length = 0;
+    },
+    reversePageArray(state) {
+        state.pages.slice().reverse();
+    },
+    setPageIndex(state, change) {
+        state.pageIndex = change;
+    },
+    setCurrentApiUrl(state, change) {
+        state.currentApiUrl = change;
+    },
+    setFirstTimeLoaded(state, change) {
+        state.firstTimeLoaded = change;
+    },
+    setCanLoadEvents(state, change) {
+        state.canLoadEvents = change;
+    },
+    setNextPage(state, change) {
+        state.nextPage = change;
     }
   },
   actions: {
