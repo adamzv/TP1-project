@@ -25,8 +25,8 @@ class UsersController extends Controller
 {
     function __construct()
     {
-        $this->middleware(['auth:api', 'scope:admin-user'])->except(['eventRegister', 'eventUnregister', 'eventEmail', 'show', 'checkEvent','notify']);
-        $this->middleware(['auth:api', 'scope:moderator-user,logged-user,admin-user'])->only(['show', 'checkEvent','notify']);
+        $this->middleware(['auth:api', 'scope:admin-user'])->except(['eventRegister', 'eventUnregister', 'eventEmail', 'show', 'checkEvent','notify','changeUserName']);
+        $this->middleware(['auth:api', 'scope:moderator-user,logged-user,admin-user'])->only(['show', 'checkEvent','notify','changeUserName']);
     }
 
     /**
@@ -369,7 +369,7 @@ class UsersController extends Controller
     public function notify(Request $request, $id)
     {
         $validator = Validator::make($request->only(['notify']), [
-           
+
         ]);
 
         if ($validator->fails()) {

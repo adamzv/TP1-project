@@ -167,7 +167,7 @@
     </div>
 
     <!-- Filter view for desktop and tablet screen sizes  -->
-    <div v-else-if="!showMobile && showDesktop && render" >
+    <div v-else-if="!showMobile && showDesktop && render">
       <b-collapse
         aria-id="contentIdForA11y2"
         class="panel collapse"
@@ -879,7 +879,7 @@ export default {
       this.selectedFacultyName = "";
       this.selectedDepartmentName = "";
       this.placeName = "";
-       this.render = false;
+      this.render = false;
       this.$nextTick(() => {
         this.render = true;
       });
@@ -888,7 +888,7 @@ export default {
     clearDateFilter() {
       this.beginning = null;
       this.$store.commit("setFilterBeginning", null);
-       this.render = false;
+      this.render = false;
       this.$nextTick(() => {
         this.render = true;
       });

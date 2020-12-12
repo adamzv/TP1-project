@@ -51,7 +51,6 @@
         {{ props.row.name }}
       </b-table-column>
       <b-table-column custom-key="actions" label="Actions" v-slot="props">
-        
         <button
           v-if="props.row.id_role != 1"
           class="button is-small is-danger"
@@ -99,7 +98,7 @@ export default {
       httpClient
         .delete(`/categories/${id}`)
         .then(() => {
-            this.data = this.data.filter(data => data.id != id);
+          this.data = this.data.filter(data => data.id != id);
           this.$buefy.toast.open({
             message: "Kategória bola vymazaná!",
             type: "is-success"
@@ -112,8 +111,7 @@ export default {
             type: "is-danger"
           });
         });
-    },
-    
+    }
   }
 };
 </script>
