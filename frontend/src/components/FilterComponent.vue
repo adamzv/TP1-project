@@ -361,7 +361,7 @@ export default {
       selectedFacultyName: "",
       pageUrls: [],
       index: 0,
-      apiRequest: `/events`
+      apiRequest: `/events`,
       render: true
     };
   },

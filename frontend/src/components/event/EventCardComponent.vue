@@ -390,7 +390,7 @@ export default {
 }
 
 .eventBackColorFSVZ {
-  background: #b2b2b2;
+  background: #f31a33;
 }
 
 .eventBorderColorUKF {
@@ -418,7 +418,7 @@ export default {
 }
 
 .eventBorderColorFSVZ {
-  border-left: 4px solid #d8d8d8;
+  border-left: 4px solid #e6b3b9;
 }
 
 .panel {

@@ -849,7 +849,7 @@ export default {
 }
 
 .eventBackColorFSVZ {
-  background: #b2b2b2;
+  background: #f31a33;
 }
 
 .eventDetailsHeaderColor {

@@ -58,16 +58,7 @@ export default {
   props: {
     pageId: Number,
     events: Array
-  },
-
-  data() {
-    return {
-      events: []
-    };
-  },
-
-  mounted() {}
-
+  }
 };
 </script>
 
