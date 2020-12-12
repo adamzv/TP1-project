@@ -1,9 +1,8 @@
 <template>
-  <div class="container is-fluid filterPanel">
-    <!-- This was the only way I could make it work, too much time spent, had to compromise for sanity reasons. -->
-    <!-- Maybe modularize this in the future somehow so it looks cleaner -->
-    <!-- Filter view for mobile screen sizes  -->
 
+  <form class="container is-fluid filterPanel" v-on:keydown.enter="sendDataToParent">
+
+    <!-- Filter view for mobile screen sizes  -->
     <div v-if="showMobile && !showDesktop && render">
       <b-collapse
         aria-id="contentIdForA11y2"
@@ -323,7 +322,7 @@
         </div>
       </b-collapse>
     </div>
-  </div>
+  </form>
 </template>
 
 <script>
@@ -360,6 +359,9 @@ export default {
       placeName: "",
       selectedDepartmentName: "",
       selectedFacultyName: "",
+      pageUrls: [],
+      index: 0,
+      apiRequest: `/events`,
       render: true
     };
   },
@@ -400,32 +402,70 @@ export default {
     },
 
     sendDataToParent() {
+      this.$store.commit("setPageIndex", 0);
       this.createFilterRequest();
+      this.loadEvents(this.$store.getters.getCurrentApiUrl);
     },
 
-    clearFilter() {
-      httpClient.get(`/events`).then(response => {
-        this.$store.commit("setCurrentlyInFilter", response.data);
-        this.$store.commit("setURL_API_FILTER", `/events`);
+    async clearFilter() {
+      this.$store.commit("setPageIndex", 0);
+      this.$store.commit("setPageIndex", this.$store.getters.getPageIndex + 1);
+      this.$store.commit("clearPageArray", []);
 
-        this.$emit("clicked", {
-          filteredEvents: response.data
-        });
+      this.$store.commit("pushToLoading", "FilterComponent");
+      httpClient.get(`/events?page=1`).then(response_x => {
+        if (response_x.data.data != "") {
+          this.$store.commit("addPageToArray", response_x.data.data);
+          this.$store.commit("setNextPage", response_x.data.next_page_url);
+          this.$store.commit("setCurrentApiUrl", `/events`);
+        }
+
+        this.$store.commit("finishLoading", "FilterComponent");
       });
 
       this.setFilterOptionsClear();
       this.setFilterOptions();
     },
 
-    getRequestFilteredEvents(apiUrl) {
-      httpClient.get(apiUrl).then(response => {
-        this.$store.commit("setCurrentlyInFilter", response.data);
-        this.$store.commit("setURL_API_FILTER", apiUrl);
+    async getRequestFilteredEvents(apiUrl) {
+      this.$store.commit("clearPageArray", []);
+      this.$store.commit("setURL_API_FILTER", apiUrl);
+    },
 
-        this.$emit("clicked", {
-          filteredEvents: response.data
+    loadEvents(url) {
+      this.$store.commit("setPageIndex", this.$store.getters.getPageIndex + 1);
+      this.$store.commit("pushToLoading", "FilterComponent");
+      this.$store.commit("setCanLoadEvents", false);
+
+      if (url != `/events`) {
+        httpClient.get(url + `&page=${this.$store.getters.getPageIndex}`).then(response_x => {
+          if (response_x.data.data != "") {
+            this.$store.commit("addPageToArray", response_x.data.data);
+            this.$store.commit("setNextPage", response_x.data.next_page_url);
+          }
+          this.$store.commit("finishLoading", "FilterComponent");
+          this.$store.commit("setCanLoadEvents", true);
         });
-      });
+      } else if (url == `/events?page=1`) {
+        httpClient.get(`/events?page=${this.$store.getters.getPageIndex + 1}`).then(response_x => {
+          if (response_x.data.data != "") {
+            this.$store.commit("addPageToArray", response_x.data.data);
+            this.$store.commit("setNextPage", response_x.data.next_page_url);
+          }
+          this.$store.commit("finishLoading", "FilterComponent");
+          this.$store.commit("setCanLoadEvents", true);
+        });
+      } else {
+        httpClient.get(url + `?page=${this.$store.getters.getPageIndex}`).then(response_x => {
+          console.log("response: " + response_x.data.data);
+          if (response_x.data.data != "") {
+            this.$store.commit("addPageToArray", response_x.data.data);
+            this.$store.commit("setNextPage", response_x.data.next_page_url);
+          }
+          this.$store.commit("finishLoading", "FilterComponent");
+          this.$store.commit("setCanLoadEvents", true);
+        });
+      }
     },
 
     generateCorrectDatetime() {
@@ -570,7 +610,6 @@ export default {
 
       let arrayOfData = [false, false, false, false, false, false];
 
-      // todo: add filtering based on categories and place
       if (isName) {
         arrayOfData[0] = true;
       } else {
@@ -618,34 +657,37 @@ export default {
         !isDate &&
         !isPlace &&
         !isCategories
-      )
+      ) {
         request = `/events`;
-      else
-        request = `/events?filter=${this.nameFilterRequestPart(
-          doFilterName
-        )}${this.dateFilterRequestPart(
-          doFilterDate,
-          apiDate,
-          doFilterName
-        )}${this.facultyFilterRequestPart(
-          doFilterFaculty
-        )}${this.departmentFilterRequestPart(
-          doFilterDepartment,
-          apiDept
-        )}${this.placeFilterRequestPart(
-          doFilterPlace,
-          this.getIdOfFilteredPlace(this.placeName)
-        )}${this.categoriesFilterRequestPart(
-          doFilterCategories,
-          this.getIdOfFilteredCategory(this.categories)
-        )}`;
+        this.apiRequest = request;
+        this.$store.commit("setCurrentApiUrl", request);
+      }
+      else {
+          request = `/events?filter=${this.nameFilterRequestPart(
+              doFilterName
+          )}${this.dateFilterRequestPart(
+              doFilterDate,
+              apiDate,
+              doFilterName
+          )}${this.facultyFilterRequestPart(
+              doFilterFaculty
+          )}${this.departmentFilterRequestPart(
+              doFilterDepartment,
+              apiDept
+          )}${this.placeFilterRequestPart(
+              doFilterPlace,
+              this.getIdOfFilteredPlace(this.placeName)
+          )}${this.categoriesFilterRequestPart(
+              doFilterCategories,
+              this.getIdOfFilteredCategory(this.categories)
+          )}`;
+
+          this.apiRequest = request;
+          this.$store.commit("setCurrentApiUrl", request);
+      }
 
       //execute filtering
       this.getRequestFilteredEvents(request);
-
-      //console.log("API REQUEST: " + request);
-      //console.log(this.getIdOfFilteredCategory(this.categories));
-      //console.log(isCategories);
     },
 
     createFilterRequest() {
@@ -896,6 +938,10 @@ export default {
   },
 
   computed: {
+    getCurrentApiUrl() {
+      return this.$store.getters.getCurrentApiUrl;
+    },
+
     getFilteredDepartments() {
       if (this.selectedFaculty != null) {
         return this.availableDepartments.filter(department => {
@@ -941,6 +987,11 @@ export default {
     httpClient.get("/faculties").then(response => {
       this.availableFaculties = response.data;
     });
+
+    if (this.$store.getters.getFirstTimeLoaded == false) {
+      this.loadEvents(this.getCurrentApiUrl);
+      this.$store.commit("setFirstTimeLoaded", true);
+    }
   }
 };
 </script>

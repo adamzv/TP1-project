@@ -5,6 +5,7 @@ details accordingly. * */
 <template>
   <!-- Temporary top padding -->
   <div style="padding-top: 30px;">
+
     <div v-if="this.$store.getters.getCurrentlyInFilter.data != 0">
       <!-- Using Bulma column layout system -->
       <div class="columns is-mobile is-multiline is-centered">
@@ -32,7 +33,7 @@ details accordingly. * */
           v-bind:event-faculty="event.faculty"
           v-bind:event-categories="event.categories"
           v-bind:event-title-img="event.titleImg"
-          v-for="event in this.$store.getters.getCurrentlyInFilter.data"
+          v-for="event in this.$store.getters.getPages[pageId - 2]"
           v-bind:key="event.id"
         />
       </div>
@@ -53,14 +54,11 @@ export default {
   components: {
     EventCardComponent
   },
-  props: {
-    events: Array
-  },
-  data() {
-    return {};
-  },
 
-  mounted() {}
+  props: {
+    pageId: Number,
+    events: Array
+  }
 };
 </script>
 
