@@ -234,7 +234,9 @@ export default new Vuex.Store({
           localStorage.removeItem("id");
           context.commit("destroyToken");
           context.commit("destroyUser");
-          return new Promise.reject(new Error("Token is expired"));
+          return new Promise(reject => {
+            reject("Token is expired");
+          });
         } else {
           return new Promise((resolve, reject) => {
             httpClient
