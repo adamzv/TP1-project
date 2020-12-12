@@ -2,16 +2,16 @@
   <section>
     <b-field grouped group-multiline>
       <b-select v-model="perPage" :disabled="!isPaginated">
-        <option value="5">5 per page</option>
-        <option value="10">10 per page</option>
-        <option value="15">15 per page</option>
-        <option value="20">20 per page</option>
+        <option value="5">5 na stranu</option>
+        <option value="10">10 na stranu</option>
+        <option value="15">15 na stranu</option>
+        <option value="20">20 na stranu</option>
       </b-select>
       <div class="control is-flex">
-        <b-switch v-model="isPaginated">Paginated</b-switch>
+        <b-switch v-model="isPaginated">Stránkovanie</b-switch>
       </div>
       <div class="control is-flex">
-        <b-switch v-model="nameSearchable">Search</b-switch>
+        <b-switch v-model="nameSearchable">Vyhľadať</b-switch>
       </div>
     </b-field>
 

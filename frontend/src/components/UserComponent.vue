@@ -2,16 +2,16 @@
   <section>
     <b-field grouped group-multiline>
       <b-select v-model="perPage" :disabled="!isPaginated">
-        <option value="5">5 per page</option>
-        <option value="10">10 per page</option>
-        <option value="15">15 per page</option>
-        <option value="20">20 per page</option>
+        <option value="5">5 na stranu</option>
+        <option value="10">10 na stranu</option>
+        <option value="15">15 na stranu</option>
+        <option value="20">20 na stranu</option>
       </b-select>
       <div class="control is-flex">
-        <b-switch v-model="isPaginated">Paginated</b-switch>
+        <b-switch v-model="isPaginated">Stránkovanie</b-switch>
       </div>
       <div class="control is-flex">
-        <b-switch v-model="nameSearchable">Search</b-switch>
+        <b-switch v-model="nameSearchable">Vyhľadať</b-switch>
       </div>
     </b-field>
 
@@ -74,7 +74,13 @@
                 <button v-if="props.row.id_role !=1" class="button is-small is-danger" @click="deleteUser(props.row.id)"> 
                     <b-icon icon="delete" size="is-small"></b-icon> </button>
             </b-table-column>
-
+            <b-table-column field="notify" label="Notifikácia"  sortable v-slot="props">
+               <b-tooltip label="Používateľ žiada zmenu práv"  type="is-dark">
+                 <button v-if="props.row.notify ===1" class="button is-small is-light" @click="deleteNotify(props.row.id)"> 
+                   <b-icon  icon="bell-ring" size="is-small" ></b-icon>  </button>
+                     
+               </b-tooltip>
+            </b-table-column>
             
 
         </b-table>
@@ -112,6 +118,24 @@ export default {
     }
   },
   methods: {
+    deleteNotify(id) {
+      httpClient
+        .post(`/users/notify/${id}`,{notify:null})
+        .then(() => {
+          
+          this.$buefy.toast.open({
+            message: "Notifikácia bola odstránená!",
+            type: "is-success"
+          });
+        })
+        .catch(error => {
+          console.log(error);
+          this.$buefy.toast.open({
+            message: "Notifikáciu sa nepodarilo odstrániť!",
+            type: "is-danger"
+          });
+        });
+    },
     deleteUser(id) {
       httpClient
         .delete(`/users/${id}`)
@@ -133,7 +157,7 @@ export default {
     upgrade(id) {
       httpClient
         .put(`/users/updateUsersRole/${id}`, {
-          id_role: 2
+          id_role: 2,notify: null
         })
         .then(() => {
           this.$buefy.toast.open({
@@ -152,7 +176,7 @@ export default {
     downgrade(id) {
       httpClient
         .put(`/users/updateUsersRole/${id}`, {
-          id_role: 3
+          id_role: 3,notify: null
         })
         .then(() => {
           this.$buefy.toast.open({

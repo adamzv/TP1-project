@@ -31,6 +31,9 @@
             <p>
               <a class="has-text-weight-semibold" @click="changePassword">
                 Zmeniť heslo
+              </a><br>
+              <a v-if="isUser && user.notify === null" class="has-text-weight-semibold" @click="notify">
+                Zmena práv
               </a>
             </p>
           </div>
@@ -196,6 +199,24 @@ export default {
             type: "is-danger"
           })
         );
+    },
+    notify() {
+      httpClient
+        .post(`/users/notify/${this.loggedInId}`,{notify:1})
+        .then(() => {
+          
+          this.$buefy.toast.open({
+            message: "Notifikácia bolo odoslaná!",
+            type: "is-success"
+          });
+        })
+        .catch(error => {
+          console.log(error);
+          this.$buefy.toast.open({
+            message: "Notifikáciu sa nepodarilo odoslať!",
+            type: "is-danger"
+          });
+        });
     },
     getEvents() {
       if (this.isAdmin) {

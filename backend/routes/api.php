@@ -48,6 +48,7 @@ Route::prefix('users')->group(function () {
     Route::post('eventUnregister', 'Api\UsersController@eventUnregister');
     Route::post('eventEmail', 'Api\UsersController@eventEmail')->name('users.email');
     Route::post('checkEvent', 'Api\UsersController@checkEvent');
+    Route::post('notify/{id}', 'Api\UsersController@notify');
 });
 
 Route::namespace('Api')->group(function () {
