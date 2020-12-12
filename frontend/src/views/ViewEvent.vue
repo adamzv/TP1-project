@@ -22,6 +22,8 @@ event details on a single page * */
       v-bind:event-department="events.event.department"
       v-bind:event-faculty="events.event.faculty"
       v-bind:event-categories="events.event.categories"
+      v-bind:event-pdf="events.event.pdf"
+      v-bind:event-images="events.event.images"
     />
   </div>
 </template>

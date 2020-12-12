@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <FilterComponent id="myFilter" class="filter" @clicked="onClickChild" />
-    <EventListComponent />
+    <EventListComponent :events="loadedEvents" />
   </div>
 </template>
 
@@ -12,14 +12,15 @@ import FilterComponent from "@/components/FilterComponent.vue";
 export default {
   name: "home",
   components: { EventListComponent, FilterComponent },
-
   created() {
     window.addEventListener("scroll", this.myFunction);
   },
   destroyed() {
     window.removeEventListener("scroll", this.myFunction);
   },
-
+  props: {
+    loadedEvents: Array
+  },
   methods: {
     myFunction() {
       var filter = document.getElementById("myFilter");

@@ -37,6 +37,19 @@ class EventsController extends Controller
         return Event::orderBy('beginning', 'asc')->paginate(12);
     }
 
+
+    public function admin(){
+        $query = Event::with('user', 'place', 'department', 'faculty', 'categories')
+            ->select('events.*', DB::raw('COUNT(event_user.event_id) as participants'))
+            ->leftJoin('event_user', 'events.id', '=', 'event_user.event_id')
+            ->leftjoin('category_event', 'category_event.event_id', '=', 'events.id')
+            ->groupBy('events.id')
+            ->orderBy('beginning', 'asc')
+            ->get();
+        return $query;
+
+
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -126,7 +139,7 @@ class EventsController extends Controller
         $event->end = $request->input('end');
         $event->attendance_limit = $request->input('attendance_limit');
         $event->lecturer = $request->input('lecturer');
-        $event->id_user = $request->input('id_user');
+        //$event->id_user = $request->input('id_user');
         $event->id_place = $request->input('id_place');
         $event->id_faculty = $request->input('id_faculty');
         $event->id_department = $request->input('id_department');
@@ -216,10 +229,40 @@ class EventsController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     * @param $id
+     * @return JsonResponse
      */
     public function destroy($id)
     {
-        // TODO: while implementing destroy method, its also important to send mail to registered users to this event.
+        // find event
+        $event = Event::findOrFail($id);
+
+        // detach categories from event
+        $event->categories()->detach();
+
+        // inform users only if event time is actual
+        if ($event->beginning >= date('Y-m-d H:i:s')) {
+
+            // create and send mail to users about deletion of event
+            Mail::to('me@app.com')
+                ->bcc($this->getUsersOfEvent($id))
+                ->send(new EventChanged(
+                    $event,
+                    'delete',
+                    $event->beginning
+                ));
+        }
+
+        // detach users from event
+        $event->attendance()->detach();
+
+        // soft delete event
+        $event->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Event was successfully deleted'],
+            200);
     }
 
     /**

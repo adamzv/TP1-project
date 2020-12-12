@@ -27,6 +27,9 @@ Route::prefix('users')->group(function () {
     Route::get('email/resend', 'Auth\VerificationApiController@resend')->name('verificationapi.resend');
     Route::get('email/verify/{id}', 'Auth\VerificationApiController@verify')->name('verificationapi.verify')->middleware('signed');
 
+    Route::put('updateUsersRole/{id}', 'Api\UsersController@updateUsersRole');
+    Route::post('changeUserName', 'Api\UsersController@changeUserName');
+
     // password reset routes
     Route::group(['namespace' => 'Auth', 'middleware' => 'api', 'prefix' => 'password'], function () {
         Route::post('create', 'PasswordResetController@create');
@@ -37,16 +40,18 @@ Route::prefix('users')->group(function () {
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('details', 'Api\UsersVerificationController@details')->middleware('verified');
         Route::get('logout', 'Api\UsersVerificationController@logout')->middleware('verified');
+        Route::get('refreshToken', 'Api\UsersVerificationController@refreshToken')->middleware('verified');
     }); // will work only when user has verified the email
 
     // User registration on events
     Route::post('eventRegister', 'Api\UsersController@eventRegister');
     Route::post('eventUnregister', 'Api\UsersController@eventUnregister');
     Route::post('eventEmail', 'Api\UsersController@eventEmail')->name('users.email');
-    Route::post('checkEvent','Api\UsersController@checkEvent');
+    Route::post('checkEvent', 'Api\UsersController@checkEvent');
 });
 
 Route::namespace('Api')->group(function () {
+
     Route::apiResource('categories', 'CategoriesController');
     Route::apiResource('cities', 'CitiesController');
     Route::apiResource('departments', 'DepartmentsController');
@@ -56,6 +61,12 @@ Route::namespace('Api')->group(function () {
     Route::apiResource('roles', 'RolesController');
     Route::apiResource('states', 'StatesController');
     Route::apiResource('users', 'UsersController');
+    Route::get('admin', 'EventsController@admin');
+
+    Route::prefix('stats')->group(function () {
+        Route::get('faculties', 'StatsController@getEventsFaculties');
+        Route::get('onlineUsers', 'StatsController@getStats');
+    });
 
     Route::prefix('files')->group(function () {
 
@@ -82,6 +93,8 @@ Route::namespace('Api')->group(function () {
  *
  * @author lacal
  */
+
+
 Route::get('events', function () {
 
     // get 'events' with pivot table 'event_user'
@@ -89,7 +102,6 @@ Route::get('events', function () {
         ->select('events.*', DB::raw('COUNT(event_user.event_id) as participants'))
         ->leftJoin('event_user', 'events.id', '=', 'event_user.event_id')
         ->leftjoin('category_event', 'category_event.event_id', '=', 'events.id');
-
 
     // Find out if request contains 'filter' value
     if (\request()->filled('filter')) {
@@ -114,11 +126,21 @@ Route::get('events', function () {
             } elseif ($criteria == 'limit') {
                 $query->havingRaw('participants != attendance_limit');
             } elseif (strpos($criteria, 'id_') !== false) {
-                if ($criteria == 'id_user') $query->where('events.id_user', '=', $value);
-                else $query->where($criteria, '=', $value);
+                if ($criteria == 'id_user') {
+                    $query->where('events.id_user', '=', $value);
+                    return $query
+                        ->groupBy('events.id')
+                        ->orderBy('beginning', 'asc')
+                        ->get();
+
+                } else $query->where($criteria, '=', $value);
             } elseif ($criteria == 'event_user_id') {
                 $query->where('event_user.user_id', '=', $value);
                 $datetimeFilter = false;
+                return $query
+                    ->groupBy('events.id')
+                    ->orderBy('beginning', 'asc')
+                    ->get();
             } elseif ($criteria == 'categories_id') {
                 $id_categories = preg_split('@!@', $value, NULL, PREG_SPLIT_NO_EMPTY);
 
@@ -136,7 +158,7 @@ Route::get('events', function () {
         return $query
             ->groupBy('events.id')
             ->orderBy('beginning', 'asc')
-            ->simplePaginate(12);
+            ->simplePaginate(12)->setPath(\request()->url() . '?filter=' . \request('filter'));
     } else {
 
         // return query with no filter value

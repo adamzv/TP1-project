@@ -2,8 +2,11 @@
   <section>
     <div style="margin-top: 24px;" class="container">
       <div class="page-margin">
-        <h1 class="is-uppercase is-size-4">
+        <h1 class="is-uppercase is-size-4" v-if="isModerator || isUser">
           Používateľská sekcia
+        </h1>
+        <h1 class="is-uppercase is-size-4" v-if="isAdmin">
+          Admin sekcia
         </h1>
         <hr class="hr" />
         <div class="box">
@@ -25,7 +28,11 @@
                 ></b-icon>
               </b-tooltip>
             </p>
-            <p><a class="has-text-weight-semibold" href="#">Zmeniť heslo</a></p>
+            <p>
+              <a class="has-text-weight-semibold" @click="changePassword">
+                Zmeniť heslo
+              </a>
+            </p>
           </div>
         </div>
         <!-- Pouzivatelska sekcia -->
@@ -60,19 +67,70 @@
                 v-bind:event-department="event.department"
                 v-bind:event-faculty="event.faculty"
                 v-bind:event-categories="event.categories"
+                v-bind:event-title-img="event.titleImg"
               />
             </template>
           </b-carousel-list>
         </template>
         <!-- Sprava udalosti -->
-        <template v-if="isModerator || isAdmin">
-          <h1 class="is-uppercase is-size-4">
-            Správa udalostí
-          </h1>
-          <hr class="hr" />
-          <template v-if="events">
-            <EventManager :events="events" />
-          </template>
+        <template v-if="isAdmin">
+          <div id="app" class="container">
+            <section>
+              
+              <b-tabs size="is-medium" class="block">
+                <b-tab-item label="Štatistiky" icon="chart-pie" >
+                    <template v-if="faculties && hodnota && online && faculties1 && hodnota1" >
+                      <StatisticsComponent :faculties="faculties" :hodnota="hodnota" :online="online" :faculties1="faculties1" :hodnota1="hodnota1" />
+                    </template>
+
+                </b-tab-item>
+                <b-tab-item
+                  label="Správa udalostí"
+                  icon="calendar-check"
+                  @click="getEvents"
+                >
+                  <template v-if="events">
+                    <EventManager :events="events" />
+                  </template>
+                </b-tab-item>
+                <b-tab-item
+                  label="Používatelia"
+                  icon="account-box"
+                  @click="getUsers"
+                >
+                  <template v-if="users">
+                    <UserComponent :users="users" />
+                  </template>
+                </b-tab-item>
+                 <b-tab-item label="Kategórie" icon="animation">
+                  <template v-if="category">
+                    <CategoryComponent :category="category" />
+                  </template>
+
+                 </b-tab-item>
+                
+                
+              </b-tabs>
+            </section>
+          </div>
+        </template>
+        <!-- Sprava udalosti -->
+        <template v-if="isModerator">
+          <div id="app" class="container">
+            <section>
+              <b-tabs size="is-large" class="block">
+                <b-tab-item
+                  label="Správa udalostí"
+                  icon="calendar-check"
+                  @click="getEvents"
+                >
+                  <template v-if="events">
+                    <EventManager :events="events" />
+                  </template>
+                </b-tab-item>
+              </b-tabs>
+            </section>
+          </div>
         </template>
       </div>
     </div>
@@ -82,6 +140,9 @@
 <script>
 import { ADMIN_ROLE, MODERATOR_ROLE, USER_ROLE } from "../const.js";
 import EventManager from "../components/event/EventManager.vue";
+import CategoryComponent from "../components/CategoryComponent.vue";
+import UserComponent from "../components/UserComponent.vue";
+import StatisticsComponent from "../components/StatisticsComponent.vue";
 import EventCardComponent from "../components/event/EventCardComponent.vue";
 import httpClient from "../httpClient.js";
 
@@ -89,23 +150,56 @@ export default {
   name: "profile",
   components: {
     EventManager,
-    EventCardComponent
+    EventCardComponent,
+    UserComponent,
+    CategoryComponent,
+    StatisticsComponent
   },
   data() {
     return {
       test: 0,
-      events: []
+      events: [],
+      users: [],
+      category:[],
+      online: [],
+      faculties: [],
+      hodnota: [],
+       faculties1: [],
+      hodnota1: [],
     };
   },
   created() {
     // this function call is for when the user returns to the profile view
     // without this events list would be empty after router.back()
     this.getEvents();
+    this.getUsers();
+    this.getCategory();
+    this.getFaculty();
+    this.getOnlineUsers();
+   
+    
   },
   methods: {
+    
+    changePassword() {
+      httpClient
+        .post("/users/password/create", { email: this.user.email })
+        .then(() =>
+          this.$buefy.toast.open({
+            message: "Odkaz na zmenu hesla Vám príde na email.",
+            type: "is-success"
+          })
+        )
+        .catch(() =>
+          this.$buefy.toast.open({
+            message: "Niekde nastala chyba.",
+            type: "is-danger"
+          })
+        );
+    },
     getEvents() {
       if (this.isAdmin) {
-        this.loadEvents("/events");
+        this.loadEvents("/admin");
       } else if (this.isModerator) {
         this.loadEvents(`/events?filter=id_user=${this.loggedInId}`);
       } else if (this.isUser) {
@@ -120,21 +214,99 @@ export default {
       httpClient
         .get(route)
         .then(response => {
-          this.events = response.data.data;
+          this.events = response.data;
           this.$store.commit("finishLoading", "Profile");
         })
         .catch(error => {
           console.log(error);
           this.$store.commit("finishLoading", "Profile");
         });
-    }
-  },
+    },
+
+    getUsers() {
+      if (this.isAdmin) {
+        this.$store.commit("pushToLoading", "Profile2");
+        httpClient
+          .get("/users")
+          .then(response => {
+            this.users = response.data;
+
+            this.$store.commit("finishLoading", "Profile2");
+          })
+          .catch(error => {
+            console.log(error);
+            this.$store.commit("finishLoading", "Profile2");
+          });
+      }
+    },
+    getOnlineUsers() {
+      if (this.isAdmin) {
+        this.$store.commit("pushToLoading", "Profile2");
+        httpClient
+          .get("/stats/onlineUsers")
+          .then(response => {
+            this.online = response.data;
+
+            this.$store.commit("finishLoading", "Profile2");
+          })
+          .catch(error => {
+            console.log(error);
+            this.$store.commit("finishLoading", "Profile2");
+          });
+      }
+    },
+
+    getCategory() {
+      if (this.isAdmin) {
+        this.$store.commit("pushToLoading", "Profile2");
+        httpClient
+          .get("/categories")
+          .then(response => {
+            this.category = response.data;
+            
+            this.$store.commit("finishLoading", "Profile2");
+          })
+          .catch(error => {
+            console.log(error);
+            this.$store.commit("finishLoading", "Profile2");
+          }); 
+      }},
+  
+  getFaculty() {
+      if (this.isAdmin) {
+         this.$store.commit("pushToLoading", "Profile2");
+        httpClient
+          .get("/stats/faculties")
+          .then(response => {
+            this.faculties = response.data.faculty;
+            this.hodnota = response.data.pocet;
+            this.faculties1 = response.data.faculty1;
+             this.hodnota1 = response.data.pocet1;
+           
+            this.$store.commit("finishLoading", "Profile2");
+          })
+          .catch(error => {
+            console.log(error);
+            this.$store.commit("finishLoading", "Profile2");
+          });
+        
+        
+      }
+    
+    },
+   },
+  
   // watching for a change in userRole is required because we have to wait
   // till user information is loaded in vuex store
   watch: {
     userRole(newVal) {
       if (newVal) {
+        this.getFaculty();
         this.getEvents();
+        this.getUsers();
+        this.getCategory();
+        this.getOnlineUsers();
+        
       }
     },
     newEventSubmitted(newVal) {
@@ -186,4 +358,6 @@ export default {
   margin-left: 20px;
   margin-right: 20px;
 }
+
+
 </style>

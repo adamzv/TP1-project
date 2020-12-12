@@ -41,6 +41,16 @@ php artisan key:generate
 
 6) Run `php artisan passport:keys` (or `php artisan passport:install`) to generate files and keys required for Laravel Passport
 
+**Attention!** Azure Storage and Mailtrap access keys are required for backend to work
+
+#### Azure storage keys
+Access key will be revoked after presentation
+```1
+AZURE_STORAGE_NAME=projectdevstorage
+AZURE_STORAGE_KEY=Y9y8zzxCK5K0d7go3BI4HOqB6YgTJ7ZBSK8jDnKYFywQbelWjOltFJ+3und0LMzH+F98bT7gNoF46FgC93j6JQ==
+AZURE_STORAGE_CONTAINER=files
+```
+
 Notes:
 
 `php artisan route:list` to show every route 
@@ -51,3 +61,17 @@ Notes:
 2) Run `npm install` in project folder to install required dependencies
 3) In frontend .env configuration change API endpoint `VUE_APP_BACKEND_URL=` to your local address (probably `http://localhost/TP1-project/backend/public/api`), also do not commit your changes in this file 
 4) Run `npm run serve` to start frontend in development mode on `localhost:8080`
+
+### Docker
+
+Our Docker setup is primarily used for deployment server and some extra setup may be required for proper functioning on your local setup. Our deployment is automated by using Azure DevOps release pipeline.
+
+1) Create your backend `.env` file and change variables for DB, Azure Storage and mail provider
+2) Change backend url in frontend `.env` file
+3) Build new Docker containers using `docker-compose up --build --force-recreate -d`
+4) After MySQL is running you can exec extra php artisan commands for DB migration and passport
+```
+docker-compose exec backend php artisan migrate:fresh --seed
+docker-compose exec backend php artisan passport:install --force
+```
+These steps are automated in our release pipeline and because of time constraints and Docker setup not being required, we did not move some of these commands to Dockerfiles.

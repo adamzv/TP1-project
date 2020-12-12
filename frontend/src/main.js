@@ -24,7 +24,7 @@ Vue.use(VueSocialSharing);
 
 interceptors();
 
-axiosRetry(httpClient, { retries: 2 });
+axiosRetry(httpClient, { retries: 3 });
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAdmin)) {

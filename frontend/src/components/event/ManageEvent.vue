@@ -124,8 +124,8 @@
                       Nahrať (zvoliť) titulnú fotku
                     </span>
                   </b-upload>
-                  <span v-if="titleImage">
-                    &nbsp;| {{ titleImage.name }}
+                  <span v-if="titleImagePath">
+                    &nbsp;| {{ titleImagePath }}
                     <b-button
                       @click="removeTitleImage"
                       type="is-danger"
@@ -133,6 +133,18 @@
                       icon-right="delete"
                     ></b-button>
                   </span>
+                  <template v-else>
+                    <span v-if="titleImage">
+                      &nbsp;| {{ titleImage.name }}
+                      <b-button
+                        @click="removeTitleImage"
+                        type="is-danger"
+                        size="is-small"
+                        icon-right="delete"
+                      ></b-button>
+                    </span>
+                  </template>
+
                   <br />
                   <b-upload
                     v-model="file"
@@ -176,6 +188,34 @@
               </div>
               <div class="columns">
                 <div class="column">
+                  <b-modal v-model="newPlaceModal" has-modal-card trap-focus>
+                    <div class="modal-card" style="width: auto">
+                      <header class="modal-card-head">
+                        <p class="modal-card-title">Login</p>
+                        <button
+                          type="button"
+                          class="delete"
+                          @click="newPlaceModal = false"
+                        />
+                      </header>
+                      <section class="modal-card-body">
+                        <b-field label="Ulica">
+                          <b-input v-model="modalPlace" required></b-input>
+                        </b-field>
+                      </section>
+                      <footer class="modal-card-foot">
+                        <button
+                          class="button"
+                          type="button"
+                          @click="newPlaceModal = false"
+                        >
+                          Zrušiť
+                        </button>
+                        <button class="button is-primary">Potvrdiť</button>
+                      </footer>
+                    </div>
+                  </b-modal>
+
                   <b-field label="Miesto konania">
                     <b-autocomplete
                       v-model="placeName"
@@ -189,7 +229,7 @@
                       @select="option => (place = option)"
                     >
                       <template slot="header">
-                        <a @click="console.log('todo')">
+                        <a @click="newPlaceModal = true">
                           <span>Pridať nové miesto</span>
                         </a>
                       </template>
@@ -379,11 +419,26 @@
                 Vytvoriť ďalší
               </b-checkbox>
             </div>
-            <div class="level-item">
+            <div class="level-item" v-if="!id">
               <input
                 type="submit"
                 class="button is-success"
                 value="Vytvoriť udalosť"
+              />
+            </div>
+            <div class="level-item" v-if="id">
+              <input
+                type="submit"
+                class="button is-success"
+                value="Upraviť udalosť"
+              />
+            </div>
+            <div class="level-item" v-if="isAdmin && id">
+              <input
+              type="button"
+                @click="deleteEvent()"
+                class="button is-danger"
+                value="Vymazať udalosť"
               />
             </div>
           </div>
@@ -394,6 +449,7 @@
 </template>
 
 <script>
+import { ADMIN_ROLE } from "../../const.js";
 import httpClient from "../../httpClient.js";
 import moment from "moment";
 import Spinner from "vue-simple-spinner";
@@ -409,6 +465,7 @@ export default {
   data() {
     return {
       newCategoryName: "",
+      newPlaceName: "",
       availableCategories: [],
       filteredCategories: [],
       id: null,
@@ -424,6 +481,9 @@ export default {
       selectedFaculty: null,
       availableDepartments: [],
       availableFaculties: [],
+      availableCities: [],
+      availableStates: [],
+      newPlaceModal: false,
       room: null,
       lecturer: null,
       file: null,
@@ -441,7 +501,9 @@ export default {
       fileLoading: false,
       loadedImages: null,
       titleImage: null,
-      titleImagePath: null
+      titleImagePath: null,
+      // place modal properties
+      modalPlace: ""
     };
   },
   methods: {
@@ -452,11 +514,25 @@ export default {
           maxlength: 255,
           value: this.newCategoryName
         },
-        confirmText: "Add",
+        confirmText: "Pridať",
         onConfirm: value => {
           this.availableCategories.push({ name: value });
           this.categories.push({ name: value });
           this.newCategoryName = "";
+        }
+      });
+    },
+    addNewPlace() {
+      this.$buefy.dialog.prompt({
+        message: `Pridať nové miesto`,
+        inputAttrs: {
+          maxlength: 255,
+          value: this.newPlaceName
+        },
+        confirmText: "Pridať",
+        onConfirm: value => {
+          this.availablePlaces.push({ name: value });
+          this.newPlaceName = "";
         }
       });
     },
@@ -473,7 +549,6 @@ export default {
             title_image: result
           })
           .then(response => {
-            console.log(response);
             this.titleImagePath = response.data.path;
           })
           .catch(error => console.log(error));
@@ -485,6 +560,7 @@ export default {
     removeTitleImage() {
       httpClient.delete(`/files/titleImg/${this.id}`).then(() => {
         this.titleImage = null;
+        this.titleImagePath = null;
       });
     },
     postPDF(file) {
@@ -498,7 +574,6 @@ export default {
             pdf: result
           })
           .then(response => {
-            console.log(response);
             this.$store.dispatch("updateLoading");
             this.filePath = response.data.path;
           })
@@ -529,10 +604,10 @@ export default {
             id_department: this.selectedDepartment
               ? this.selectedDepartment.id
               : null,
-            id_user: parseInt(this.$store.getters.loggedInId),
+            //id_user: parseInt(this.$store.getters.loggedInId),
             attendance_limit: this.attendanceLimit || -1,
-            pdfPath: this.filePath,
-            titleImgPath: this.titleImagePath
+            pdfPath: null,
+            titleImgPath: null
           })
           .then(() => {
             this.$store.commit("submitNewEvent", true);
@@ -697,6 +772,7 @@ export default {
       this.room = this.getEvent.room;
       this.lecturer = this.getEvent.lecturer;
       this.file = this.getEvent.file;
+      this.titleImagePath = this.getEvent.titleImg[0];
       this.isAttendanceLimit = this.getEvent.attendanceLimit > -1;
       this.attendanceLimit =
         this.getEvent.attendanceLimit > -1
@@ -710,9 +786,35 @@ export default {
         : "";
       this.selectedFacultyName = this.selectedFaculty.name;
       // this.titleImage = this.getEvent.titleImage
+    },
+
+    deleteEvent(){
+      httpClient
+          .delete(`/events/${this.id}`)
+          .then(() => {
+           this.$store.commit("submitNewEvent", true);
+           this.$buefy.toast.open({
+              message: "Udalosť bola úspešne vymazaná!",
+              type: "is-success"
+            });
+          })
+          .catch(error => {
+            console.log(error);
+            this.$buefy.toast.open({
+              message: "Udalosť sa nepodarilo vymazať!",
+              type: "is-danger"
+            });
+          });
+
     }
   },
   watch: {
+    selectedDepartmentName(val) {
+      console.log(val);
+      if (val === "") {
+        this.selectedDepartment = null;
+      }
+    },
     getEvent(val) {
       if (val) {
         this.editFormInputs();
@@ -722,28 +824,31 @@ export default {
     },
     id(val) {
       if (val) {
-        this.$store.commit("pushToLoading", "EventPDF");
-        httpClient
-          .get(`/files/pdf/${this.id}`)
-          .then(response => {
-            this.file = {};
-            this.file.name = response.data.pdfs_path.pdf1_path;
-            this.$store.commit("finishLoading", "EventPDF");
-          })
-          .catch(() => {
-            this.$store.commit("finishLoading", "EventPDF");
-          });
-
-        this.$store.commit("pushToLoading", "ManageEventLoadImages");
-        httpClient
-          .get(`/files/image/${this.id}`)
-          .then(response => {
-            this.loadedImages = response.data.images_path;
-            this.$store.commit("finishLoading", "ManageEventLoadImages");
-          })
-          .catch(() => {
-            this.$store.commit("finishLoading", "ManageEventLoadImages");
-          });
+        if (this.event.pdf.length > 0) {
+          this.$store.commit("pushToLoading", "EventPDF");
+          httpClient
+            .get(`/files/pdf/${this.id}`)
+            .then(response => {
+              this.file = {};
+              this.file.name = response.data.pdfs_path.pdf1_path;
+              this.$store.commit("finishLoading", "EventPDF");
+            })
+            .catch(() => {
+              this.$store.commit("finishLoading", "EventPDF");
+            });
+        }
+        if (this.event.images.length > 0) {
+          this.$store.commit("pushToLoading", "ManageEventLoadImages");
+          httpClient
+            .get(`/files/image/${this.id}`)
+            .then(response => {
+              this.loadedImages = response.data.images_path;
+              this.$store.commit("finishLoading", "ManageEventLoadImages");
+            })
+            .catch(() => {
+              this.$store.commit("finishLoading", "ManageEventLoadImages");
+            });
+        }
       }
     }
   },
@@ -761,7 +866,18 @@ export default {
     },
     fileUploadLoading() {
       return this.$store.getters.fileUploadLoading;
-    }
+    },
+
+    userRole() {
+      return this.user ? this.$store.getters.loggedInUser.id_role : null;
+    },
+    // user is used as a computed property
+    user() {
+      return this.$store.getters.loggedInUser || null;
+    },
+    isAdmin() {
+      return this.userRole === ADMIN_ROLE;
+    },
   },
   created() {
     this.$store.commit("pushToLoading", "ManageEventCategories");
@@ -775,6 +891,18 @@ export default {
     httpClient.get("/places").then(response => {
       this.availablePlaces = response.data;
       this.$store.commit("finishLoading", "ManageEventPlaces");
+    });
+
+    this.$store.commit("pushToLoading", "ManageEventCities");
+    httpClient.get("/cities").then(response => {
+      this.availableCities = response.data;
+      this.$store.commit("finishLoading", "ManageEventCities");
+    });
+
+    this.$store.commit("pushToLoading", "ManageEventStates");
+    httpClient.get("/states").then(response => {
+      this.availableStates = response.data;
+      this.$store.commit("finishLoading", "ManageEventStates");
     });
 
     this.$store.commit("pushToLoading", "ManageEventDepartments");

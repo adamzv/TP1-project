@@ -9,10 +9,12 @@ use App\Models\Email;
 use App\Models\Event;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
+use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Mail;
+use Validator;
 
 /**
  * Class UsersController
@@ -87,10 +89,91 @@ class UsersController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
+     * @return JsonResponse
      */
     public function destroy($id)
     {
-        // TODO: discuss with team
+        // find user
+        $user = User::findOrFail($id);
+
+        // detach user from event
+        $user->events()->detach();
+
+        // soft delete user
+        $user->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User was successfully deleted'],
+            200);
+    }
+
+    /**
+     * Change users name
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function changeUserName(Request $request)
+    {
+        if (Auth::user()) {
+
+            $validator = Validator::make($request->only(['name', 'surname']), [
+                'name' => 'required|string|max:255',
+                'surname' => 'required|string|max:255',
+            ]);
+
+            if (!$validator->fails()) {
+                $user = Auth::user();
+                $user->name = $request->input('name');
+                $user->surname = $request->input('surname');
+                $user->save();
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'User name was updated successfully',
+                    'user' => $user],
+                    201);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->messages()],
+                    404);
+            }
+        }
+        return response()->json([
+            'success' => false,
+            'message' => 'User not found'],
+            404);
+    }
+
+    /**
+     * Method that updates users role (For admin environment)
+     *
+     * @param Request $request
+     * @param $id
+     * @return JsonResponse
+     */
+    public function updateUsersRole(Request $request, $id)
+    {
+        $validator = Validator::make($request->only(['id_role']), [
+            'id_role' => 'required|numeric|min:1|max:4',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid user role'],
+                404);
+        }
+
+        $user = User::with('role')->findOrFail($id);
+        $user->update($request->only(['id_role']));
+
+        return response()->json([
+            'success' => true,
+            'user' => $user],
+            200);
     }
 
     /**

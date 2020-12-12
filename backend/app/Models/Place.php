@@ -28,6 +28,6 @@ class Place extends Model
      */
     public function city()
     {
-        return $this->belongsTo('App\Models\City');
+        return $this->belongsTo('App\Models\City', 'id_city');
     }
 }

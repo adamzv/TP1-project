@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import httpClient from "./httpClient.js";
+import jwt_decode from "jwt-decode";
 
 Vue.use(Vuex);
 
@@ -168,7 +169,6 @@ export default new Vuex.Store({
 
               localStorage.setItem("access_token", token);
               localStorage.setItem("id", userId);
-              // localStorage.setItem("user", user);
               context.commit("retrieveToken", token);
               context.commit("retrieveUserId", userId);
               context.commit("retrieveUser", user);
@@ -199,7 +199,9 @@ export default new Vuex.Store({
             })
             .catch(error => {
               localStorage.removeItem("access_token");
+              localStorage.removeItem("id");
               context.commit("destroyToken");
+              context.commit("destroyUser");
               reject(error);
             });
         });
@@ -225,20 +227,28 @@ export default new Vuex.Store({
     },
     retrieveUserData(context) {
       if (context.getters.loggedInId) {
-        return new Promise((resolve, reject) => {
-          httpClient
-            .get(`/users/${context.state.userId}`)
-            .then(response => {
-              const user = response.data;
-              console.log(response);
-              context.commit("retrieveUser", user);
-              resolve(response);
-            })
-            .catch(error => {
-              console.log(error);
-              reject(error);
-            });
-        });
+        var tokenExp = new Date(jwt_decode(context.getters.token).exp * 1000);
+        var currentTime = new Date();
+        if (tokenExp < currentTime) {
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("id");
+          context.commit("destroyToken");
+          context.commit("destroyUser");
+          return new Promise.reject(new Error("Token is expired"));
+        } else {
+          return new Promise((resolve, reject) => {
+            httpClient
+              .get(`/users/${context.state.userId}`)
+              .then(response => {
+                const user = response.data;
+                context.commit("retrieveUser", user);
+                resolve(response);
+              })
+              .catch(error => {
+                reject(error);
+              });
+          });
+        }
       }
     }
   }
