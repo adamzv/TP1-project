@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Event;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use PDF;
 
 /**
  * Class FilesController
@@ -17,7 +19,7 @@ class FilesController extends Controller
 {
     function __construct()
     {
-        $this->middleware(['auth:api', 'scope:admin-user,moderator-user'])->except(['downloadPdf', 'downloadTitleImg', 'downloadImage']);
+        $this->middleware(['auth:api', 'scope:admin-user,moderator-user'])->except(['downloadPdf', 'downloadTitleImg', 'downloadImage', 'downloadInformationList']);
     }
 
     /**
@@ -395,5 +397,80 @@ class FilesController extends Controller
         return response()->json([
             'success' => false,
             'message' => 'Images directory doesnt exists: images/' . $id], 404);
+    }
+
+    /**
+     * Create and upload pdf information list
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function downloadInformationList(Request $request)
+    {
+        if ($request->has(('event_id'))) {
+            $events = Event::orderBy('beginning')
+                ->where('id', '=', $request->input('event_id'))
+                ->get();
+        } else if ($request->has('beginning') || $request->has('end')) {
+            if ($request->has('beginning') && $request->has('end')) {
+                $beginning = $request->input('beginning');
+                $end = $request->input('end');
+                $events = Event::orderBy('beginning')
+                    ->whereBetween('events.beginning', [$beginning, $end])
+                    ->get();
+            } else if ($request->has('beginning')) {
+                $beginning = $request->input('beginning');
+                $events = Event::orderBy('beginning')
+                    ->where('events.beginning', '>=', $beginning)
+                    ->get();
+            } else {
+                $end = $request->input('end');
+                $events = Event::orderBy('beginning')
+                    ->where('events.beginning', '<=', $end)
+                    ->get();
+            }
+        } else {
+            $events = Event::orderBy('beginning')->get();
+        }
+        $pdf = PDF::loadView('pdfs/pdf', compact('events'));
+        $pdfPath = $this->uploadInformationList($pdf->download('events.pdf'));
+
+        // return successful json response
+        return response()->json([
+            'success' => true,
+            'path' => $pdfPath], 200);
+    }
+
+    /**
+     * Upload information list
+     *
+     * @param $pdf
+     * @return string
+     */
+    public function uploadInformationList($pdf)
+    {
+        // create path
+        $path = 'pdfInformationList/' . Carbon::now()->format('YmdHisu') . '.pdf';
+
+        // upload file
+        Storage::disk('azure')->put($path, $pdf);
+
+        // return path
+        return $path;
+    }
+
+    /**
+     * Deletes all information lists
+     *
+     * @return JsonResponse
+     */
+    public function deleteInformationLists()
+    {
+        Storage::disk('azure')->deleteDirectory('pdfInformationList');
+
+        // return successful json response
+        return response()->json([
+            'success' => true,
+            'message' => 'Information lists successfully removed'], 200);
     }
 }
