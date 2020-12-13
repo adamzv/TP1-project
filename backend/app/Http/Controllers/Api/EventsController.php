@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreEventRequest;
 use App\Mail\EventChanged;
 use App\Models\Category;
+use App\Models\City;
 use App\Models\Event;
 use App\Models\Place;
 use App\Models\User;
@@ -68,10 +69,20 @@ class EventsController extends Controller
         $event->attendance_limit = $request->input('attendance_limit');
         $event->lecturer = $request->input('lecturer');
         $event->id_user = $request->input('id_user');
-        $event->id_place = $request->input('id_place');
+        if($request->input('id_place') != null){
+            $event->id_place = $request->input('id_place');
+        }
+        else{
+            $city =  City::firstOrCreate(["name" => $request->input("city")],['id_state' => 1]);
+            $place = Place::firstOrCreate(["name" => $request->input("street")], ['id_city' => $city->id]);
+            $event->id_place = $place->id;
+
+        };
         $event->id_faculty = $request->input('id_faculty');
         $event->id_department = $request->input('id_department');
         $event->save();
+
+
 
         foreach ($request->input("categories") as $category) {
             $category = Category::firstOrCreate(["name" => $category['name']]);
@@ -140,7 +151,15 @@ class EventsController extends Controller
         $event->attendance_limit = $request->input('attendance_limit');
         $event->lecturer = $request->input('lecturer');
         //$event->id_user = $request->input('id_user');
-        $event->id_place = $request->input('id_place');
+        if($request->input('id_place') != null){
+            $event->id_place = $request->input('id_place');
+        }
+        else{
+            $city =  City::firstOrCreate(["name" => $request->input("city")],['id_state' => 1]);
+            $place = Place::firstOrCreate(["name" => $request->input("street")], ['id_city' => $city->id]);
+            $event->id_place = $place->id;
+
+        };
         $event->id_faculty = $request->input('id_faculty');
         $event->id_department = $request->input('id_department');
         $event->save();

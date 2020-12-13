@@ -191,7 +191,7 @@
                   <b-modal v-model="newPlaceModal" has-modal-card trap-focus>
                     <div class="modal-card" style="width: auto">
                       <header class="modal-card-head">
-                        <p class="modal-card-title">Login</p>
+                        <p class="modal-card-title">Vytvoriť nové miesto</p>
                         <button
                           type="button"
                           class="delete"
@@ -202,6 +202,9 @@
                         <b-field label="Ulica">
                           <b-input v-model="modalPlace" required></b-input>
                         </b-field>
+                        <b-field label="Mesto">
+                          <b-input v-model="modalCity" required></b-input>
+                        </b-field>
                       </section>
                       <footer class="modal-card-foot">
                         <button
@@ -211,7 +214,9 @@
                         >
                           Zrušiť
                         </button>
-                        <button class="button is-primary">Potvrdiť</button>
+                        <button class="button is-primary" @click="newPlace">
+                          Potvrdiť
+                        </button>
                       </footer>
                     </div>
                   </b-modal>
@@ -506,7 +511,8 @@ export default {
       titleImage: null,
       titleImagePath: null,
       // place modal properties
-      modalPlace: ""
+      modalPlace: "",
+      modalCity: ""
     };
   },
   methods: {
@@ -525,19 +531,9 @@ export default {
         }
       });
     },
-    addNewPlace() {
-      this.$buefy.dialog.prompt({
-        message: `Pridať nové miesto`,
-        inputAttrs: {
-          maxlength: 255,
-          value: this.newPlaceName
-        },
-        confirmText: "Pridať",
-        onConfirm: value => {
-          this.availablePlaces.push({ name: value });
-          this.newPlaceName = "";
-        }
-      });
+    newPlace() {
+      this.availablePlaces.push({ name: this.modalPlace });
+      this.place = this.modalPlace;
     },
     checkForm() {
       this.generateRequest();
@@ -644,7 +640,9 @@ export default {
             id_user: parseInt(this.$store.getters.loggedInId),
             attendance_limit: this.attendanceLimit || -1,
             pdfPath: this.filePath,
-            titleImgPath: this.titleImagePath
+            titleImgPath: this.titleImagePath,
+            street: this.modalPlace,
+            city: this.modalCity
           })
           .then(() => {
             if (!this.createNext) {
