@@ -28,7 +28,8 @@ export default new Vuex.Store({
     currentApiUrl: `/events`,
     firstTimeLoaded: false,
     canLoadEvents: true,
-    nextPage: ``
+    nextPage: ``,
+    canShowNoEvents: false
   },
   getters: {
     fileUploadLoading(state) {
@@ -107,6 +108,9 @@ export default new Vuex.Store({
     },
     getNextPage(state) {
         return state.nextPage;
+    },
+    getCanShowNoEvents(state) {
+        return state.canShowNoEvents;
     }
   },
   mutations: {
@@ -115,9 +119,11 @@ export default new Vuex.Store({
     },
     pushToLoading(state, component) {
       state.loading.push(component);
+      state.canShowNoEvents = false;
     },
     finishLoading(state, component) {
       state.loading.splice(state.loading.indexOf(component), 1);
+    state.canShowNoEvents = true;
     },
     changeCarouselHeight(state, payload) {
       state.carouselHeight = payload;
@@ -195,6 +201,10 @@ export default new Vuex.Store({
     },
     setNextPage(state, change) {
         state.nextPage = change;
+    },
+
+    setCanShowNoEvents(state, change) {
+        state.canShowNoEvents = change;
     }
   },
   actions: {

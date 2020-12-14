@@ -1,19 +1,38 @@
 <template>
   <div id="app">
-    <b-loading
-      class="loading-z-pos"
-      :is-full-page="true"
-      v-model="isLoading"
-      :can-cancel="false"
-    >
-      <img
-        width="200"
-        height="200"
-        src="./assets/logo-UKF-transparent.png"
-        alt=""
-        class="rotate"
-      />
-    </b-loading>
+    <div v-if="this.$store.getters.loading[0] == 'FilterComponent'">
+      <b-loading
+              class="loading-z-pos"
+              :is-full-page="true"
+              v-model="isLoading"
+              :can-cancel="false"
+      >
+        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+
+      </b-loading>
+    </div>
+
+    <div v-else>
+      <b-loading
+              class="loading-z-pos"
+              :is-full-page="true"
+              v-model="isLoading"
+              :can-cancel="false"
+      >
+        <div class="backLoading">
+          <img
+                  width="200"
+                  height="200"
+                  src="./assets/logo-UKF-transparent.png"
+                  alt=""
+                  class="rotate"
+          />
+        </div>
+
+      </b-loading>
+    </div>
+
+
     <template v-if="events.length > 0">
       <HeaderComponent :events="events.slice(0, 6)" class="element" />
     </template>
@@ -125,7 +144,55 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.rotate {
+
+  .backLoading {
+    width: 100%;
+    height: 100%;
+    background: white;
+  }
+
+  .lds-ring {
+    display: inline-block;
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    bottom: 0px;
+    right: 25%;
+    left: 50%;
+    margin-left: -30px;
+  }
+  .lds-ring div {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    margin: 8px;
+    border: 5px solid #4d4d4d;
+    border-radius: 50%;
+    animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    border-color: #4d4d4d transparent transparent transparent;
+  }
+  .lds-ring div:nth-child(1) {
+    animation-delay: -0.45s;
+  }
+  .lds-ring div:nth-child(2) {
+    animation-delay: -0.3s;
+  }
+  .lds-ring div:nth-child(3) {
+    animation-delay: -0.15s;
+  }
+  @keyframes lds-ring {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+
+  .rotate {
   background: linear-gradient(rgb(40, 184, 206), rgb(40, 184, 206)) left
       no-repeat,
     rgba(0, 0, 0, 0.3);
@@ -133,6 +200,11 @@ export default {
   -webkit-text-fill-color: transparent;
   color: transparent;
   animation: loading 3s forwards infinite linear;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    margin: -100px 0 0 -100px;
 }
 
 @keyframes loading {
@@ -142,7 +214,8 @@ export default {
 }
 
 .loading-overlay {
-  background: rgba(255, 255, 255, 1);
+  background: rgb(2,0,36);
+  background: linear-gradient(180deg, rgba(2,0,36,0) 45%, rgba(255,255,255,1) 86%, rgba(255,255,255,1) 100%);
 }
 .loading-z-pos {
   z-index: 2000;

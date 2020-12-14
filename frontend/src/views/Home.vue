@@ -1,10 +1,18 @@
 <template>
   <div class="home">
     <FilterComponent id="myFilter" class="filter" ref="filter" />
-    <EventListComponent v-bind:page-id="increasePageId(page)"
-                        v-for="page in this.$store.getters.getPages.length"
-                        v-bind:key="page.id"
-                        :events="loadedEvents"/>
+
+    <div v-if="this.$store.getters.getPages.length > 0">
+      <EventListComponent v-bind:page-id="increasePageId(page)"
+                          v-for="page in this.$store.getters.getPages.length"
+                          v-bind:key="page.id"
+                          :events="loadedEvents"/>
+    </div>
+
+    <div v-else-if="this.$store.getters.getCanShowNoEvents">
+      <br/><br/>
+      <strong>No events found!</strong>
+    </div>
   </div>
 </template>
 
