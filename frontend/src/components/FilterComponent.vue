@@ -328,6 +328,7 @@
 
 <script>
 import httpClient from "../httpClient";
+import moment from "moment";
 
 const MOBILE_SIZE = 768;
 const CHECK_INTERVAL = 10;
@@ -464,7 +465,6 @@ export default {
         httpClient
           .get(url + `?page=${this.$store.getters.getPageIndex}`)
           .then(response_x => {
-            console.log("response: " + response_x.data.data);
             if (response_x.data.data != "") {
               this.$store.commit("addPageToArray", response_x.data.data);
               this.$store.commit("setNextPage", response_x.data.next_page_url);
@@ -702,204 +702,16 @@ export default {
     },
 
     getCorrectMonthFormat(dateRaw) {
-      let correctDateFormat = "";
-
-      switch (dateRaw) {
-        case "Jan":
-          correctDateFormat = "01";
-          break;
-        case "Feb":
-          correctDateFormat = "02";
-          break;
-        case "Mar":
-          correctDateFormat = "03";
-          break;
-        case "Apr":
-          correctDateFormat = "04";
-          break;
-        case "May":
-          correctDateFormat = "05";
-          break;
-        case "Jun":
-          correctDateFormat = "06";
-          break;
-        case "Jul":
-          correctDateFormat = "07";
-          break;
-        case "Aug":
-          correctDateFormat = "08";
-          break;
-        case "Sep":
-          correctDateFormat = "09";
-          break;
-        case "Oct":
-          correctDateFormat = "10";
-          break;
-        case "Nov":
-          correctDateFormat = "11";
-          break;
-        case "Dec":
-          correctDateFormat = "12";
-          break;
-      }
-
-      return correctDateFormat;
+      return moment()
+        .month(dateRaw)
+        .format("MM");
     },
 
     getDepId(depRaw) {
-      let depId = "";
-
-      switch (depRaw) {
-        case "Katedra zoológie a antropológie":
-          depId = 1;
-          break;
-        case "Katedra chémie":
-          depId = 2;
-          break;
-        case "Gemologický ústav":
-          depId = 3;
-          break;
-        case "Katedra informatiky":
-          depId = 4;
-          break;
-        case "Katedra matematiky":
-          depId = 6;
-          break;
-        case "Katedra geografie a regionálneho rozvoja":
-          depId = 7;
-          break;
-        case "Katedra fyziky":
-          depId = 8;
-          break;
-        case "Katedra ekológie a enviromentalistiky":
-          depId = 9;
-          break;
-        case "Katedra botaniky a genetiky":
-          depId = 10;
-          break;
-        case "Katedra sociálnej práce asociálnych vied":
-          depId = 11;
-          break;
-        case "Ústav aplikovanej psychológie":
-          depId = 12;
-          break;
-        case "Ústav romologických štúdií":
-          depId = 13;
-          break;
-        case "Katedra ošetrovateľstva":
-          depId = 14;
-          break;
-        case "Katedra klinických disciplín aurgentnej medicíny":
-          depId = 15;
-          break;
-        case "Katedra cestovného ruchu":
-          depId = 16;
-          break;
-        case "Ústav maďarskej jazykovedy a literárnej vedy":
-          depId = 17;
-          break;
-        case "Ústav pre vzdelávanie pedagógov":
-          depId = 18;
-          break;
-        case "Ústaav stredoeurópskych jazykov a kultúr":
-          depId = 19;
-          break;
-        case "Katedra anglistiky a amerikanistiky":
-          depId = 20;
-          break;
-        case "Katedra archeológie":
-          depId = 21;
-          break;
-        case "Katedra etnológie a folkloristiky":
-          depId = 22;
-          break;
-        case "Katedra filozofie":
-          depId = 23;
-          break;
-        case "Katedra germanistiky":
-          depId = 24;
-          break;
-        case "Katedra histórie":
-          depId = 25;
-          break;
-        case "Katedra kulturológie":
-          depId = 26;
-          break;
-        case "Katedra manažmentu kultúry a turizmu":
-          depId = 27;
-          break;
-        case "Katedra masmediálnej komunikácie a reklamy":
-          depId = 28;
-          break;
-        case "Katedra muzeológie":
-          depId = 29;
-          break;
-        case "Katedra náboženských štúdií":
-          depId = 30;
-          break;
-        case "Katedra politológie a euroázijských štúdií":
-          depId = 31;
-          break;
-        case "Katedra romanistiky":
-          depId = 32;
-          break;
-        case "Katedra rusistiky":
-          depId = 33;
-          break;
-        case "Katedra sociológie":
-          depId = 34;
-          break;
-        case "Katedra translatológie":
-          depId = 35;
-          break;
-        case "Katedra všeobecnej a aplikovanej etiky":
-          depId = 36;
-          break;
-        case "Katedra žurnalistiky":
-          depId = 37;
-          break;
-        case "Mediálne centrum":
-          depId = 38;
-          break;
-        case "Tlmočnícky ústav":
-          depId = 39;
-          break;
-        case "Ústav literárnej a umeleckej komunikácie":
-          depId = 41;
-          break;
-        case "Ústav pre výskum kultúrneho dedičstva Konštantína a Metoda":
-          depId = 42;
-          break;
-        case "Centrum digitálnych humanitných vied":
-          depId = 43;
-          break;
-        case "Jazykové centrum":
-          depId = 44;
-          break;
-        case "Katedra hudby":
-          depId = 45;
-          break;
-        case "Katedra lingvodidaktiky a interkultúrnych štúdií":
-          depId = 46;
-          break;
-        case "Katedra pedagogiky":
-          depId = 47;
-          break;
-        case "Katedra pedagogickej a školskej psychológie":
-          depId = 48;
-          break;
-        case "Katedra techniky a informačných technológií":
-          depId = 49;
-          break;
-        case "Katedra telesnej výchovy a športu":
-          depId = 50;
-          break;
-        case "Katedra výtvarnej tvorby a výchovy":
-          depId = 51;
-          break;
-      }
-
-      return depId;
+      var department = this.availableDepartments.find(
+        dep => dep.name === depRaw
+      );
+      return department ? department.id : null;
     },
 
     retrieveFilterOptions() {
