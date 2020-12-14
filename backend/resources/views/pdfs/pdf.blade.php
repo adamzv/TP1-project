@@ -61,8 +61,7 @@
         <tr>
             <td align="center" bgcolor="#70bbd9" style="padding: 20px 0 10px 0;">
 
-                <h2 style="vertical-align: middle;" width="100" height="100"><img src="pictures/logo-ukf.png" alt="Logo" style="vertical-align: middle;" width="100" height="100"
-                         class="logo"/>
+                <h2 style="vertical-align: middle;" width="100" height="100">
                     Univerzita Konštantína Filozofa v Nitre</h2>
             </td>
         </tr>
