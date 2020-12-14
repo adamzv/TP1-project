@@ -4,7 +4,7 @@
       <p>
         © 2020
         <strong>{{ $t("ukfNitra") }}.</strong>
-        Všetky práva vyhradené.
+        {{ $t("rights_reserved") }}
       </p>
     </div>
   </footer>

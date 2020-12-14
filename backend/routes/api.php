@@ -48,6 +48,7 @@ Route::prefix('users')->group(function () {
     Route::post('eventUnregister', 'Api\UsersController@eventUnregister');
     Route::post('eventEmail', 'Api\UsersController@eventEmail')->name('users.email');
     Route::post('checkEvent', 'Api\UsersController@checkEvent');
+    Route::post('notify/{id}', 'Api\UsersController@notify');
 });
 
 Route::namespace('Api')->group(function () {
@@ -85,6 +86,9 @@ Route::namespace('Api')->group(function () {
         Route::get('image/{id}', 'FilesController@downloadImage');
         Route::delete('image/{id}/{imageName}', 'FilesController@deleteImage');
         Route::delete('imageAll/{id}', 'FilesController@deleteAllImages');
+
+        Route::post('downloadPDF','FilesController@downloadInformationList');
+        Route::delete('deletePDF', 'FilesController@deleteInformationLists');
     });
 });
 

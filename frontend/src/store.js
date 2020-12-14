@@ -22,8 +22,14 @@ export default new Vuex.Store({
     filterFaculty: "",
     filterDepartment: "",
     filterPlace: "",
-
-    URL_API_FILTER: `/events`
+    URL_API_FILTER: `/events`,
+    pages: [],
+    pageIndex: 0,
+    currentApiUrl: `/events`,
+    firstTimeLoaded: false,
+    canLoadEvents: true,
+    nextPage: ``,
+    canShowNoEvents: false
   },
   getters: {
     fileUploadLoading(state) {
@@ -84,6 +90,27 @@ export default new Vuex.Store({
     },
     getFilterPlace(state) {
       return state.filterPlace;
+    },
+    getPages(state) {
+        return state.pages;
+    },
+    getPageIndex(state) {
+        return state.pageIndex;
+    },
+    getCurrentApiUrl(state) {
+        return state.currentApiUrl;
+    },
+    getFirstTimeLoaded(state) {
+        return state.firstTimeLoaded;
+    },
+    getCanLoadEvents(state) {
+        return state.canLoadEvents;
+    },
+    getNextPage(state) {
+        return state.nextPage;
+    },
+    getCanShowNoEvents(state) {
+        return state.canShowNoEvents;
     }
   },
   mutations: {
@@ -92,9 +119,11 @@ export default new Vuex.Store({
     },
     pushToLoading(state, component) {
       state.loading.push(component);
+      state.canShowNoEvents = false;
     },
     finishLoading(state, component) {
       state.loading.splice(state.loading.indexOf(component), 1);
+    state.canShowNoEvents = true;
     },
     changeCarouselHeight(state, payload) {
       state.carouselHeight = payload;
@@ -147,6 +176,35 @@ export default new Vuex.Store({
     },
     setFilterPlace(state, change) {
       state.filterPlace = change;
+    },
+    addPageToArray(state, change) {
+        state.pages.push(change);
+    },
+    clearPageArray(state, change) {
+        state.pages = change;
+        state.pages.length = 0;
+    },
+    reversePageArray(state) {
+        state.pages.slice().reverse();
+    },
+    setPageIndex(state, change) {
+        state.pageIndex = change;
+    },
+    setCurrentApiUrl(state, change) {
+        state.currentApiUrl = change;
+    },
+    setFirstTimeLoaded(state, change) {
+        state.firstTimeLoaded = change;
+    },
+    setCanLoadEvents(state, change) {
+        state.canLoadEvents = change;
+    },
+    setNextPage(state, change) {
+        state.nextPage = change;
+    },
+
+    setCanShowNoEvents(state, change) {
+        state.canShowNoEvents = change;
     }
   },
   actions: {
@@ -234,7 +292,9 @@ export default new Vuex.Store({
           localStorage.removeItem("id");
           context.commit("destroyToken");
           context.commit("destroyUser");
-          return new Promise.reject(new Error("Token is expired"));
+          return new Promise(reject => {
+            reject("Token is expired");
+          });
         } else {
           return new Promise((resolve, reject) => {
             httpClient

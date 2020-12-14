@@ -3,28 +3,30 @@ event details on a single page * */
 
 <template>
   <div class="page-margin">
-    <EventDetailsComponent
-      v-bind:event-id="events.event.id"
-      v-bind:event-name="events.event.name"
-      v-bind:event-desc="events.event.desc"
-      v-bind:event-room="events.event.room"
-      v-bind:event-beginning="events.event.beginning"
-      v-bind:event-end="events.event.end"
-      v-bind:event-attendance-limit="events.event.attendance_limit"
-      v-bind:event-lecturer="events.event.lecturer"
-      v-bind:event-id-user="events.event.id_user"
-      v-bind:event-id-place="events.event.id_place"
-      v-bind:event-id-faculty="events.event.id_faculty"
-      v-bind:event-id-department="events.event.id_department"
-      v-bind:event-participants="events.event.participants"
-      v-bind:event-user="events.event.user"
-      v-bind:event-place="events.event.place"
-      v-bind:event-department="events.event.department"
-      v-bind:event-faculty="events.event.faculty"
-      v-bind:event-categories="events.event.categories"
-      v-bind:event-pdf="events.event.pdf"
-      v-bind:event-images="events.event.images"
-    />
+    <template v-if="event">
+      <EventDetailsComponent
+        v-bind:event-id="event.id"
+        v-bind:event-name="event.name"
+        v-bind:event-desc="event.desc"
+        v-bind:event-room="event.room"
+        v-bind:event-beginning="event.beginning"
+        v-bind:event-end="event.end"
+        v-bind:event-attendance-limit="event.attendance_limit"
+        v-bind:event-lecturer="event.lecturer"
+        v-bind:event-id-user="event.id_user"
+        v-bind:event-id-place="event.id_place"
+        v-bind:event-id-faculty="event.id_faculty"
+        v-bind:event-id-department="event.id_department"
+        v-bind:event-participants="event.participants"
+        v-bind:event-user="event.user"
+        v-bind:event-place="event.place"
+        v-bind:event-department="event.department"
+        v-bind:event-faculty="event.faculty"
+        v-bind:event-categories="event.categories"
+        v-bind:event-pdf="event.pdf"
+        v-bind:event-images="event.images"
+      />
+    </template>
   </div>
 </template>
 
@@ -39,15 +41,16 @@ export default {
   data() {
     return {
       event_id: Number,
-      events: []
+      event: null
     };
   },
 
   created() {
     this.event_id = this.$route.params.eventId;
-
+    this.$store.commit("pushToLoading", "ViewEvent");
     httpClient.get(`/events/${this.event_id}`).then(response => {
-      this.events = response.data;
+      this.event = response.data.event;
+      this.$store.commit("finishLoading", "ViewEvent");
     });
   }
 };

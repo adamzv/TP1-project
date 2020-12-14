@@ -1,9 +1,9 @@
 <template>
-  <div class="container is-fluid filterPanel">
-    <!-- This was the only way I could make it work, too much time spent, had to compromise for sanity reasons. -->
-    <!-- Maybe modularize this in the future somehow so it looks cleaner -->
+  <form
+    class="container is-fluid filterPanel"
+    v-on:keydown.enter="sendDataToParent"
+  >
     <!-- Filter view for mobile screen sizes  -->
-
     <div v-if="showMobile && !showDesktop && render">
       <b-collapse
         aria-id="contentIdForA11y2"
@@ -167,7 +167,7 @@
     </div>
 
     <!-- Filter view for desktop and tablet screen sizes  -->
-    <div v-else-if="!showMobile && showDesktop && render" >
+    <div v-else-if="!showMobile && showDesktop && render">
       <b-collapse
         aria-id="contentIdForA11y2"
         class="panel collapse"
@@ -188,7 +188,7 @@
               <b-input
                 v-model="eventName"
                 field="name"
-                placeholder="Názov"
+                v-bind:placeholder="$t('filter.title')"
               ></b-input>
             </div>
 
@@ -198,7 +198,7 @@
                 icon="calendar-today"
                 :locale="'sk-SK'"
                 ref="datepicker"
-                placeholder="Od dátumu"
+                v-bind:placeholder="$t('filter.from_date')"
                 horizontal-time-picker
               >
                 <template slot="left">
@@ -235,7 +235,7 @@
                 :open-on-focus="true"
                 :keep-first="true"
                 icon="label"
-                placeholder="Kategórie"
+                v-bind:placeholder="$t('filter.categories')"
                 @typing="getFilteredTags"
               ></b-taginput>
             </div>
@@ -245,7 +245,7 @@
                 v-model="selectedFacultyName"
                 :keep-first="true"
                 :open-on-focus="true"
-                placeholder="Fakulta"
+                v-bind:placeholder="$t('filter.faculty')"
                 :data="availableFaculties"
                 field="name"
                 @select="option => (selectedFaculty = option)"
@@ -261,7 +261,7 @@
                 :open-on-focus="true"
                 :data="getFilteredDepartments"
                 field="name"
-                placeholder="Katedra"
+                v-bind:placeholder="$t('filter.department')"
                 :clearable="true"
               ></b-autocomplete>
             </div>
@@ -275,7 +275,7 @@
                 :keep-first="true"
                 :open-on-focus="true"
                 :clearable="true"
-                placeholder="Miesto konania"
+                v-bind:placeholder="$t('filter.venue')"
                 @select="option => (place = option)"
               ></b-autocomplete>
             </div>
@@ -323,11 +323,12 @@
         </div>
       </b-collapse>
     </div>
-  </div>
+  </form>
 </template>
 
 <script>
 import httpClient from "../httpClient";
+import moment from "moment";
 
 const MOBILE_SIZE = 768;
 const CHECK_INTERVAL = 10;
@@ -360,6 +361,9 @@ export default {
       placeName: "",
       selectedDepartmentName: "",
       selectedFacultyName: "",
+      pageUrls: [],
+      index: 0,
+      apiRequest: `/events`,
       render: true
     };
   },
@@ -400,32 +404,75 @@ export default {
     },
 
     sendDataToParent() {
+      this.$store.commit("setPageIndex", 0);
       this.createFilterRequest();
+      this.loadEvents(this.$store.getters.getCurrentApiUrl);
     },
 
-    clearFilter() {
-      httpClient.get(`/events`).then(response => {
-        this.$store.commit("setCurrentlyInFilter", response.data);
-        this.$store.commit("setURL_API_FILTER", `/events`);
+    async clearFilter() {
+      this.$store.commit("setPageIndex", 0);
+      this.$store.commit("setPageIndex", this.$store.getters.getPageIndex + 1);
+      this.$store.commit("clearPageArray", []);
 
-        this.$emit("clicked", {
-          filteredEvents: response.data
-        });
+      this.$store.commit("pushToLoading", "FilterComponent");
+      httpClient.get(`/events?page=1`).then(response_x => {
+        if (response_x.data.data != "") {
+          this.$store.commit("addPageToArray", response_x.data.data);
+          this.$store.commit("setNextPage", response_x.data.next_page_url);
+          this.$store.commit("setCurrentApiUrl", `/events`);
+        }
+
+        this.$store.commit("finishLoading", "FilterComponent");
       });
 
       this.setFilterOptionsClear();
       this.setFilterOptions();
     },
 
-    getRequestFilteredEvents(apiUrl) {
-      httpClient.get(apiUrl).then(response => {
-        this.$store.commit("setCurrentlyInFilter", response.data);
-        this.$store.commit("setURL_API_FILTER", apiUrl);
+    async getRequestFilteredEvents(apiUrl) {
+      this.$store.commit("clearPageArray", []);
+      this.$store.commit("setURL_API_FILTER", apiUrl);
+    },
 
-        this.$emit("clicked", {
-          filteredEvents: response.data
-        });
-      });
+    loadEvents(url) {
+      this.$store.commit("setPageIndex", this.$store.getters.getPageIndex + 1);
+      this.$store.commit("pushToLoading", "FilterComponent");
+      this.$store.commit("setCanLoadEvents", false);
+
+      if (url != `/events`) {
+        httpClient
+          .get(url + `&page=${this.$store.getters.getPageIndex}`)
+          .then(response_x => {
+            if (response_x.data.data != "") {
+              this.$store.commit("addPageToArray", response_x.data.data);
+              this.$store.commit("setNextPage", response_x.data.next_page_url);
+            }
+            this.$store.commit("finishLoading", "FilterComponent");
+            this.$store.commit("setCanLoadEvents", true);
+          });
+      } else if (url == `/events?page=1`) {
+        httpClient
+          .get(`/events?page=${this.$store.getters.getPageIndex + 1}`)
+          .then(response_x => {
+            if (response_x.data.data != "") {
+              this.$store.commit("addPageToArray", response_x.data.data);
+              this.$store.commit("setNextPage", response_x.data.next_page_url);
+            }
+            this.$store.commit("finishLoading", "FilterComponent");
+            this.$store.commit("setCanLoadEvents", true);
+          });
+      } else {
+        httpClient
+          .get(url + `?page=${this.$store.getters.getPageIndex}`)
+          .then(response_x => {
+            if (response_x.data.data != "") {
+              this.$store.commit("addPageToArray", response_x.data.data);
+              this.$store.commit("setNextPage", response_x.data.next_page_url);
+            }
+            this.$store.commit("finishLoading", "FilterComponent");
+            this.$store.commit("setCanLoadEvents", true);
+          });
+      }
     },
 
     generateCorrectDatetime() {
@@ -570,7 +617,6 @@ export default {
 
       let arrayOfData = [false, false, false, false, false, false];
 
-      // todo: add filtering based on categories and place
       if (isName) {
         arrayOfData[0] = true;
       } else {
@@ -618,9 +664,11 @@ export default {
         !isDate &&
         !isPlace &&
         !isCategories
-      )
+      ) {
         request = `/events`;
-      else
+        this.apiRequest = request;
+        this.$store.commit("setCurrentApiUrl", request);
+      } else {
         request = `/events?filter=${this.nameFilterRequestPart(
           doFilterName
         )}${this.dateFilterRequestPart(
@@ -640,12 +688,12 @@ export default {
           this.getIdOfFilteredCategory(this.categories)
         )}`;
 
+        this.apiRequest = request;
+        this.$store.commit("setCurrentApiUrl", request);
+      }
+
       //execute filtering
       this.getRequestFilteredEvents(request);
-
-      //console.log("API REQUEST: " + request);
-      //console.log(this.getIdOfFilteredCategory(this.categories));
-      //console.log(isCategories);
     },
 
     createFilterRequest() {
@@ -654,204 +702,16 @@ export default {
     },
 
     getCorrectMonthFormat(dateRaw) {
-      let correctDateFormat = "";
-
-      switch (dateRaw) {
-        case "Jan":
-          correctDateFormat = "01";
-          break;
-        case "Feb":
-          correctDateFormat = "02";
-          break;
-        case "Mar":
-          correctDateFormat = "03";
-          break;
-        case "Apr":
-          correctDateFormat = "04";
-          break;
-        case "May":
-          correctDateFormat = "05";
-          break;
-        case "Jun":
-          correctDateFormat = "06";
-          break;
-        case "Jul":
-          correctDateFormat = "07";
-          break;
-        case "Aug":
-          correctDateFormat = "08";
-          break;
-        case "Sep":
-          correctDateFormat = "09";
-          break;
-        case "Oct":
-          correctDateFormat = "10";
-          break;
-        case "Nov":
-          correctDateFormat = "11";
-          break;
-        case "Dec":
-          correctDateFormat = "12";
-          break;
-      }
-
-      return correctDateFormat;
+      return moment()
+        .month(dateRaw)
+        .format("MM");
     },
 
     getDepId(depRaw) {
-      let depId = "";
-
-      switch (depRaw) {
-        case "Katedra zoológie a antropológie":
-          depId = 1;
-          break;
-        case "Katedra chémie":
-          depId = 2;
-          break;
-        case "Gemologický ústav":
-          depId = 3;
-          break;
-        case "Katedra informatiky":
-          depId = 4;
-          break;
-        case "Katedra matematiky":
-          depId = 6;
-          break;
-        case "Katedra geografie a regionálneho rozvoja":
-          depId = 7;
-          break;
-        case "Katedra fyziky":
-          depId = 8;
-          break;
-        case "Katedra ekológie a enviromentalistiky":
-          depId = 9;
-          break;
-        case "Katedra botaniky a genetiky":
-          depId = 10;
-          break;
-        case "Katedra sociálnej práce asociálnych vied":
-          depId = 11;
-          break;
-        case "Ústav aplikovanej psychológie":
-          depId = 12;
-          break;
-        case "Ústav romologických štúdií":
-          depId = 13;
-          break;
-        case "Katedra ošetrovateľstva":
-          depId = 14;
-          break;
-        case "Katedra klinických disciplín aurgentnej medicíny":
-          depId = 15;
-          break;
-        case "Katedra cestovného ruchu":
-          depId = 16;
-          break;
-        case "Ústav maďarskej jazykovedy a literárnej vedy":
-          depId = 17;
-          break;
-        case "Ústav pre vzdelávanie pedagógov":
-          depId = 18;
-          break;
-        case "Ústaav stredoeurópskych jazykov a kultúr":
-          depId = 19;
-          break;
-        case "Katedra anglistiky a amerikanistiky":
-          depId = 20;
-          break;
-        case "Katedra archeológie":
-          depId = 21;
-          break;
-        case "Katedra etnológie a folkloristiky":
-          depId = 22;
-          break;
-        case "Katedra filozofie":
-          depId = 23;
-          break;
-        case "Katedra germanistiky":
-          depId = 24;
-          break;
-        case "Katedra histórie":
-          depId = 25;
-          break;
-        case "Katedra kulturológie":
-          depId = 26;
-          break;
-        case "Katedra manažmentu kultúry a turizmu":
-          depId = 27;
-          break;
-        case "Katedra masmediálnej komunikácie a reklamy":
-          depId = 28;
-          break;
-        case "Katedra muzeológie":
-          depId = 29;
-          break;
-        case "Katedra náboženských štúdií":
-          depId = 30;
-          break;
-        case "Katedra politológie a euroázijských štúdií":
-          depId = 31;
-          break;
-        case "Katedra romanistiky":
-          depId = 32;
-          break;
-        case "Katedra rusistiky":
-          depId = 33;
-          break;
-        case "Katedra sociológie":
-          depId = 34;
-          break;
-        case "Katedra translatológie":
-          depId = 35;
-          break;
-        case "Katedra všeobecnej a aplikovanej etiky":
-          depId = 36;
-          break;
-        case "Katedra žurnalistiky":
-          depId = 37;
-          break;
-        case "Mediálne centrum":
-          depId = 38;
-          break;
-        case "Tlmočnícky ústav":
-          depId = 39;
-          break;
-        case "Ústav literárnej a umeleckej komunikácie":
-          depId = 41;
-          break;
-        case "Ústav pre výskum kultúrneho dedičstva Konštantína a Metoda":
-          depId = 42;
-          break;
-        case "Centrum digitálnych humanitných vied":
-          depId = 43;
-          break;
-        case "Jazykové centrum":
-          depId = 44;
-          break;
-        case "Katedra hudby":
-          depId = 45;
-          break;
-        case "Katedra lingvodidaktiky a interkultúrnych štúdií":
-          depId = 46;
-          break;
-        case "Katedra pedagogiky":
-          depId = 47;
-          break;
-        case "Katedra pedagogickej a školskej psychológie":
-          depId = 48;
-          break;
-        case "Katedra techniky a informačných technológií":
-          depId = 49;
-          break;
-        case "Katedra telesnej výchovy a športu":
-          depId = 50;
-          break;
-        case "Katedra výtvarnej tvorby a výchovy":
-          depId = 51;
-          break;
-      }
-
-      return depId;
+      var department = this.availableDepartments.find(
+        dep => dep.name === depRaw
+      );
+      return department ? department.id : null;
     },
 
     retrieveFilterOptions() {
@@ -879,7 +739,7 @@ export default {
       this.selectedFacultyName = "";
       this.selectedDepartmentName = "";
       this.placeName = "";
-       this.render = false;
+      this.render = false;
       this.$nextTick(() => {
         this.render = true;
       });
@@ -888,7 +748,7 @@ export default {
     clearDateFilter() {
       this.beginning = null;
       this.$store.commit("setFilterBeginning", null);
-       this.render = false;
+      this.render = false;
       this.$nextTick(() => {
         this.render = true;
       });
@@ -896,6 +756,10 @@ export default {
   },
 
   computed: {
+    getCurrentApiUrl() {
+      return this.$store.getters.getCurrentApiUrl;
+    },
+
     getFilteredDepartments() {
       if (this.selectedFaculty != null) {
         return this.availableDepartments.filter(department => {
@@ -941,6 +805,11 @@ export default {
     httpClient.get("/faculties").then(response => {
       this.availableFaculties = response.data;
     });
+
+    if (this.$store.getters.getFirstTimeLoaded == false) {
+      this.loadEvents(this.getCurrentApiUrl);
+      this.$store.commit("setFirstTimeLoaded", true);
+    }
   }
 };
 </script>

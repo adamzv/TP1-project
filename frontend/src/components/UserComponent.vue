@@ -2,16 +2,16 @@
   <section>
     <b-field grouped group-multiline>
       <b-select v-model="perPage" :disabled="!isPaginated">
-        <option value="5">5 per page</option>
-        <option value="10">10 per page</option>
-        <option value="15">15 per page</option>
-        <option value="20">20 per page</option>
+        <option value="5">5 na stranu</option>
+        <option value="10">10 na stranu</option>
+        <option value="15">15 na stranu</option>
+        <option value="20">20 na stranu</option>
       </b-select>
       <div class="control is-flex">
-        <b-switch v-model="isPaginated">Paginated</b-switch>
+        <b-switch v-model="isPaginated">Stránkovanie</b-switch>
       </div>
       <div class="control is-flex">
-        <b-switch v-model="nameSearchable">Search</b-switch>
+        <b-switch v-model="nameSearchable">Vyhľadať</b-switch>
       </div>
     </b-field>
 
@@ -24,7 +24,7 @@
       :pagination-rounded="isPaginationRounded"
       :sort-icon="sortIcon"
       :sort-icon-size="sortIconSize"
-      default-sort="user.first_name"
+      default-sort="notify"
       aria-next-label="Next page"
       aria-previous-label="Previous page"
       aria-page-label="Page"
@@ -43,7 +43,7 @@
 
       <b-table-column
         field="name"
-        label="Meno"
+        v-bind:label="$t('name')"
         :searchable="nameSearchable"
         sortable
         v-slot="props"
@@ -51,34 +51,74 @@
         {{ props.row.name }}
       </b-table-column>
 
-            <b-table-column field="surname" label="Priezvisko" :searchable="nameSearchable" sortable v-slot="props" >
-                {{ props.row.surname }}
-            </b-table-column>
-            <b-table-column field="email" label="Email" :searchable="nameSearchable" sortable v-slot="props" >
-                {{ props.row.email}}
-            </b-table-column>
-            <b-table-column field="id_role" label="Práva"  sortable v-slot="props" >
-                <label v-if="props.row.id_role ===1">Admin</label>
-                <label v-if="props.row.id_role ===2">Moderátor</label>
-                <label v-if="props.row.id_role ===3">Používateľ</label>
-            </b-table-column>
-            <b-table-column custom-key="actions" label="Actions"  v-slot="props"> 
-                <b-tooltip label="Povýšiť"  type="is-dark">
-                <button v-if="props.row.id_role ===3" class="button is-small is-light" @click="upgrade(props.row.id)"> 
-                    <b-icon icon="arrow-up" size="is-small"></b-icon> </button>
-                </b-tooltip>
-                <b-tooltip label="Degradovať"  type="is-dark">
-                <button v-if="props.row.id_role ===2" class="button is-small is-light" @click="downgrade(props.row.id)"> 
-                    <b-icon icon="arrow-down" size="is-small"></b-icon> </button> 
-                </b-tooltip>    
-                <button v-if="props.row.id_role !=1" class="button is-small is-danger" @click="deleteUser(props.row.id)"> 
-                    <b-icon icon="delete" size="is-small"></b-icon> </button>
-            </b-table-column>
-
-            
-
-        </b-table>
-    </section>
+      <b-table-column
+        field="surname"
+        v-bind:label="$t('surname')"
+        :searchable="nameSearchable"
+        sortable
+        v-slot="props"
+      >
+        {{ props.row.surname }}
+      </b-table-column>
+      <b-table-column
+        field="email"
+        label="Email"
+        :searchable="nameSearchable"
+        sortable
+        v-slot="props"
+      >
+        {{ props.row.email }}
+      </b-table-column>
+      <b-table-column field="id_role" label="Práva" sortable v-slot="props">
+        <label v-if="props.row.id_role === 1">Admin</label>
+        <label v-if="props.row.id_role === 2">Moderátor</label>
+        <label v-if="props.row.id_role === 3">Používateľ</label>
+      </b-table-column>
+      <b-table-column custom-key="actions" label="Actions" v-slot="props">
+        <b-tooltip label="Povýšiť" type="is-dark">
+          <button
+            v-if="props.row.id_role === 3"
+            class="button is-small is-light"
+            @click="upgrade(props.row.id)"
+          >
+            <b-icon icon="arrow-up" size="is-small"></b-icon>
+          </button>
+        </b-tooltip>
+        <b-tooltip label="Degradovať" type="is-dark">
+          <button
+            v-if="props.row.id_role === 2"
+            class="button is-small is-light"
+            @click="downgrade(props.row.id)"
+          >
+            <b-icon icon="arrow-down" size="is-small"></b-icon>
+          </button>
+        </b-tooltip>
+        <button
+          v-if="props.row.id_role != 1"
+          class="button is-small is-danger"
+          @click="deleteUser(props.row.id)"
+        >
+          <b-icon icon="delete" size="is-small"></b-icon>
+        </button>
+      </b-table-column>
+      <b-table-column
+        field="notify"
+        label="Notifikácia"
+        sortable
+        v-slot="props"
+      >
+        <b-tooltip label="Používateľ žiada zmenu práv" type="is-dark">
+          <button
+            v-if="props.row.notify === 1"
+            class="button is-small is-light"
+            @click="deleteNotify(props.row.id)"
+          >
+            <b-icon icon="bell-ring" size="is-small"></b-icon>
+          </button>
+        </b-tooltip>
+      </b-table-column>
+    </b-table>
+  </section>
 </template>
 
 <script>
@@ -112,6 +152,23 @@ export default {
     }
   },
   methods: {
+    deleteNotify(id) {
+      httpClient
+        .post(`/users/notify/${id}`, { notify: null })
+        .then(() => {
+          this.$buefy.toast.open({
+            message: "Notifikácia bola odstránená!",
+            type: "is-success"
+          });
+        })
+        .catch(error => {
+          console.log(error);
+          this.$buefy.toast.open({
+            message: "Notifikáciu sa nepodarilo odstrániť!",
+            type: "is-danger"
+          });
+        });
+    },
     deleteUser(id) {
       httpClient
         .delete(`/users/${id}`)
@@ -133,7 +190,8 @@ export default {
     upgrade(id) {
       httpClient
         .put(`/users/updateUsersRole/${id}`, {
-          id_role: 2
+          id_role: 2,
+          notify: null
         })
         .then(() => {
           this.$buefy.toast.open({
@@ -152,7 +210,8 @@ export default {
     downgrade(id) {
       httpClient
         .put(`/users/updateUsersRole/${id}`, {
-          id_role: 3
+          id_role: 3,
+          notify: null
         })
         .then(() => {
           this.$buefy.toast.open({

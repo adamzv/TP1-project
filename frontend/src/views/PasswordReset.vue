@@ -5,14 +5,14 @@
         <form id="login" v-on:submit.prevent="checkResetForm" method="post">
           <div class="page-margin">
             <h1 class="is-uppercase is-size-4">
-              Zmena hesla
+              {{ $t("password_reset.change") }}
             </h1>
             <hr class="hr" />
             <div class="box">
               <div class="columns">
                 <div class="column">
                   <b-field
-                    label="Nové heslo"
+                    v-bind:label="$t('password_reset.new_password')"
                     :message="{
                       'Heslo musí mať viac ako 6 znakov': passwordHasErrors
                     }"
@@ -30,7 +30,7 @@
               <div class="columns">
                 <div class="column">
                   <b-field
-                    label="Zopakujte nové heslo"
+                    v-bind:label="$t('password_reset.repeat_new_password')"
                     :type="{ 'is-danger': passwordHasErrors }"
                   >
                     <b-input
@@ -47,7 +47,7 @@
                   <input
                     type="submit"
                     class="button is-success"
-                    value="Zmeniť heslo"
+                    v-bind:value="$t('password_reset.change_password')"
                   />
                 </div>
               </div>
@@ -92,7 +92,7 @@ export default {
           .then(() =>
             this.$router.push("/login", () => {
               this.$buefy.toast.open({
-                message: "Heslo bolo zmenené",
+                message: this.$t("password_reset.password_changed"),
                 type: "is-success",
                 duration: 3000
               });

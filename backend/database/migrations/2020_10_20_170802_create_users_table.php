@@ -25,6 +25,7 @@ class CreateUsersTable extends Migration
             $table->string('email', 255);
             $table->string('password', 255);
             $table->dateTime('email_verified_at')->nullable();
+            $table->integer('notify')->nullable();
 
             // foreign ids
             $table->unsignedBigInteger('id_role');

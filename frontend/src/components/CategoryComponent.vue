@@ -2,16 +2,16 @@
   <section>
     <b-field grouped group-multiline>
       <b-select v-model="perPage" :disabled="!isPaginated">
-        <option value="5">5 per page</option>
-        <option value="10">10 per page</option>
-        <option value="15">15 per page</option>
-        <option value="20">20 per page</option>
+        <option value="5">5 na stranu</option>
+        <option value="10">10 na stranu</option>
+        <option value="15">15 na stranu</option>
+        <option value="20">20 na stranu</option>
       </b-select>
       <div class="control is-flex">
-        <b-switch v-model="isPaginated">Paginated</b-switch>
+        <b-switch v-model="isPaginated">Stránkovanie</b-switch>
       </div>
       <div class="control is-flex">
-        <b-switch v-model="nameSearchable">Search</b-switch>
+        <b-switch v-model="nameSearchable">Vyhľadať</b-switch>
       </div>
     </b-field>
 
@@ -43,7 +43,7 @@
 
       <b-table-column
         field="name"
-        label="Názov"
+        v-bind:label="$t('filter.title')"
         :searchable="nameSearchable"
         sortable
         v-slot="props"
@@ -51,7 +51,6 @@
         {{ props.row.name }}
       </b-table-column>
       <b-table-column custom-key="actions" label="Actions" v-slot="props">
-        
         <button
           v-if="props.row.id_role != 1"
           class="button is-small is-danger"
@@ -99,7 +98,7 @@ export default {
       httpClient
         .delete(`/categories/${id}`)
         .then(() => {
-            this.data = this.data.filter(data => data.id != id);
+          this.data = this.data.filter(data => data.id != id);
           this.$buefy.toast.open({
             message: "Kategória bola vymazaná!",
             type: "is-success"
@@ -112,8 +111,7 @@ export default {
             type: "is-danger"
           });
         });
-    },
-    
+    }
   }
 };
 </script>

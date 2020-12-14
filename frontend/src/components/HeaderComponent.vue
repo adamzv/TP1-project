@@ -7,6 +7,9 @@
         </b-navbar-item>
       </template>
       <template slot="end">
+        <b-navbar-item tag="router-link" to="/">
+          {{ $t("home") }}
+        </b-navbar-item>
         <b-navbar-item href="https://www.ukf.sk">
           UKF.sk
         </b-navbar-item>
@@ -29,7 +32,7 @@
         </b-navbar-dropdown>
         <b-navbar-item v-if="!loggedIn">
           <b-button tag="router-link" to="/login" type="is-light">
-            {{ $t("login") }}
+            {{ $t("sign_in") }}
           </b-button>
         </b-navbar-item>
         <b-navbar-dropdown
@@ -67,7 +70,7 @@
             <img
               v-else
               class="imgSettings"
-              src="https://picsum.photos/id/2/1230/350"
+              src="https://picsum.photos/id/2/1230/500"
               :alt="event.name"
             />
             <div
@@ -216,6 +219,18 @@ body {
 @media screen and (max-width: 768px) {
   .carousel {
     margin-bottom: 0px;
+  }
+  .imgSettings {
+    max-height: 500px;
+  }
+  h1.title {
+    font-size: 1.25rem;
+  }
+  a.title {
+    font-size: 1.25rem;
+  }
+  h1.subtitle {
+    font-size: 1rem;
   }
 }
 </style>

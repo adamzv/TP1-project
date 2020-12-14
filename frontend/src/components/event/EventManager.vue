@@ -23,7 +23,7 @@
             <span class="panel-icon">
               <i class="mdi mdi-calendar-plus" aria-hidden="true"></i>
             </span>
-            Pridať udalosť
+            {{ $t("event.add_event") }}
           </a>
           <a
             class="panel-block"
@@ -65,11 +65,106 @@
         </div>
       </div>
     </div>
+    <div class="columns">
+      <div class="column">
+        <hr />
+        <div class="box">
+          <div class="columns">
+            <div class="column">
+              <h2 class="is-size-4">
+                Generovanie reportov
+              </h2>
+            </div>
+          </div>
+          <div class="columns">
+            <div class="column">
+              <b-notification type="is-warning">
+                Ak si nezvolíte časový rozsah tak sa vygeneruje zoznam so
+                všetkými udalosťami.
+              </b-notification>
+            </div>
+          </div>
+          <div class="columns">
+            <div class="column">
+              <b-field label="Začiatok udalosti">
+                <b-datetimepicker
+                  v-model="beginning"
+                  placeholder="Vybrať dátum a čas"
+                  icon="calendar-today"
+                  :locale="'sk-SK'"
+                  ref="datepicker"
+                  horizontal-time-picker
+                >
+                  <!-- A simple hack to display timepicker in the middle :) -->
+                  <template slot="left">
+                    <b-button disabled style="visibility:hidden"></b-button>
+                  </template>
+                  <template slot="right">
+                    <b-button
+                      outlined
+                      class="button is-success"
+                      type="button"
+                      icon-left="check"
+                      @click="$refs.datepicker.toggle()"
+                    ></b-button>
+                  </template>
+                </b-datetimepicker>
+              </b-field>
+            </div>
+            <div class="column">
+              <b-field label="Koniec udalosti">
+                <b-datetimepicker
+                  v-model="end"
+                  placeholder="Vybrať dátum a čas"
+                  icon="calendar-today"
+                  :locale="'sk-SK'"
+                  ref="datepickerend"
+                  horizontal-time-picker
+                >
+                  <!-- A simple hack to display timepicker in the middle :) -->
+                  <template slot="left">
+                    <b-button disabled style="visibility:hidden"></b-button>
+                  </template>
+                  <template slot="right">
+                    <b-button
+                      outlined
+                      class="button is-success"
+                      type="button"
+                      icon-left="check"
+                      @click="$refs.datepickerend.toggle()"
+                    ></b-button>
+                  </template>
+                </b-datetimepicker>
+              </b-field>
+            </div>
+          </div>
+          <div class="columns">
+            <div class="column">
+              <div class="level">
+                <div class="level-left"></div>
+                <div class="level-right">
+                  <div class="level-item">
+                    <input
+                      type="button"
+                      @click="generateReport()"
+                      class="button is-success"
+                      value="Report udalostí (.pdf)"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import httpClient from "../../httpClient";
 import ManageEvent from "./ManageEvent.vue";
+import moment from "moment";
 
 export default {
   components: {
@@ -83,6 +178,8 @@ export default {
   },
   data() {
     return {
+      beginning: "",
+      end: "",
       lastEvent: null,
       filteredEvents: [],
       filterEvent: "",
@@ -121,6 +218,21 @@ export default {
             .toLowerCase()
             .indexOf(this.filterEvent.toLowerCase()) >= 0
         );
+      });
+    },
+    generateReport() {
+      var request = {};
+      if (this.beginning !== "") {
+        request.beginning = moment(this.beginning).format(
+          "YYYY-MM-DD HH:mm:ss"
+        );
+      }
+      if (this.end !== "") {
+        request.end = moment(this.end).format("YYYY-MM-DD HH:mm:ss");
+      }
+      httpClient.post("files/downloadPDF", request).then(response => {
+        window.location.href =
+          process.env.VUE_APP_IMAGES_STORAGE_URL + response.data.path;
       });
     }
   },

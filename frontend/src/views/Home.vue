@@ -1,13 +1,24 @@
 <template>
   <div class="home">
-    <FilterComponent id="myFilter" class="filter" @clicked="onClickChild" />
-    <EventListComponent :events="loadedEvents" />
+    <FilterComponent id="myFilter" class="filter" ref="filter" />
+
+    <div v-if="this.$store.getters.getPages.length > 0">
+      <EventListComponent v-bind:page-id="increasePageId(page)"
+                          v-for="page in this.$store.getters.getPages.length"
+                          v-bind:key="page.id"
+                          :events="loadedEvents"/>
+    </div>
+
+    <div v-else-if="this.$store.getters.getCanShowNoEvents">
+      <br/><br/>
+      <strong>No events found!</strong>
+    </div>
   </div>
 </template>
 
 <script>
 import EventListComponent from "../components/event/EventListComponent";
-import FilterComponent from "@/components/FilterComponent.vue";
+import FilterComponent from "../components/FilterComponent";
 
 export default {
   name: "home",
@@ -18,15 +29,20 @@ export default {
   destroyed() {
     window.removeEventListener("scroll", this.myFunction);
   },
+
+  mounted() {
+    this.scrolledToBottom();
+  },
+
   props: {
     loadedEvents: Array
   },
+  
   methods: {
     myFunction() {
       var filter = document.getElementById("myFilter");
       var sticky = filter.offsetTop;
 
-      // TODO: Second value is not correct nor exact, needs to be somehow modified for carouselHeight from VUEX
       if (window.pageYOffset * 4 > sticky) {
         filter.classList.add("sticky");
       }
@@ -35,8 +51,26 @@ export default {
       }
     },
 
-    onClickChild(value) {
-      this.events = value.filteredEvents;
+    increasePageId(index) {
+      return index + 1;
+    },
+
+    scrolledToBottom () {
+      window.onscroll = async () => {
+        if (this.getCanLoadEvents) {
+          let bottomOfWindow = Math.max(window.pageYOffset, document.documentElement.scrollTop, document.body.scrollTop) + window.innerHeight === document.documentElement.offsetHeight;
+
+          if (bottomOfWindow) {
+            this.isAtBottom = true;
+
+            if (this.$store.getters.getNextPage != null) {
+              this.$refs.filter.loadEvents(this.getCurrentApiUrl);
+            }
+          } else {
+              this.isAtBottom = false;
+          }
+        }
+      }
     }
   },
 
@@ -47,8 +81,26 @@ export default {
       windowWidth: window.innerWidth,
       showDesktop: true,
       showMobile: false,
-      openIndex: 0
+      openIndex: 0,
+      pageUrls: [],
+      pageId: 5,
+      isAtBottom: false
     };
+  },
+
+  filters: {
+    reverse(items) {
+      return items.slice().reverse();
+    }
+  },
+
+  computed: {
+    getCurrentApiUrl() {
+      return this.$store.getters.getCurrentApiUrl;
+    },
+    getCanLoadEvents() {
+        return this.$store.getters.getCanLoadEvents;
+    }
   }
 };
 </script>
