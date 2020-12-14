@@ -301,15 +301,15 @@ export default {
   },
   created() {
     if (this.eventTitleImg && this.eventTitleImg[0]) {
-      this.$store.commit("pushToLoading", "EventCardLoadImages");
+      //this.$store.commit("pushToLoading", "FilterComponent");
       httpClient
         .get(`/files/titleImg/${this.eventId}`)
         .then(response => {
           this.titleImage = response.data.title_images_path.title_image1_path;
-          this.$store.commit("finishLoading", "EventCardLoadImages");
+          //this.$store.commit("finishLoading", "FilterComponent");
         })
         .catch(() => {
-          this.$store.commit("finishLoading", "EventCardLoadImages");
+          //this.$store.commit("finishLoading", "FilterComponent");
         });
     }
   }

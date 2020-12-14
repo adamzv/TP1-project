@@ -625,14 +625,16 @@ export default {
     this.zoom = 17;
 
     httpClient.get(`/cities/${this.eventPlace.id_city}`).then(response => {
-        this.city = response.data.name;
+      this.$store.commit("setCurrentCityOnMap", response.data.name);
     });
+
+    console.log(this.$store.getters.getCurrentCityOnMan);
 
     setTimeout(() => {
       let a = 0;
       let b = 0;
 
-      httpClient.get(`https://nominatim.openstreetmap.org/search?q=${this.eventPlace.name},${this.city}&format=jsonv2`).then(response => {
+      httpClient.get(`https://nominatim.openstreetmap.org/search?q=${this.eventPlace.name},${this.$store.getters.getCurrentCityOnMan}&format=jsonv2`).then(response => {
         // get latitude and longitude from api
         a = response.data[0].lat;
         b = response.data[0].lon;
@@ -643,20 +645,20 @@ export default {
     }, 500);
 
     if (this.eventImages && this.eventImages.length > 0) {
-      this.$store.commit("pushToLoading", "EventDetailsLoadImages");
+      //this.$store.commit("pushToLoading", "EventDetailsLoadImages");
       httpClient
         .get(`/files/image/${this.eventId}`)
         .then(response => {
           this.images = response.data.images_path;
-          this.$store.commit("finishLoading", "EventDetailsLoadImages");
+            //this.$store.commit("finishLoading", "EventDetailsLoadImages");
         })
         .catch(() => {
-          this.$store.commit("finishLoading", "EventDetailsLoadImages");
+            //this.$store.commit("finishLoading", "EventDetailsLoadImages");
         });
     }
 
     if (this.loggedInId) {
-      this.$store.commit("pushToLoading", "EventDetailsUserState");
+        //this.$store.commit("pushToLoading", "EventDetailsUserState");
       httpClient
         .post("/users/checkEvent", {
           event_id: this.eventId,
@@ -664,10 +666,10 @@ export default {
         })
         .then(response => {
           this.userAttendingEvent = response.data.message;
-          this.$store.commit("finishLoading", "EventDetailsUserState");
+            //this.$store.commit("finishLoading", "EventDetailsUserState");
         })
         .catch(() => {
-          this.$store.commit("finishLoading", "EventDetailsUserState");
+            //this.$store.commit("finishLoading", "EventDetailsUserState");
         });
     }
     var event = {
@@ -960,5 +962,9 @@ export default {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom {
+  z-index: 1 !important;
 }
 </style>

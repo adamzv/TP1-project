@@ -6,7 +6,7 @@ details accordingly. * */
   <!-- Temporary top padding -->
   <div style="padding-top: 30px;">
 
-    <div v-if="this.$store.getters.getCurrentlyInFilter.data != 0">
+    <div v-if="this.$store.getters.getPages.length > 0">
       <!-- Using Bulma column layout system -->
       <div class="columns is-mobile is-multiline is-centered">
         <!-- Actual column iterated through the event list -->

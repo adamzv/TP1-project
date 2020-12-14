@@ -5,10 +5,8 @@
               class="loading-z-pos"
               :is-full-page="true"
               v-model="isLoading"
-              :can-cancel="false"
-      >
+              :can-cancel="false">
         <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
-
       </b-loading>
     </div>
 
@@ -17,28 +15,25 @@
               class="loading-z-pos"
               :is-full-page="true"
               v-model="isLoading"
-              :can-cancel="false"
-      >
+              :can-cancel="false">
         <div class="backLoading">
           <img
                   width="200"
                   height="200"
                   src="./assets/logo-UKF-transparent.png"
                   alt=""
-                  class="rotate"
-          />
+                  class="rotate"/>
         </div>
-
       </b-loading>
     </div>
-
 
     <template v-if="events.length > 0">
       <HeaderComponent :events="events.slice(0, 6)" class="element" />
     </template>
 
     <router-view :loaded-events="events" />
-    <FooterComponent />
+
+    <FooterComponent v-if="(this.$store.getters.getPages.length > 0) || (this.$store.getters.getCanShowNoEvents)" />
 
     <back-to-top bottom="50px" right="50px">
       <button type="button" class="btn-to-top">
@@ -133,10 +128,12 @@ export default {
   },
   mounted() {
     // App hned po starte
-    this.$store.commit("pushToLoading", "AppEvents");
+      this.$store.commit("pushToLoading", "AppEvents");
+      this.$store.commit("setFirstTimeLoaded", true);
     httpClient.get(`/events`).then(response => {
       this.$store.commit("setCurrentlyInFilter", response.data);
       this.events = response.data.data;
+      this.$store.commit("setFirstTimeLoaded", false);
       this.$store.commit("finishLoading", "AppEvents");
     });
   }
@@ -156,7 +153,7 @@ export default {
     position: absolute;
     width: 60px;
     height: 60px;
-    bottom: 0px;
+    bottom: 64px;
     right: 25%;
     left: 50%;
     margin-left: -30px;
