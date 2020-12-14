@@ -513,7 +513,8 @@ export default {
       google: "",
       outlook: "",
       office365: "",
-      ics: ""
+      ics: "",
+      city: ``
     };
   },
 
@@ -623,11 +624,15 @@ export default {
   created() {
     this.zoom = 17;
 
+    httpClient.get(`/cities/${this.eventPlace.id_city}`).then(response => {
+        this.city = response.data.name;
+    });
+
     setTimeout(() => {
       let a = 0;
       let b = 0;
 
-      httpClient.get(`https://nominatim.openstreetmap.org/search?q=${this.eventPlace.name}&format=jsonv2`).then(response => {
+      httpClient.get(`https://nominatim.openstreetmap.org/search?q=${this.eventPlace.name},${this.city}&format=jsonv2`).then(response => {
         // get latitude and longitude from api
         a = response.data[0].lat;
         b = response.data[0].lon;
