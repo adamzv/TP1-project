@@ -207,11 +207,16 @@ format. * */
         <!-- Section 4 -->
         <div class="column is-3-desktop section4 eventDetailsHeaderColor">
           <div class="map-container">
-            <h1
-              style="font-weight: bold; color: white; margin-left: 150px; margin-top: 90px;"
-            >
-              Map
-            </h1>
+
+            <LMap :zoom="zoom"
+                  :center="center"
+                  ref="map">
+              <LTileLayer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
+                          :attribution="attribution">
+              </LTileLayer>
+              <LMarker :lat-lng="center"></LMarker>
+            </LMap>
+
           </div>
 
           <!-- Other details about the event -->
@@ -294,6 +299,8 @@ format. * */
 </template>
 
 <script>
+import L from "leaflet";
+
 let months = [
   "január",
   "február",
@@ -308,14 +315,24 @@ let months = [
   "november",
   "december"
 ];
+
 import httpClient from "../../httpClient.js";
 import { google, outlook, office365, ics } from "calendar-link";
+import { LMap, LTileLayer, LMarker } from 'vue2-leaflet';
+import 'leaflet/dist/leaflet.css';
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+    iconUrl: require('leaflet/dist/images/marker-icon.png'),
+    shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+});
 
 export default {
   name: "EventDetailsComponent",
 
   // Registering the components
-  components: {},
+  components: {LMap, LTileLayer, LMarker},
 
   methods: {
     // TODO if user is logged in and is routed to details page,
@@ -470,11 +487,11 @@ export default {
 
   data() {
     return {
-      // Default map location
-      center: {
-        lat: 40.73061,
-        lng: -73.935242
-      },
+      zoom: 20,
+      center: [0, 0],
+      url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+
       images: [],
       imageModal: null,
       isImageModalActive: false,
@@ -592,7 +609,24 @@ export default {
       return window.location.href;
     }
   },
+
   created() {
+    this.zoom = 17;
+
+    setTimeout(() => {
+      let a = 0;
+      let b = 0;
+
+      httpClient.get(`https://nominatim.openstreetmap.org/search?q=${this.eventPlace.name}&format=jsonv2`).then(response => {
+        // get latitude and longitude from api
+        a = response.data[0].lat;
+        b = response.data[0].lon;
+
+        console.log(a + ", " + b)
+        this.center = L.latLng(a, b)
+      });
+    }, 500);
+
     if (this.eventImages && this.eventImages.length > 0) {
       this.$store.commit("pushToLoading", "EventDetailsLoadImages");
       httpClient
