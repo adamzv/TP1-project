@@ -18,7 +18,7 @@
                 <div class="media-content">
                   <div class="content">
                     <p v-if="this.online.length > 0">
-                      <strong>Používatelia ONLINE</strong>
+                      <strong>{{ $t("admin.users") }} ONLINE</strong>
                       <br />
                       <a style="color:green; font-size:20px">•</a>
                       {{ online[0].pocet }}
@@ -39,7 +39,7 @@
                 <div class="media-content">
                   <div class="content">
                     <p v-if="this.online.length > 0">
-                      <strong>Registrovaných používateľov</strong>
+                      <strong>{{ $t("admin.registered_users") }}</strong>
                       <br />
                       <a style="color:green; font-size:20px"></a>
                       {{ online[1].registrovani }}
@@ -70,7 +70,7 @@
                 <div class="media-content">
                   <div class="content">
                     <p v-if="this.online.length > 0">
-                      <strong>Nadchádzajúce udalosti</strong>
+                      <strong>{{ $t("admin.upcoming_events") }}</strong>
                       <br />
                       <a style="color:green; font-size:20px"></a>
                       {{ online[2].eventy }}
@@ -101,7 +101,7 @@
                 <div class="media-content">
                   <div class="content">
                     <p v-if="this.online.length > 0">
-                      <strong>Archív udalostí</strong>
+                      <strong>{{ $t("admin.archive_events") }}</strong>
                       <br />
                       <a style="color:green; font-size:20px"></a>
                       {{ online[3].eventy_doteraz }}

@@ -52,7 +52,9 @@ format. * */
 
           <div style="padding-top: 10px;">
             <b-icon icon="clock-time-four-outline"></b-icon>
-            <strong style="padding-left: 5px;">KEDY</strong>
+            <strong style="padding-left: 5px;">
+              {{ $t("event_detail.when") }}
+            </strong>
           </div>
 
           <p class="panel-info" style="font-size: small;">
@@ -65,11 +67,13 @@ format. * */
 
           <div style="padding-top: 20px;">
             <b-icon icon="map-marker"></b-icon>
-            <strong style="padding-left: 5px;">KDE</strong>
+            <strong style="padding-left: 5px;">
+              {{ $t("event_detail.where") }}
+            </strong>
           </div>
 
           <p class="panel-info" style="font-size: small;">
-            Miestnosť {{ eventRoom }}
+            {{ $t("event_detail.room") }} {{ eventRoom }}
             <br />
             {{ eventFaculty.name }}
             <br />
@@ -78,7 +82,9 @@ format. * */
 
           <div style="padding-top: 20px;">
             <b-icon icon="calendar"></b-icon>
-            <strong style="padding-left: 5px;">KALENDÁR</strong>
+            <strong style="padding-left: 5px;">
+              {{ $t("event_detail.calendar") }}
+            </strong>
           </div>
 
           <p class="panel-info">
@@ -106,7 +112,9 @@ format. * */
 
           <div style="margin-top: 20px; margin-bottom: 10px;">
             <b-icon icon="account"></b-icon>
-            <strong style="padding-left: 5px;">LIMIT MIEST</strong>
+            <strong style="padding-left: 5px;">
+              {{ $t("event_detail.seat_limit") }}
+            </strong>
 
             <p
               v-if="eventAttendanceLimit >= 1"
@@ -121,7 +129,7 @@ format. * */
             </p>
 
             <p v-else class="panel-info" style="font-size: small;">
-              <i>Neobmedzene</i>
+              <i>{{ $t("event_detail.unlimited") }}</i>
             </p>
           </div>
 
@@ -141,7 +149,7 @@ format. * */
               }"
               style="margin-top: 10px; margin-bottom: 10px; color: white;"
             >
-              Prihlásiť sa
+              {{ $t("login") }}
             </b-button>
             <b-button
               v-if="userAttendingEvent"
@@ -150,7 +158,7 @@ format. * */
               icon-right="close-thick"
               style="margin-top: 10px; margin-bottom: 10px; color: white;"
             >
-              Odhlásiť sa
+              {{ $t("logout") }}
             </b-button>
           </div>
         </div>
@@ -160,7 +168,9 @@ format. * */
           <!-- Heading of section 2 -->
           <div class="section2-heading alignLeft">
             <b-icon icon="file-document-multiple-outline"></b-icon>
-            <strong style="padding-left: 5px;">POPIS UDALOSTI</strong>
+            <strong style="padding-left: 5px;">
+              {{ $t("event_detail.event_description") }}
+            </strong>
           </div>
 
           <div style="clear: both;"></div>
@@ -179,7 +189,9 @@ format. * */
           <!-- Heading of section 2 -->
           <div class="section2-heading">
             <b-icon icon="image-outline"></b-icon>
-            <strong style="padding-left: 5px;">GALÉRIA</strong>
+            <strong style="padding-left: 5px;">
+              {{ $t("event_detail.gallery") }}
+            </strong>
           </div>
 
           <!-- Separator line -->
@@ -210,14 +222,14 @@ format. * */
             <h1
               style="font-weight: bold; color: white; margin-left: 150px; margin-top: 90px;"
             >
-              Map
+              {{ $t("event_detail.map") }}
             </h1>
           </div>
 
           <!-- Other details about the event -->
           <div class="other-details">
             <div class="forLabel">
-              URČENÉ PRE
+              {{ $t("event_detail.created_for") }}
               <b-icon icon="school"></b-icon>
             </div>
 
@@ -229,14 +241,14 @@ format. * */
               </span>
 
               <span v-else style="font-weight: normal;">
-                Všetky katedry
+                {{ $t("event_detail.all_departments") }}
               </span>
             </div>
 
             <br />
 
             <div class="forLabel">
-              VYTVORIL
+              {{ $t("event_detail.created") }}
               <b-icon icon="account"></b-icon>
             </div>
 
@@ -259,7 +271,7 @@ format. * */
                 style="color: white;"
                 icon-right="download"
               >
-                Stiahnuť informačný list
+                {{ $t("event_detail.download_information_sheet") }}
               </b-button>
             </div>
             <br />

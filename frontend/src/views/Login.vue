@@ -7,7 +7,7 @@
           <form id="login" v-on:submit.prevent="checkLoginForm" method="post">
             <div class="columns">
               <div class="column">
-                <h1 class="is-uppercase is-size-4">Prihlásiť sa</h1>
+                <h1 class="is-uppercase is-size-4">{{ $t("login") }}</h1>
               </div>
             </div>
             <div class="columns">
@@ -28,7 +28,7 @@
             <div class="columns">
               <div class="column">
                 <b-field
-                  label="Heslo"
+                  v-bind:label="$t('password')"
                   :type="{ 'is-danger': loginValidation.passwordHasErrors }"
                 >
                   <b-input
@@ -45,10 +45,10 @@
                 <input
                   type="submit"
                   class="button is-success"
-                  value="Prihlásenie"
+                  v-bind:value="$t('sign_in')"
                 />
                 <b-button type="is-text" @click="changePassword">
-                  Zabudnuté heslo
+                  {{ $t("forgotten_password") }}
                 </b-button>
               </div>
             </div>
@@ -60,7 +60,7 @@
           class="divider"
           v-bind:class="{ 'is-vertical': !isMobile, 'is-horizontal': isMobile }"
         >
-          Alebo
+          {{ $t("or") }}
         </div>
 
         <!-- Register column -->
@@ -72,13 +72,13 @@
           >
             <div class="columns">
               <div class="column">
-                <h1 class="is-uppercase is-size-4">Registrácia</h1>
+                <h1 class="is-uppercase is-size-4">{{ $t("registration") }}</h1>
               </div>
             </div>
             <div class="columns">
               <div class="column">
                 <b-field
-                  label="Meno"
+                  v-bind:label="$t('name')"
                   :type="{ 'is-danger': registerValidation.nameHasErrors }"
                 >
                   <b-input
@@ -92,7 +92,7 @@
             <div class="columns">
               <div class="column">
                 <b-field
-                  label="Priezvisko"
+                  v-bind:label="$t('surname')"
                   :type="{ 'is-danger': registerValidation.surnameHasErrors }"
                 >
                   <b-input
@@ -121,7 +121,7 @@
             <div class="columns">
               <div class="column">
                 <b-field
-                  label="Heslo"
+                  v-bind:label="$t('password')"
                   :type="{ 'is-danger': registerValidation.passwordHasErrors }"
                   :message="{
                     'Heslo musí obsahovať minimálne 6 znakov':
@@ -142,7 +142,7 @@
                 <input
                   type="submit"
                   class="button is-success"
-                  value="Odoslať"
+                  v-bind:value="$t('register')"
                 />
               </div>
             </div>
@@ -182,24 +182,24 @@ export default {
   methods: {
     changePassword() {
       this.$buefy.dialog.prompt({
-        message: `Zadajte Vašu emailovú adresu`,
+        message: this.$t("login_messages.enter_email"),
         inputAttrs: {
           maxlength: 255,
           type: "email"
         },
-        confirmText: "Odoslať",
+        confirmText: this.$t("send"),
         onConfirm: value => {
           httpClient
             .post("/users/password/create", { email: value })
             .then(() =>
               this.$buefy.toast.open({
-                message: "Odkaz na zmenu hesla Vám príde na email.",
+                message: this.$t("login_messages.link_to_change_password"),
                 type: "is-success"
               })
             )
             .catch(() =>
               this.$buefy.toast.open({
-                message: "Niekde nastala chyba.",
+                message: this.$t("login_messages.error_occurred"),
                 type: "is-danger"
               })
             );
@@ -219,7 +219,7 @@ export default {
           this.loginValidation.emailHasErrors = true;
           this.loginValidation.passwordHasErrors = true;
           this.$buefy.toast.open({
-            message: "Neplatný pokus o prihlásenie, skúste ešte raz",
+            message: this.$t("login_messages.invalid_login_attempt"),
             type: "is-danger",
             duration: 3000
           });
@@ -266,7 +266,7 @@ export default {
           .then(() => {
             this.$router.push({ name: "home" }, () => {
               this.$buefy.toast.open({
-                message: "Boli ste úspešne zaregistrovaná/ý!",
+                message: this.$t("login_messages.registered_successfully"),
                 type: "is-success"
               });
             });
@@ -275,14 +275,14 @@ export default {
             console.log(error);
             if (error.data.errors.email) {
               this.$buefy.toast.open({
-                message: "Zadaný email už existuje v systéme!",
+                message: this.$t("login_messages.email_exists"),
                 type: "is-danger"
               });
               this.registerValidation.emailHasErrors = true;
             }
             if (error.data.errors.password) {
               this.$buefy.toast.open({
-                message: "Zadané heslo je neplatné!",
+                message: this.$t("login_messages.invalid_password"),
                 type: "is-danger"
               });
               this.registerValidation.passwordHasErrors = true;
@@ -290,7 +290,7 @@ export default {
           });
       } else {
         this.$buefy.toast.open({
-          message: "Registrácia bola neúspešná!",
+          message: this.$t("login_messages.registration_failed"),
           type: "is-danger"
         });
       }

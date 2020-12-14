@@ -1,9 +1,105 @@
 {
   "language": "EN",
   "ukf": "My UKF",
-  "login": "Log in",
+  "login": "Sign in",
   "logout": "Logout",
   "ukfNitra": "UKF in Nitra",
   "addEvent": "Add event",
-  "profile": "Profile"
+  "profile": "Profile",
+  "or": "Or",
+  "send": "Send",
+  "forgotten_password": "Forgotten password",
+  "sign_in": "Login",
+  "password": "Password",
+  "password_bad": "Password must contain at least 6 characters",
+  "registration": "Registration",
+  "register": "Register",
+  "name": "Name",
+  "surname": "Surname",
+  "rights_reserved": "All rights reserved.",
+  "logged_in_event": "You have been logged in to the event.",
+  "home": "Home",
+
+  "login_messages": {
+      "registration_failed": "Registration failed!",
+      "invalid_password": "The password you entered is invalid!",
+      "email_exists": "The entered email already exists in the system!",
+      "registered_successfully": "You have been successfully registered!",
+      "invalid_login_attempt": "Invalid login attempt, please try again",
+      "error_occurred": "An error occurred somewhere.",
+      "link_to_change_password": "A link to change your password will be sent to you by email.",
+      "enter_email": "Enter your email address"
+  },
+
+  "not_found": {
+    "page_not_found": "Error 404: Page not found",
+    "back_to_main": "Back to the main page"
+  },
+
+  "password_reset": {
+    "change": "Password change",
+    "new_password": "New password",
+    "repeat_new_password": "Repeat the new password",
+    "change_password": "Change Password",
+    "password_changed": "Password changed"
+  },
+
+  "event_detail": {
+    "when": "WHEN",
+    "where": "WHERE",
+    "room": "The room",
+    "calendar": "CALENDAR",
+    "seat_limit": "SEAT LIMIT",
+    "unlimited": "Unlimited",
+    "event_description": "EVENT DESCRIPTION",
+    "gallery": "GALLERY",
+    "map": "Map",
+    "created_for": "CREATED FOR",
+    "created": "CREATED",
+    "all_departments": "All departments",
+    "download_information_sheet": "Download the information sheet"
+  },
+
+  "filter": {
+    "venue": "Venue",
+    "department": "Department",
+    "faculty": "Faculty",
+    "categories": "Categories",
+    "from_date": "From date",
+    "title": "Title"
+  },
+
+  "event": {
+    "settings": "General event settings",
+    "event_name": "Event name",
+    "new_category": "New category",
+    "add_category": "Add a category",
+    "event_start": "Event start",
+    "select_date": "Select date and time",
+    "event_end": "End of event",
+    "upload_cover_photo": "Upload (select) a cover photo",
+    "upload_pdf": "Upload a .pdf file",
+    "event_description": "Event description",
+    "select_location": "Select the location of the event",
+    "add_new_place": "Add a new place",
+    "university_settings": "University settings",
+    "lecturer": "Lecturer",
+    "limit_number_seats": "Limit the number of seats?",
+    "gallery": "Gallery",
+    "images_can_only_event": "Images can only be inserted after the event",
+    "add_event": "Add an event"
+  },
+
+  "admin": {
+    "section": "Admin section",
+    "email_adress": "E-mail adress",
+    "statistics": "Statistics",
+    "event_management": "Event management",
+    "users": "Users",
+    "change_password": "Change Password",
+    "registered_users": "Registered users",
+    "upcoming_events": "Upcoming events",
+    "archive_events": "Archive of events"
+  }
+
 }
