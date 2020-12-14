@@ -86,6 +86,9 @@ Route::namespace('Api')->group(function () {
         Route::get('image/{id}', 'FilesController@downloadImage');
         Route::delete('image/{id}/{imageName}', 'FilesController@deleteImage');
         Route::delete('imageAll/{id}', 'FilesController@deleteAllImages');
+
+        Route::post('downloadPDF','FilesController@downloadInformationList');
+        Route::delete('deletePDF', 'FilesController@deleteInformationLists');
     });
 });
 

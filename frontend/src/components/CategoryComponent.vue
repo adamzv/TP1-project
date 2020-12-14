@@ -43,7 +43,7 @@
 
       <b-table-column
         field="name"
-        label="Názov"
+        v-bind:label="$t('filter.title')"
         :searchable="nameSearchable"
         sortable
         v-slot="props"

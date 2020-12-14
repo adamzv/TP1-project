@@ -15,7 +15,7 @@
             role="button"
           >
             <p class="card-header-title">
-              Všeobecné nastavenia udalosti
+              {{ $t("event.settings") }}
             </p>
             <a class="card-header-icon">
               <b-icon :icon="props.open ? 'menu-down' : 'menu-up'"></b-icon>
@@ -25,12 +25,12 @@
             <div class="content">
               <div class="columns">
                 <div class="column is-two-fifths">
-                  <b-field label="Názov udalosti">
+                  <b-field v-bind:label="$t('event.event_name')">
                     <b-input v-model="name"></b-input>
                   </b-field>
                 </div>
                 <div class="column">
-                  <b-field label="Kategórie">
+                  <b-field v-bind:label="$t('filter.categories')">
                     <b-taginput
                       v-model="categories"
                       :data="filteredCategories"
@@ -40,22 +40,22 @@
                       :open-on-focus="true"
                       :keep-first="true"
                       icon="label"
-                      placeholder="Pridať kategóriu"
+                      v-bind:placeholder="$t('event.add_category')"
                       @typing="getFilteredTags"
                     >
                       <template slot="header">
                         <a @click="addNewCategory">
-                          <span>Nová kategória</span>
+                          <span>{{ $t("event.new_category") }}</span>
                         </a>
                       </template>
                     </b-taginput>
                   </b-field>
                 </div>
                 <div class="column">
-                  <b-field label="Začiatok udalosti">
+                  <b-field v-bind:label="$t('event.event_start')">
                     <b-datetimepicker
                       v-model="beginning"
-                      placeholder="Vybrať dátum a čas"
+                      v-bind:placeholder="$t('event.select_date')"
                       icon="calendar-today"
                       :locale="'sk-SK'"
                       :max-datetime="end"
@@ -83,10 +83,10 @@
                 <div class="column is-two-fifths"></div>
                 <div class="column"></div>
                 <div class="column">
-                  <b-field label="Koniec udalosti">
+                  <b-field v-bind:label="$t('event.event_end')">
                     <b-datetimepicker
                       v-model="end"
-                      placeholder="Vybrať dátum a čas"
+                      v-bind:placeholder="$t('event.select_date')"
                       icon="calendar-today"
                       :locale="'sk-SK'"
                       :min-datetime="beginning"
@@ -121,7 +121,7 @@
                   >
                     <span>
                       <i class="mdi mdi-upload"></i>
-                      Nahrať (zvoliť) titulnú fotku
+                      {{ $t("event.upload_cover_photo") }}
                     </span>
                   </b-upload>
                   <span v-if="titleImagePath">
@@ -155,7 +155,7 @@
                   >
                     <span>
                       <i class="mdi mdi-file-upload"></i>
-                      Nahrať súbor .pdf
+                      {{ $t("event.upload_pdf") }}
                     </span>
                   </b-upload>
                   <span v-if="file">
@@ -177,7 +177,7 @@
               </div>
               <div class="columns">
                 <div class="column">
-                  <b-field label="Popis udalosti">
+                  <b-field v-bind:label="$t('event.event_description')">
                     <b-input
                       maxlength="350"
                       v-model="desc"
@@ -216,7 +216,7 @@
                     </div>
                   </b-modal>
 
-                  <b-field label="Miesto konania">
+                  <b-field v-bind:label="$t('filter.venue')">
                     <b-autocomplete
                       v-model="placeName"
                       ref="autocomplete"
@@ -225,19 +225,19 @@
                       :keep-first="true"
                       :open-on-focus="true"
                       :clearable="true"
-                      placeholder="Vybrať miesto konania udalosti"
+                      v-bind:placeholder="$t('event.select_location')"
                       @select="option => (place = option)"
                     >
                       <template slot="header">
                         <a @click="newPlaceModal = true">
-                          <span>Pridať nové miesto</span>
+                          <span>{{ $t("event.add_new_place") }}</span>
                         </a>
                       </template>
                     </b-autocomplete>
                   </b-field>
                 </div>
                 <div class="column">
-                  <b-field label="Miestnosť">
+                  <b-field v-bind:label="$t('event_detail.room')">
                     <b-input v-model="room"></b-input>
                   </b-field>
                 </div>
@@ -259,7 +259,7 @@
             role="button"
           >
             <p class="card-header-title">
-              Univerzitné nastavenia
+              {{ $t("event.university_settings") }}
             </p>
             <a class="card-header-icon">
               <b-icon :icon="props.open ? 'menu-down' : 'menu-up'"></b-icon>
@@ -269,7 +269,7 @@
             <div class="content">
               <div class="columns">
                 <div class="column">
-                  <b-field label="Fakulta">
+                  <b-field v-bind:label="$t('filter.faculty')">
                     <b-autocomplete
                       v-model="selectedFacultyName"
                       :keep-first="true"
@@ -283,7 +283,7 @@
                   </b-field>
                 </div>
                 <div class="column">
-                  <b-field label="Katedra">
+                  <b-field v-bind:label="$t('filter.department')">
                     <b-autocomplete
                       v-model="selectedDepartmentName"
                       :keep-first="true"
@@ -297,14 +297,17 @@
                   </b-field>
                 </div>
                 <div class="column">
-                  <b-field label="Prednášajúci">
+                  <b-field v-bind:label="$t('event.lecturer')">
                     <b-input v-model="lecturer"></b-input>
                   </b-field>
                 </div>
               </div>
               <div class="columns">
                 <div class="column ">
-                  <b-field grouped label="Obmedziť počeť miest?">
+                  <b-field
+                    grouped
+                    v-bind:label="$t('event.limit_number_seats')"
+                  >
                     <b-checkbox v-model="isAttendanceLimit"></b-checkbox>
                     <b-input
                       type="number"
@@ -330,7 +333,7 @@
             role="button"
           >
             <p class="card-header-title">
-              Galéria
+              {{ $t("event.gallery") }}
             </p>
             <a class="card-header-icon">
               <b-icon :icon="props.open ? 'menu-down' : 'menu-up'"></b-icon>
@@ -341,7 +344,7 @@
               <div class="columns">
                 <div class="column">
                   <div class="is-warning notification" v-if="!id">
-                    Obrázky sa dajú vkladať až po skončení udalosti
+                    {{ $t("event.images_can_only_event") }}
                   </div>
                   <b-field>
                     <b-upload

@@ -23,7 +23,7 @@
             <span class="panel-icon">
               <i class="mdi mdi-calendar-plus" aria-hidden="true"></i>
             </span>
-            Pridať udalosť
+            {{ $t("event.add_event") }}
           </a>
           <a
             class="panel-block"

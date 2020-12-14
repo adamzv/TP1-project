@@ -6,7 +6,7 @@
           Používateľská sekcia
         </h1>
         <h1 class="is-uppercase is-size-4" v-if="isAdmin">
-          Admin sekcia
+          {{ $t("admin.section") }}
         </h1>
         <hr class="hr" />
         <div class="box">
@@ -22,10 +22,10 @@
                   />
                 </header>
                 <section class="modal-card-body">
-                  <b-field label="Meno">
+                  <b-field v-bind:label="$t('name')">
                     <b-input v-model="name" required></b-input>
                   </b-field>
-                  <b-field label="Priezvisko">
+                  <b-field v-bind:label="$t('surname')">
                     <b-input v-model="surname" required></b-input>
                   </b-field>
                 </section>
@@ -53,7 +53,9 @@
             </h2>
 
             <p>
-              <span class="has-text-weight-semibold">Emailová adresa:</span>
+              <span class="has-text-weight-semibold">
+                {{ $t("admin.email_adress") }}:
+              </span>
               {{ user.email }}
               <b-tooltip
                 label="Verifikovaný email"
@@ -70,7 +72,7 @@
             </p>
             <p>
               <a class="has-text-weight-semibold" @click="changePassword">
-                Zmeniť heslo
+                {{ $t("admin.change_password") }}
               </a>
               <br />
               <a
@@ -125,7 +127,10 @@
           <div id="app" class="container">
             <section>
               <b-tabs size="is-medium" class="block" :multiline="true">
-                <b-tab-item label="Štatistiky" icon="chart-pie">
+                <b-tab-item
+                  v-bind:label="$t('admin.statistics')"
+                  icon="chart-pie"
+                >
                   <template
                     v-if="
                       faculties && hodnota && online && faculties1 && hodnota1
@@ -141,7 +146,7 @@
                   </template>
                 </b-tab-item>
                 <b-tab-item
-                  label="Správa udalostí"
+                  v-bind:label="$t('admin.event_management')"
                   icon="calendar-check"
                   @click="getEvents"
                 >
@@ -150,7 +155,7 @@
                   </template>
                 </b-tab-item>
                 <b-tab-item
-                  label="Používatelia"
+                  v-bind:label="$t('admin.users')"
                   icon="account-box"
                   @click="getUsers"
                 >
@@ -158,7 +163,10 @@
                     <UserComponent :users="users" />
                   </template>
                 </b-tab-item>
-                <b-tab-item label="Kategórie" icon="animation">
+                <b-tab-item
+                  v-bind:label="$t('filter.categories')"
+                  icon="animation"
+                >
                   <template v-if="category">
                     <CategoryComponent :category="category" />
                   </template>

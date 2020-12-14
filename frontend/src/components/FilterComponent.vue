@@ -1,7 +1,8 @@
 <template>
-
-  <form class="container is-fluid filterPanel" v-on:keydown.enter="sendDataToParent">
-
+  <form
+    class="container is-fluid filterPanel"
+    v-on:keydown.enter="sendDataToParent"
+  >
     <!-- Filter view for mobile screen sizes  -->
     <div v-if="showMobile && !showDesktop && render">
       <b-collapse
@@ -187,7 +188,7 @@
               <b-input
                 v-model="eventName"
                 field="name"
-                placeholder="Názov"
+                v-bind:placeholder="$t('filter.title')"
               ></b-input>
             </div>
 
@@ -197,7 +198,7 @@
                 icon="calendar-today"
                 :locale="'sk-SK'"
                 ref="datepicker"
-                placeholder="Od dátumu"
+                v-bind:placeholder="$t('filter.from_date')"
                 horizontal-time-picker
               >
                 <template slot="left">
@@ -234,7 +235,7 @@
                 :open-on-focus="true"
                 :keep-first="true"
                 icon="label"
-                placeholder="Kategórie"
+                v-bind:placeholder="$t('filter.categories')"
                 @typing="getFilteredTags"
               ></b-taginput>
             </div>
@@ -244,7 +245,7 @@
                 v-model="selectedFacultyName"
                 :keep-first="true"
                 :open-on-focus="true"
-                placeholder="Fakulta"
+                v-bind:placeholder="$t('filter.faculty')"
                 :data="availableFaculties"
                 field="name"
                 @select="option => (selectedFaculty = option)"
@@ -260,7 +261,7 @@
                 :open-on-focus="true"
                 :data="getFilteredDepartments"
                 field="name"
-                placeholder="Katedra"
+                v-bind:placeholder="$t('filter.department')"
                 :clearable="true"
               ></b-autocomplete>
             </div>
@@ -274,7 +275,7 @@
                 :keep-first="true"
                 :open-on-focus="true"
                 :clearable="true"
-                placeholder="Miesto konania"
+                v-bind:placeholder="$t('filter.venue')"
                 @select="option => (place = option)"
               ></b-autocomplete>
             </div>
@@ -438,33 +439,39 @@ export default {
       this.$store.commit("setCanLoadEvents", false);
 
       if (url != `/events`) {
-        httpClient.get(url + `&page=${this.$store.getters.getPageIndex}`).then(response_x => {
-          if (response_x.data.data != "") {
-            this.$store.commit("addPageToArray", response_x.data.data);
-            this.$store.commit("setNextPage", response_x.data.next_page_url);
-          }
-          this.$store.commit("finishLoading", "FilterComponent");
-          this.$store.commit("setCanLoadEvents", true);
-        });
+        httpClient
+          .get(url + `&page=${this.$store.getters.getPageIndex}`)
+          .then(response_x => {
+            if (response_x.data.data != "") {
+              this.$store.commit("addPageToArray", response_x.data.data);
+              this.$store.commit("setNextPage", response_x.data.next_page_url);
+            }
+            this.$store.commit("finishLoading", "FilterComponent");
+            this.$store.commit("setCanLoadEvents", true);
+          });
       } else if (url == `/events?page=1`) {
-        httpClient.get(`/events?page=${this.$store.getters.getPageIndex + 1}`).then(response_x => {
-          if (response_x.data.data != "") {
-            this.$store.commit("addPageToArray", response_x.data.data);
-            this.$store.commit("setNextPage", response_x.data.next_page_url);
-          }
-          this.$store.commit("finishLoading", "FilterComponent");
-          this.$store.commit("setCanLoadEvents", true);
-        });
+        httpClient
+          .get(`/events?page=${this.$store.getters.getPageIndex + 1}`)
+          .then(response_x => {
+            if (response_x.data.data != "") {
+              this.$store.commit("addPageToArray", response_x.data.data);
+              this.$store.commit("setNextPage", response_x.data.next_page_url);
+            }
+            this.$store.commit("finishLoading", "FilterComponent");
+            this.$store.commit("setCanLoadEvents", true);
+          });
       } else {
-        httpClient.get(url + `?page=${this.$store.getters.getPageIndex}`).then(response_x => {
-          console.log("response: " + response_x.data.data);
-          if (response_x.data.data != "") {
-            this.$store.commit("addPageToArray", response_x.data.data);
-            this.$store.commit("setNextPage", response_x.data.next_page_url);
-          }
-          this.$store.commit("finishLoading", "FilterComponent");
-          this.$store.commit("setCanLoadEvents", true);
-        });
+        httpClient
+          .get(url + `?page=${this.$store.getters.getPageIndex}`)
+          .then(response_x => {
+            console.log("response: " + response_x.data.data);
+            if (response_x.data.data != "") {
+              this.$store.commit("addPageToArray", response_x.data.data);
+              this.$store.commit("setNextPage", response_x.data.next_page_url);
+            }
+            this.$store.commit("finishLoading", "FilterComponent");
+            this.$store.commit("setCanLoadEvents", true);
+          });
       }
     },
 
@@ -661,29 +668,28 @@ export default {
         request = `/events`;
         this.apiRequest = request;
         this.$store.commit("setCurrentApiUrl", request);
-      }
-      else {
-          request = `/events?filter=${this.nameFilterRequestPart(
-              doFilterName
-          )}${this.dateFilterRequestPart(
-              doFilterDate,
-              apiDate,
-              doFilterName
-          )}${this.facultyFilterRequestPart(
-              doFilterFaculty
-          )}${this.departmentFilterRequestPart(
-              doFilterDepartment,
-              apiDept
-          )}${this.placeFilterRequestPart(
-              doFilterPlace,
-              this.getIdOfFilteredPlace(this.placeName)
-          )}${this.categoriesFilterRequestPart(
-              doFilterCategories,
-              this.getIdOfFilteredCategory(this.categories)
-          )}`;
+      } else {
+        request = `/events?filter=${this.nameFilterRequestPart(
+          doFilterName
+        )}${this.dateFilterRequestPart(
+          doFilterDate,
+          apiDate,
+          doFilterName
+        )}${this.facultyFilterRequestPart(
+          doFilterFaculty
+        )}${this.departmentFilterRequestPart(
+          doFilterDepartment,
+          apiDept
+        )}${this.placeFilterRequestPart(
+          doFilterPlace,
+          this.getIdOfFilteredPlace(this.placeName)
+        )}${this.categoriesFilterRequestPart(
+          doFilterCategories,
+          this.getIdOfFilteredCategory(this.categories)
+        )}`;
 
-          this.apiRequest = request;
-          this.$store.commit("setCurrentApiUrl", request);
+        this.apiRequest = request;
+        this.$store.commit("setCurrentApiUrl", request);
       }
 
       //execute filtering

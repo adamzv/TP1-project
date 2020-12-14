@@ -5,5 +5,100 @@
   "logout": "Odhlásiť sa",
   "ukfNitra": "UKF v Nitre",
   "addEvent": "Pridať event",
-  "profile": "Profil"
+  "profile": "Profil",
+  "or": "Alebo",
+  "send": "Odoslať",
+  "forgotten_password": "Zabudnuté heslo",
+  "sign_in": "Prihlásenie",
+  "password": "Heslo",
+  "password_bad": "Heslo musí obsahovať minimálne 6 znakov",
+  "registration": "Registrácia",
+  "register": "Registrovať",
+  "name": "Meno",
+  "surname": "Priezvisko",
+  "rights_reserved": "Všetky práva vyhradené.",
+  "logged_in_event": "Boli ste prihlásená/ý na udalosť.",
+  "home": "Domov",
+
+  "login_messages": {
+    "registration_failed": "Registrácia bola neúspešná!",
+    "invalid_password": "Zadané heslo je neplatné!",
+    "email_exists": "Zadaný email už existuje v systéme!",
+    "registered_successfully": "Boli ste úspešne zaregistrovaná/ý!",
+    "invalid_login_attempt": "Neplatný pokus o prihlásenie, skúste ešte raz",
+    "error_occurred": "Niekde nastala chyba.",
+    "link_to_change_password": "Odkaz na zmenu hesla Vám príde na email.",
+    "enter_email": "Zadajte Vašu emailovú adresu"
+  },
+
+  "not_found": {
+    "page_not_found": "Chyba 404: Stránka nenájdená",
+    "back_to_main": "Späť na úvod"
+  },
+
+  "password_reset": {
+    "change": "Zmena hesla",
+    "new_password": "Nové heslo",
+    "repeat_new_password": "Zopakujte nové heslo",
+    "change_password": "Zmeniť heslo",
+    "password_changed": "Heslo bolo zmenené"
+  },
+
+  "event_detail": {
+    "when": "KEDY",
+    "where": "KDE",
+    "room": "Miestnosť",
+    "calendar": "KALENDÁR",
+    "seat_limit": "LIMIT MIEST",
+    "unlimited": "Neobmedzene",
+    "event_description": "POPIS UDALOSTI",
+    "gallery": "GALÉRIA",
+    "map": "Mapa",
+    "created_for": "URČENÉ PRE",
+    "created": "VYTVORIL",
+    "all_departments": "Všetky katedry",
+    "download_information_sheet": "Stiahnuť informačný list"
+  },
+
+  "filter": {
+    "venue": "Miesto konania",
+    "department": "Katedra",
+    "faculty": "Fakulta",
+    "categories": "Kategórie",
+    "from_date": "Od dátumu",
+    "title": "Názov"
+  },
+
+  "event": {
+    "settings": "Všeobecné nastavenia udalosti",
+    "event_name": "Názov udalosti",
+    "new_category": "Nová kategória",
+    "add_category": "Pridať kategóriu",
+    "event_start": "Začiatok udalosti",
+    "select_date": "Vybrať dátum a čas",
+    "event_end": "Koniec udalosti",
+    "upload_cover_photo": "Nahrať (zvoliť) titulnú fotku ",
+    "upload_pdf": "Nahrať súbor .pdf",
+    "event_description": "Popis udalosti",
+    "select_location": "Vybrať miesto konania udalosti",
+    "add_new_place": "Pridať nové miesto",
+    "university_settings": "Univerzitné nastavenia",
+    "lecturer": "Prednášajúci",
+    "limit_number_seats": "Obmedziť počet miest?",
+    "gallery": "Galéria",
+    "images_can_only_event": "Obrázky sa dajú vkladať až po skončení udalosti",
+    "add_event": "Pridať udalosť"
+  },
+
+  "admin": {
+    "section": "Admin sekcia",
+    "email_adress": "Emailová adresa",
+    "statistics": "Štatistiky",
+    "event_management": "Správa udalostí",
+    "users": "Používatelia",
+    "change_password": "Zmeniť heslo",
+    "registered_users": "Registrovaných používateľov",
+    "upcoming_events": "Nadchádzajúce udalosti",
+    "archive_events": "Archív udalostí"
+  }
 }
