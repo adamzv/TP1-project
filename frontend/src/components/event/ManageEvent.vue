@@ -61,6 +61,7 @@
                       :max-datetime="end"
                       ref="datepicker"
                       horizontal-time-picker
+                      required
                     >
                       <!-- A simple hack to display timepicker in the middle :) -->
                       <template slot="left">
@@ -92,6 +93,7 @@
                       :min-datetime="beginning"
                       ref="datepicker"
                       horizontal-time-picker
+                      required
                     >
                       <!-- A simple hack to display timepicker in the middle :) -->
                       <template slot="left">
@@ -188,45 +190,19 @@
               </div>
               <div class="columns">
                 <div class="column">
-                  <b-modal v-model="newPlaceModal" has-modal-card trap-focus>
-                    <div class="modal-card" style="width: auto">
-                      <header class="modal-card-head">
-                        <p class="modal-card-title">Login</p>
-                        <button
-                          type="button"
-                          class="delete"
-                          @click="newPlaceModal = false"
-                        />
-                      </header>
-                      <section class="modal-card-body">
-                        <b-field label="Ulica">
-                          <b-input v-model="modalPlace" required></b-input>
-                        </b-field>
-                      </section>
-                      <footer class="modal-card-foot">
-                        <button
-                          class="button"
-                          type="button"
-                          @click="newPlaceModal = false"
-                        >
-                          Zrušiť
-                        </button>
-                        <button class="button is-primary">Potvrdiť</button>
-                      </footer>
-                    </div>
-                  </b-modal>
-
-                  <b-field v-bind:label="$t('filter.venue')">
+                  <b-field label="Miesto konania">
                     <b-autocomplete
                       v-model="placeName"
                       ref="autocomplete"
-                      :data="availablePlaces"
+                      :data="filteredPlaces"
                       field="name"
                       :keep-first="true"
                       :open-on-focus="true"
                       :clearable="true"
                       v-bind:placeholder="$t('event.select_location')"
                       @select="option => (place = option)"
+                      @typing="getFilteredPlaces"
+                      required
                     >
                       <template slot="header">
                         <a @click="newPlaceModal = true">
@@ -279,6 +255,7 @@
                       @select="option => (selectedFaculty = option)"
                       v-on:select="checkIfDepartmentIsSelected"
                       :clearable="true"
+                      required
                     ></b-autocomplete>
                   </b-field>
                 </div>
@@ -293,6 +270,7 @@
                       :disabled="selectedFaculty == null"
                       :clearable="true"
                       @select="option => (selectedDepartment = option)"
+                      required
                     ></b-autocomplete>
                   </b-field>
                 </div>
@@ -448,6 +426,30 @@
         </div>
       </form>
     </div>
+    <b-modal v-model="newPlaceModal" has-modal-card trap-focus>
+      <div class="modal-card" style="width: auto">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Vytvoriť nové miesto</p>
+          <button type="button" class="delete" @click="newPlaceModal = false" />
+        </header>
+        <section class="modal-card-body">
+          <b-field label="Ulica">
+            <b-input v-model="modalPlace" required></b-input>
+          </b-field>
+          <b-field label="Mesto">
+            <b-input v-model="modalCity" required></b-input>
+          </b-field>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button" type="button" @click="newPlaceModal = false">
+            Zrušiť
+          </button>
+          <button class="button is-primary" @click="newPlace">
+            Potvrdiť
+          </button>
+        </footer>
+      </div>
+    </b-modal>
   </section>
 </template>
 
@@ -471,6 +473,7 @@ export default {
       newPlaceName: "",
       availableCategories: [],
       filteredCategories: [],
+      filteredPlaces: [],
       id: null,
       name: "",
       desc: null,
@@ -506,7 +509,8 @@ export default {
       titleImage: null,
       titleImagePath: null,
       // place modal properties
-      modalPlace: ""
+      modalPlace: "",
+      modalCity: ""
     };
   },
   methods: {
@@ -525,19 +529,11 @@ export default {
         }
       });
     },
-    addNewPlace() {
-      this.$buefy.dialog.prompt({
-        message: `Pridať nové miesto`,
-        inputAttrs: {
-          maxlength: 255,
-          value: this.newPlaceName
-        },
-        confirmText: "Pridať",
-        onConfirm: value => {
-          this.availablePlaces.push({ name: value });
-          this.newPlaceName = "";
-        }
-      });
+    newPlace() {
+      this.availablePlaces.push({ name: this.modalPlace });
+      this.placeName = this.modalPlace;
+      this.newPlaceModal = false;
+      this.place = this.modalPlace;
     },
     checkForm() {
       this.generateRequest();
@@ -610,7 +606,9 @@ export default {
             //id_user: parseInt(this.$store.getters.loggedInId),
             attendance_limit: this.attendanceLimit || -1,
             pdfPath: null,
-            titleImgPath: null
+            titleImgPath: null,
+            street: this.modalPlace,
+            city: this.modalCity
           })
           .then(() => {
             this.$store.commit("submitNewEvent", true);
@@ -644,7 +642,9 @@ export default {
             id_user: parseInt(this.$store.getters.loggedInId),
             attendance_limit: this.attendanceLimit || -1,
             pdfPath: this.filePath,
-            titleImgPath: this.titleImagePath
+            titleImgPath: this.titleImagePath,
+            street: this.modalPlace,
+            city: this.modalCity
           })
           .then(() => {
             if (!this.createNext) {
@@ -668,6 +668,16 @@ export default {
     },
     getFilteredTags(text) {
       this.filteredCategories = this.availableCategories.filter(option => {
+        return (
+          option.name
+            .toString()
+            .toLowerCase()
+            .indexOf(text.toLowerCase()) >= 0
+        );
+      });
+    },
+    getFilteredPlaces(text) {
+      this.filteredPlaces = this.availablePlaces.filter(option => {
         return (
           option.name
             .toString()
@@ -892,6 +902,7 @@ export default {
     this.$store.commit("pushToLoading", "ManageEventPlaces");
     httpClient.get("/places").then(response => {
       this.availablePlaces = response.data;
+      this.filteredPlaces = response.data;
       this.$store.commit("finishLoading", "ManageEventPlaces");
     });
 
