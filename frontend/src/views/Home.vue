@@ -9,9 +9,11 @@
                           :events="loadedEvents"/>
     </div>
 
-    <div v-else-if="this.$store.getters.getCanShowNoEvents">
-      <br/><br/>
-      <strong>No events found!</strong>
+    <div v-else>
+      <div v-if="this.$store.getters.getCanShowNoEvents">
+        <br/><br/>
+        <strong>No events found!</strong>
+      </div>
     </div>
   </div>
 </template>
