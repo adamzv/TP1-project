@@ -33,7 +33,7 @@
 
     <router-view :loaded-events="events" />
 
-    <FooterComponent v-if="(this.$store.getters.getPages.length > 0) || (this.$store.getters.getCanShowNoEvents)" />
+    <FooterComponent v-if="((this.$store.getters.getPages.length > 0) || (this.$store.getters.getCanShowNoEvents) && !this.$store.getters.getFirstTimeLoaded)" />
 
     <back-to-top bottom="50px" right="50px">
       <button type="button" class="btn-to-top">
