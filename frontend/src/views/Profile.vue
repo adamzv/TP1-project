@@ -22,10 +22,10 @@
                   />
                 </header>
                 <section class="modal-card-body">
-                  <b-field label="Meno">
+                  <b-field v-bind:label="$t('name')">
                     <b-input v-model="name" required></b-input>
                   </b-field>
-                  <b-field label="Priezvisko">
+                  <b-field v-bind:label="$t('surname')">
                     <b-input v-model="surname" required></b-input>
                   </b-field>
                 </section>

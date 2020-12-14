@@ -43,7 +43,7 @@
 
       <b-table-column
         field="name"
-        label="Meno"
+        v-bind:label="$t('name')"
         :searchable="nameSearchable"
         sortable
         v-slot="props"
@@ -53,7 +53,7 @@
 
       <b-table-column
         field="surname"
-        label="Priezvisko"
+        v-bind:label="$t('surname')"
         :searchable="nameSearchable"
         sortable
         v-slot="props"

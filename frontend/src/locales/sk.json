@@ -18,6 +18,7 @@
   "surname": "Priezvisko",
   "rights_reserved": "Všetky práva vyhradené.",
   "logged_in_event": "Boli ste prihlásená/ý na udalosť.",
+  "home": "Domov",
 
   "login_messages": {
     "registration_failed": "Registrácia bola neúspešná!",
@@ -95,6 +96,9 @@
     "statistics": "Štatistiky",
     "event_management": "Správa udalostí",
     "users": "Používatelia",
-    "change_password": "Zmeniť heslo"
+    "change_password": "Zmeniť heslo",
+    "registered_users": "Registrovaných používateľov",
+    "upcoming_events": "Nadchádzajúce udalosti",
+    "archive_events": "Archív udalostí"
   }
 }
