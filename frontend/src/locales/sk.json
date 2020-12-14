@@ -57,5 +57,44 @@
     "created": "VYTVORIL",
     "all_departments": "Všetky katedry",
     "download_information_sheet": "Stiahnuť informačný list"
+  },
+
+  "filter": {
+    "venue": "Miesto konania",
+    "department": "Katedra",
+    "faculty": "Fakulta",
+    "categories": "Kategórie",
+    "from_date": "Od dátumu",
+    "title": "Názov"
+  },
+
+  "event": {
+    "settings": "Všeobecné nastavenia udalosti",
+    "event_name": "Názov udalosti",
+    "new_category": "Nová kategória",
+    "add_category": "Pridať kategóriu",
+    "event_start": "Začiatok udalosti",
+    "select_date": "Vybrať dátum a čas",
+    "event_end": "Koniec udalosti",
+    "upload_cover_photo": "Nahrať (zvoliť) titulnú fotku ",
+    "upload_pdf": "Nahrať súbor .pdf",
+    "event_description": "Popis udalosti",
+    "select_location": "Vybrať miesto konania udalosti",
+    "add_new_place": "Pridať nové miesto",
+    "university_settings": "Univerzitné nastavenia",
+    "lecturer": "Prednášajúci",
+    "limit_number_seats": "Obmedziť počet miest?",
+    "gallery": "Galéria",
+    "images_can_only_event": "Obrázky sa dajú vkladať až po skončení udalosti",
+    "add_event": "Pridať udalosť"
+  },
+
+  "admin": {
+    "section": "Admin sekcia",
+    "email_adress": "Emailová adresa",
+    "statistics": "Štatistiky",
+    "event_management": "Správa udalostí",
+    "users": "Používatelia",
+    "change_password": "Zmeniť heslo"
   }
 }

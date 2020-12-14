@@ -7,6 +7,9 @@
         </b-navbar-item>
       </template>
       <template slot="end">
+        <b-navbar-item tag="router-link" to="/">
+          Domov
+        </b-navbar-item>
         <b-navbar-item href="https://www.ukf.sk">
           UKF.sk
         </b-navbar-item>

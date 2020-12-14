@@ -57,6 +57,45 @@
     "created": "CREATED",
     "all_departments": "All departments",
     "download_information_sheet": "Download the information sheet"
+  },
+
+  "filter": {
+    "venue": "Venue",
+    "department": "Department",
+    "faculty": "Faculty",
+    "categories": "Categories",
+    "from_date": "From date",
+    "title": "Title"
+  },
+
+  "event": {
+    "settings": "General event settings",
+    "event_name": "Event name",
+    "new_category": "New category",
+    "add_category": "Add a category",
+    "event_start": "Event start",
+    "select_date": "Select date and time",
+    "event_end": "End of event",
+    "upload_cover_photo": "Upload (select) a cover photo",
+    "upload_pdf": "Upload a .pdf file",
+    "event_description": "Event description",
+    "select_location": "Select the location of the event",
+    "add_new_place": "Add a new place",
+    "university_settings": "University settings",
+    "lecturer": "Lecturer",
+    "limit_number_seats": "Limit the number of seats?",
+    "gallery": "Gallery",
+    "images_can_only_event": "Images can only be inserted after the event",
+    "add_event": "Add an event"
+  },
+
+  "admin": {
+    "section": "Admin section",
+    "email_adress": "E-mail adress",
+    "statistics": "Statistics",
+    "event_management": "Event management",
+    "users": "Users",
+    "change_password": "Change Password"
   }
 
 }
