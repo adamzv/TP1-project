@@ -413,6 +413,7 @@ export default {
       this.$store.commit("clearPageArray", []);
 
       this.$store.commit("pushToLoading", "FilterComponent");
+      this.$store.commit("setShowFooter", false);
       httpClient.get(`/events?page=1`).then(response_x => {
         if (response_x.data.data != "") {
           this.$store.commit("addPageToArray", response_x.data.data);
@@ -421,6 +422,7 @@ export default {
         }
 
         this.$store.commit("finishLoading", "FilterComponent");
+        this.$store.commit("setShowFooter", true);
       });
 
       this.setFilterOptionsClear();
@@ -990,7 +992,6 @@ export default {
 
     if (this.$store.getters.getFirstTimeLoaded == false) {
       this.loadEvents(this.getCurrentApiUrl);
-      this.$store.commit("setFirstTimeLoaded", true);
     }
   }
 };
