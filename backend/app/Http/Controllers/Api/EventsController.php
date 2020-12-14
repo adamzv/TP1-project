@@ -73,8 +73,8 @@ class EventsController extends Controller
             $event->id_place = $request->input('id_place');
         }
         else{
-            $city =  City::firstOrCreate(["name" => $request->input("city")],['id_state' => 1]);
-            $place = Place::firstOrCreate(["name" => $request->input("street")], ['id_city' => $city->id]);
+            $city =  City::firstOrCreate(["name" => $request->input('city')],['id_state' => 1]);
+            $place = Place::firstOrCreate(["name" => $request->input('street')], ['id_city' => $city->id]);
             $event->id_place = $place->id;
 
         };
@@ -153,6 +153,7 @@ class EventsController extends Controller
         //$event->id_user = $request->input('id_user');
         if($request->input('id_place') != null){
             $event->id_place = $request->input('id_place');
+            $place = Place::findOrFail($request->input('id_place'));
         }
         else{
             $city =  City::firstOrCreate(["name" => $request->input("city")],['id_state' => 1]);
@@ -189,7 +190,7 @@ class EventsController extends Controller
             $eventBeginningOld != $request->input('beginning')) {
 
             // find the place
-            $place = Place::findOrFail($request->input('id_place'));
+
 
             // create and send mail
             Mail::to('me@app.com')
@@ -204,7 +205,7 @@ class EventsController extends Controller
         } elseif ($eventPlaceOld != $request->input('id_place')) {
 
             // find the place
-            $place = Place::findOrFail($request->input('id_place'));
+
 
             // create and send mail
             Mail::to('me@app.com')

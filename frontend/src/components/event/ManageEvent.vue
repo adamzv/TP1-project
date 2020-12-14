@@ -188,40 +188,7 @@
               </div>
               <div class="columns">
                 <div class="column">
-                  <b-modal v-model="newPlaceModal" has-modal-card trap-focus>
-                    <div class="modal-card" style="width: auto">
-                      <header class="modal-card-head">
-                        <p class="modal-card-title">Vytvoriť nové miesto</p>
-                        <button
-                          type="button"
-                          class="delete"
-                          @click="newPlaceModal = false"
-                        />
-                      </header>
-                      <section class="modal-card-body">
-                        <b-field label="Ulica">
-                          <b-input v-model="modalPlace" required></b-input>
-                        </b-field>
-                        <b-field label="Mesto">
-                          <b-input v-model="modalCity" required></b-input>
-                        </b-field>
-                      </section>
-                      <footer class="modal-card-foot">
-                        <button
-                          class="button"
-                          type="button"
-                          @click="newPlaceModal = false"
-                        >
-                          Zrušiť
-                        </button>
-                        <button class="button is-primary" @click="newPlace">
-                          Potvrdiť
-                        </button>
-                      </footer>
-                    </div>
-                  </b-modal>
-
-                  <b-field v-bind:label="$t('filter.venue')">
+                  <b-field label="Miesto konania">
                     <b-autocomplete
                       v-model="placeName"
                       ref="autocomplete"
@@ -453,6 +420,30 @@
         </div>
       </form>
     </div>
+    <b-modal v-model="newPlaceModal" has-modal-card trap-focus>
+      <div class="modal-card" style="width: auto">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Vytvoriť nové miesto</p>
+          <button type="button" class="delete" @click="newPlaceModal = false" />
+        </header>
+        <section class="modal-card-body">
+          <b-field label="Ulica">
+            <b-input v-model="modalPlace" required></b-input>
+          </b-field>
+          <b-field label="Mesto">
+            <b-input v-model="modalCity" required></b-input>
+          </b-field>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button" type="button" @click="newPlaceModal = false">
+            Zrušiť
+          </button>
+          <button class="button is-primary" @click="newPlace">
+            Potvrdiť
+          </button>
+        </footer>
+      </div>
+    </b-modal>
   </section>
 </template>
 
@@ -533,6 +524,8 @@ export default {
     },
     newPlace() {
       this.availablePlaces.push({ name: this.modalPlace });
+      this.placeName = this.modalPlace;
+      this.newPlaceModal = false;
       this.place = this.modalPlace;
     },
     checkForm() {
@@ -606,7 +599,9 @@ export default {
             //id_user: parseInt(this.$store.getters.loggedInId),
             attendance_limit: this.attendanceLimit || -1,
             pdfPath: null,
-            titleImgPath: null
+            titleImgPath: null,
+            street: this.modalPlace,
+            city: this.modalCity
           })
           .then(() => {
             this.$store.commit("submitNewEvent", true);
