@@ -17,7 +17,7 @@ class PlacesSeeder extends Seeder
      */
     public function run()
     {
-        // factory(\App\Models\Place::class, 10)->create();
+       //factory(\App\Models\Place::class, 10)->create();
         $places_array = array(
             'Trieda Andreja Hlinku 1',
             'Nábrežie mládeže 91',

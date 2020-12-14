@@ -61,6 +61,7 @@
                       :max-datetime="end"
                       ref="datepicker"
                       horizontal-time-picker
+                      required
                     >
                       <!-- A simple hack to display timepicker in the middle :) -->
                       <template slot="left">
@@ -92,6 +93,7 @@
                       :min-datetime="beginning"
                       ref="datepicker"
                       horizontal-time-picker
+                      required
                     >
                       <!-- A simple hack to display timepicker in the middle :) -->
                       <template slot="left">
@@ -192,13 +194,15 @@
                     <b-autocomplete
                       v-model="placeName"
                       ref="autocomplete"
-                      :data="availablePlaces"
+                      :data="filteredPlaces"
                       field="name"
                       :keep-first="true"
                       :open-on-focus="true"
                       :clearable="true"
                       v-bind:placeholder="$t('event.select_location')"
                       @select="option => (place = option)"
+                      @typing="getFilteredPlaces"
+                      required
                     >
                       <template slot="header">
                         <a @click="newPlaceModal = true">
@@ -251,6 +255,7 @@
                       @select="option => (selectedFaculty = option)"
                       v-on:select="checkIfDepartmentIsSelected"
                       :clearable="true"
+                      required
                     ></b-autocomplete>
                   </b-field>
                 </div>
@@ -265,6 +270,7 @@
                       :disabled="selectedFaculty == null"
                       :clearable="true"
                       @select="option => (selectedDepartment = option)"
+                      required
                     ></b-autocomplete>
                   </b-field>
                 </div>
@@ -467,6 +473,7 @@ export default {
       newPlaceName: "",
       availableCategories: [],
       filteredCategories: [],
+      filteredPlaces: [],
       id: null,
       name: "",
       desc: null,
@@ -661,6 +668,16 @@ export default {
     },
     getFilteredTags(text) {
       this.filteredCategories = this.availableCategories.filter(option => {
+        return (
+          option.name
+            .toString()
+            .toLowerCase()
+            .indexOf(text.toLowerCase()) >= 0
+        );
+      });
+    },
+    getFilteredPlaces(text) {
+      this.filteredPlaces = this.availablePlaces.filter(option => {
         return (
           option.name
             .toString()
@@ -885,6 +902,7 @@ export default {
     this.$store.commit("pushToLoading", "ManageEventPlaces");
     httpClient.get("/places").then(response => {
       this.availablePlaces = response.data;
+      this.filteredPlaces = response.data;
       this.$store.commit("finishLoading", "ManageEventPlaces");
     });
 

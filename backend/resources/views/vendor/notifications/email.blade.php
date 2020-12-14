@@ -34,8 +34,7 @@
 @isset($actionText)
 @slot('subcopy')
 @lang(
-    "Ak máte problém s kliknutím na  \":actionText\" , skopírujte a vložte túto URL do vášho prehliadača\n".
-    'into your web browser:',
+    "Ak máte problém s kliknutím na  \":actionText\" , skopírujte a vložte túto URL do vášho prehliadača:",
     [
         'actionText' => $actionText,
     ]

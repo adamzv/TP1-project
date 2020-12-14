@@ -189,7 +189,6 @@ class EventsController extends Controller
         if ($eventPlaceOld != $request->input('id_place') &&
             $eventBeginningOld != $request->input('beginning')) {
 
-            // find the place
 
 
             // create and send mail
