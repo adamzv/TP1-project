@@ -26,7 +26,7 @@
               <div class="columns">
                 <div class="column is-two-fifths">
                   <b-field v-bind:label="$t('event.event_name')">
-                    <b-input v-model="name"></b-input>
+                    <b-input v-model="name" required></b-input>
                   </b-field>
                 </div>
                 <div class="column">
@@ -62,6 +62,7 @@
                       ref="datepicker"
                       horizontal-time-picker
                       required
+                      :position="is-top-left"
                     >
                       <!-- A simple hack to display timepicker in the middle :) -->
                       <template slot="left">
@@ -92,6 +93,7 @@
                       :locale="'sk-SK'"
                       :min-datetime="beginning"
                       ref="datepicker"
+                      :position="is - top - left"
                       horizontal-time-picker
                       required
                     >
@@ -822,7 +824,6 @@ export default {
   },
   watch: {
     selectedDepartmentName(val) {
-      console.log(val);
       if (val === "") {
         this.selectedDepartment = null;
       }
