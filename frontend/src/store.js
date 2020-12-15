@@ -29,7 +29,9 @@ export default new Vuex.Store({
     firstTimeLoaded: false,
     canLoadEvents: true,
     nextPage: ``,
-    canShowNoEvents: false
+    canShowNoEvents: false,
+    currentCityOnMap: ``,
+    showFooter: true
   },
   getters: {
     fileUploadLoading(state) {
@@ -111,6 +113,12 @@ export default new Vuex.Store({
     },
     getCanShowNoEvents(state) {
         return state.canShowNoEvents;
+    },
+    getCurrentCityOnMan(state) {
+        return state.currentCityOnMap;
+    },
+    getShowFooter(state) {
+        return state.showFooter;
     }
   },
   mutations: {
@@ -203,9 +211,17 @@ export default new Vuex.Store({
         state.nextPage = change;
     },
 
-    setCanShowNoEvents(state, change) {
-        state.canShowNoEvents = change;
-    }
+      setCanShowNoEvents(state, change) {
+          state.canShowNoEvents = change;
+      },
+
+      setCurrentCityOnMap(state, change) {
+          state.currentCityOnMap = change;
+      },
+
+      setShowFooter(state, change) {
+        state.showFooter = change;
+      }
   },
   actions: {
     updateLoading(context) {

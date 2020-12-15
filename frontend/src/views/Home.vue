@@ -6,11 +6,12 @@
       <EventListComponent v-bind:page-id="increasePageId(page)"
                           v-for="page in this.$store.getters.getPages.length"
                           v-bind:key="page.id"
-                          :events="loadedEvents"/>
+                          :events="loadedEvents"
+                          ref="elc"/>
     </div>
 
     <div v-else>
-      <div v-if="this.$store.getters.getCanShowNoEvents">
+      <div v-if="this.$store.getters.getCanShowNoEvents && !this.$store.getters.getFirstTimeLoaded">
         <br/><br/>
         <strong>No events found!</strong>
       </div>

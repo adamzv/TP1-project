@@ -43,14 +43,6 @@ php artisan key:generate
 
 **Attention!** Azure Storage and Mailtrap access keys are required for backend to work
 
-#### Azure storage keys
-Access key will be revoked after presentation
-```1
-AZURE_STORAGE_NAME=projectdevstorage
-AZURE_STORAGE_KEY=Y9y8zzxCK5K0d7go3BI4HOqB6YgTJ7ZBSK8jDnKYFywQbelWjOltFJ+3und0LMzH+F98bT7gNoF46FgC93j6JQ==
-AZURE_STORAGE_CONTAINER=files
-```
-
 Notes:
 
 `php artisan route:list` to show every route 

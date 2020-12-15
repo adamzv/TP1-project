@@ -74,7 +74,7 @@ class EventsController extends Controller
         }
         else{
             $city =  City::firstOrCreate(["name" => $request->input('city')],['id_state' => 1]);
-            $place = Place::firstOrCreate(["name" => $request->input('street')], ['id_city' => $city->id]);
+            $place = Place::firstOrCreate(["name" => $request->input('street'), 'id_city' => $city->id]);
             $event->id_place = $place->id;
 
         };
@@ -157,7 +157,7 @@ class EventsController extends Controller
         }
         else{
             $city =  City::firstOrCreate(["name" => $request->input("city")],['id_state' => 1]);
-            $place = Place::firstOrCreate(["name" => $request->input("street")], ['id_city' => $city->id]);
+            $place = Place::firstOrCreate(["name" => $request->input('street'), 'id_city' => $city->id]);
             $event->id_place = $place->id;
 
         };
