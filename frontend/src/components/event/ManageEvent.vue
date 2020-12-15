@@ -92,8 +92,8 @@
                       icon="calendar-today"
                       :locale="'sk-SK'"
                       :min-datetime="beginning"
-                      ref="datepicker"
-                      :position="is - top - left"
+                      ref="datepickerend"
+                      :position="is-top-left"
                       horizontal-time-picker
                       required
                     >
@@ -107,7 +107,7 @@
                           class="button is-success"
                           type="button"
                           icon-left="check"
-                          @click="$refs.datepicker.toggle()"
+                          @click="$refs.datepickerend.toggle()"
                         ></b-button>
                       </template>
                     </b-datetimepicker>
@@ -272,7 +272,6 @@
                       :disabled="selectedFaculty == null"
                       :clearable="true"
                       @select="option => (selectedDepartment = option)"
-                      required
                     ></b-autocomplete>
                   </b-field>
                 </div>
