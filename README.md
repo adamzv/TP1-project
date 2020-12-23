@@ -67,3 +67,8 @@ docker-compose exec backend php artisan migrate:fresh --seed
 docker-compose exec backend php artisan passport:install --force
 ```
 These steps are automated in our release pipeline and because of time constraints and Docker setup not being required, we did not move some of these commands to Dockerfiles.
+
+### Final application
+![0](https://user-images.githubusercontent.com/31664842/103012790-63d21a00-453c-11eb-8eb7-19a9c9556978.png)
+![6](https://user-images.githubusercontent.com/31664842/103012849-79dfda80-453c-11eb-9977-282a5bf81a67.png)
+![4](https://user-images.githubusercontent.com/31664842/103012859-7c423480-453c-11eb-887e-04f4432d50bc.png)
